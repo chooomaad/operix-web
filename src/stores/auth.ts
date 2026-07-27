@@ -25,7 +25,7 @@ interface User {
   organisation: Organisation | null
 }
 
-function buildUser(apiUser: Record<string, any>, apiOrg: Record<string, any> | null): User {
+function buildUser(apiUser: Omit<User, 'organisation'>, apiOrg: Organisation | null): User {
   return { ...apiUser, organisation: apiOrg ?? null }
 }
 
