@@ -66,6 +66,29 @@ const router = createRouter({
       ],
     },
 
+    // ── Activation de compte (public) ─────────────────────────────────────────
+    {
+      path: '/activate',
+      name: 'activate',
+      component: () => import('@/pages/activate/ActivatePage.vue'),
+      meta: { public: true },
+    },
+
+    // ── Console Super Admin plateforme (super_admin uniquement) ───────────────
+    {
+      path: '/superadmin',
+      component: () => import('@/pages/superadmin/SuperAdminLayout.vue'),
+      meta: { requiresAuth: true, requiresSuperAdmin: true },
+      children: [
+        { path: '',              name: 'sa-dashboard',     component: () => import('@/pages/superadmin/SaDashboard.vue') },
+        { path: 'demo-requests', name: 'sa-demo-requests', component: () => import('@/pages/superadmin/SaDemoRequests.vue') },
+        { path: 'plans',         name: 'sa-plans',         component: () => import('@/pages/superadmin/SaPlans.vue') },
+        { path: 'orders',        name: 'sa-orders',        component: () => import('@/pages/superadmin/SaOrders.vue') },
+        { path: 'payments',      name: 'sa-payments',      component: () => import('@/pages/superadmin/SaPayments.vue') },
+        { path: 'subscriptions', name: 'sa-subscriptions', component: () => import('@/pages/superadmin/SaSubscriptions.vue') },
+      ],
+    },
+
     // ── Catch-all ────────────────────────────────────────────────────────────
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
@@ -83,6 +106,11 @@ router.beforeEach(async (to) => {
   }
 
   const role = auth.user?.role
+
+  // Super Admin plateforme → console dédiée (aucun contexte tenant)
+  if (auth.isSuperAdmin && !to.path.startsWith('/superadmin')) {
+    return { name: 'sa-dashboard' }
+  }
 
   // Agents → interface agent seulement, aucun accès à l'AppLayout
   if (role === 'agent' && !to.meta.agentOnly) {
