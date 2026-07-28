@@ -76,7 +76,7 @@
             >
               <!-- Avatar -->
               <div class="w-12 h-12 rounded-full flex-shrink-0 overflow-hidden bg-blue-100 flex items-center justify-center">
-                <img v-if="emp.photo" :src="`/storage/${emp.photo}`" class="w-full h-full object-cover" @error="(e) => (e.target as HTMLImageElement).style.display='none'" loading="lazy" />
+                <img v-if="emp.photo_url" :src="emp.photo_url" class="w-full h-full object-cover" @error="(e) => (e.target as HTMLImageElement).style.display='none'" loading="lazy" />
                 <span class="text-blue-600 font-bold text-sm">{{ initials(emp.prenom, emp.nom) }}</span>
               </div>
 

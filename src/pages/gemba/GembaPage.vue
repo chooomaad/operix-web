@@ -108,10 +108,10 @@
         }">{{ priorityLabel[value] ?? value }}</span>
       </template>
 
-      <template #cell-image="{ value }">
-        <img v-if="value" :src="`/storage/${value}`"
+      <template #cell-image="{ value, row }">
+        <img v-if="value" :src="(row as any).image_url"
           class="w-14 h-10 object-cover rounded-lg cursor-pointer hover:opacity-80"
-          @click.stop="lightbox = `/storage/${value}`" />
+          @click.stop="lightbox = (row as any).image_url" />
         <span v-else class="text-gray-300 text-xs">—</span>
       </template>
 
@@ -219,9 +219,9 @@
           <div v-if="viewRow.image">
             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{{ t('gemba.photoLabel') }}</p>
             <img
-              :src="`/storage/${viewRow.image}`"
+              :src="viewRow.image_url"
               class="w-full rounded-xl object-cover max-h-64 cursor-pointer hover:opacity-90 transition-opacity"
-              @click="lightbox = `/storage/${viewRow.image}`"
+              @click="lightbox = viewRow.image_url"
             />
           </div>
 
