@@ -20,6 +20,35 @@ export const authApi = {
   resetPin:   (data: Record<string, string>) => api.post('/auth/reset-pin', data),
   me:      () => api.get('/auth/me'),
   logout:  () => api.post('/auth/logout'),
+  activate: (token: string, password: string, password_confirmation: string) =>
+    api.post('/activate', { token, password, password_confirmation }),
+}
+
+// ── Commercial (public — site marketing) ──────────────────────────────────────
+export const commercialApi = {
+  plans:       () => api.get('/plans'),
+  requestDemo: (data: Record<string, unknown>) => api.post('/demo-requests', data),
+  checkout:    (data: Record<string, unknown>) => api.post('/checkout', data),
+}
+
+// ── Super Admin plateforme (super_admin uniquement) ───────────────────────────
+export const superAdminApi = {
+  dashboard:     () => api.get('/superadmin/dashboard'),
+  // Demandes de démo
+  demoRequests:  (params?: Record<string, unknown>) => api.get('/superadmin/demo-requests', { params }),
+  demoRequest:   (id: number) => api.get(`/superadmin/demo-requests/${id}`),
+  demoSetStatus: (id: number, status: string) => api.put(`/superadmin/demo-requests/${id}/status`, { status }),
+  demoConvert:   (id: number, data: Record<string, unknown>) => api.post(`/superadmin/demo-requests/${id}/convert`, data),
+  // Plans
+  plans:         () => api.get('/superadmin/plans'),
+  createPlan:    (data: Record<string, unknown>) => api.post('/superadmin/plans', data),
+  updatePlan:    (id: number, data: Record<string, unknown>) => api.put(`/superadmin/plans/${id}`, data),
+  // Commercial (lecture)
+  orders:        (params?: Record<string, unknown>) => api.get('/superadmin/orders', { params }),
+  payments:      (params?: Record<string, unknown>) => api.get('/superadmin/payments', { params }),
+  subscriptions: (params?: Record<string, unknown>) => api.get('/superadmin/subscriptions', { params }),
+  // Tenants
+  tenants:       (params?: Record<string, unknown>) => api.get('/superadmin/tenants', { params }),
 }
 
 // ── Dashboard ─────────────────────────────────────────────────────────────────
