@@ -45,7 +45,7 @@
     <DataTable :columns="columns" :rows="employees" :loading="loading" :meta="meta" :empty-text="t('employees.noEmployees')" @page="loadPage">
       <template #cell-photo="{ row }">
         <div class="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center overflow-hidden">
-          <img v-if="(row as any).photo" :src="`/storage/${(row as any).photo}`" class="w-full h-full object-cover" :alt="(row as any).nom" />
+          <img v-if="(row as any).photo_url" :src="(row as any).photo_url" class="w-full h-full object-cover" :alt="(row as any).nom" />
           <span v-else class="text-brand-600 text-xs font-bold">
             {{ ((row as any).prenom?.[0] ?? '') + ((row as any).nom?.[0] ?? '') }}
           </span>

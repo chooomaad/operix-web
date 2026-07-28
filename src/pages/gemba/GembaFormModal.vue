@@ -90,7 +90,7 @@
 
           <!-- Preview image existante (edit) -->
           <div v-if="existingImage && !photoPreview" class="relative w-full">
-            <img :src="storageUrl(existingImage)" class="w-full max-h-48 object-cover rounded-lg" />
+            <img :src="gemba?.image_url ?? ''" class="w-full max-h-48 object-cover rounded-lg" />
             <button type="button" @click="existingImage = null"
               class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600">
               <XMarkIcon class="w-3.5 h-3.5" />
@@ -169,10 +169,6 @@ const photoFile       = ref<File | null>(null)
 const photoPreview    = ref<string | null>(null)
 const existingImage   = ref<string | null>(null)
 const photoInputRef   = ref<HTMLInputElement | null>(null)
-
-function storageUrl(path: string) {
-  return `/storage/${path}`
-}
 
 function onPhotoChange(e: Event) {
   const file = (e.target as HTMLInputElement).files?.[0]

@@ -7,7 +7,7 @@
         <ArrowLeftIcon class="w-5 h-5" />
       </button>
       <div class="w-16 h-16 rounded-2xl bg-brand-100 flex items-center justify-center overflow-hidden flex-shrink-0">
-        <img v-if="employee.photo" :src="`/storage/${employee.photo}`" class="w-full h-full object-cover" />
+        <img v-if="employee.photo_url" :src="employee.photo_url" class="w-full h-full object-cover" />
         <span v-else class="text-brand-600 text-xl font-bold">{{ employee.prenom?.[0] }}{{ employee.nom?.[0] }}</span>
       </div>
       <div class="flex-1 min-w-0">
