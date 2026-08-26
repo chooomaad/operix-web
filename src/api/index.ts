@@ -13,8 +13,10 @@ export const searchApi = {
 // ── Auth ──────────────────────────────────────────────────────────────────────
 export const authApi = {
   requestOtp: (email: string) => api.post('/auth/request-otp', { email }),
-  verifyOtp:  (email: string, code: string) => api.post('/auth/verify-otp', { email, code }),
-  loginWithMatricule: (matricule: string, pin: string) => api.post('/auth/login', { matricule, pin }),
+  // `platform` rattache le jeton emis a ce client : une connexion mobile ne ferme
+  // plus la session web, et inversement (voir operix-api AuthController::issuePlatformToken).
+  verifyOtp:  (email: string, code: string) => api.post('/auth/verify-otp', { email, code, platform: 'web' }),
+  loginWithMatricule: (matricule: string, pin: string) => api.post('/auth/login', { matricule, pin, platform: 'web' }),
   register:   (data: Record<string, string>) => api.post('/auth/register', data),
   forgotPin:  (email: string) => api.post('/auth/forgot-pin', { email }),
   resetPin:   (data: Record<string, string>) => api.post('/auth/reset-pin', data),
