@@ -35,6 +35,7 @@ const auth = useAuthStore()
 
 const links = [
   { to: '/superadmin', label: 'Tableau de bord' },
+  { to: '/superadmin/tenants', label: 'Entreprises' },
   { to: '/superadmin/demo-requests', label: 'Demandes de démo' },
   { to: '/superadmin/plans', label: 'Plans' },
   { to: '/superadmin/orders', label: 'Commandes' },

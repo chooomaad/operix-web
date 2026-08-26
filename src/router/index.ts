@@ -81,6 +81,7 @@ const router = createRouter({
       meta: { requiresAuth: true, requiresSuperAdmin: true },
       children: [
         { path: '',              name: 'sa-dashboard',     component: () => import('@/pages/superadmin/SaDashboard.vue') },
+        { path: 'tenants',       name: 'sa-tenants',        component: () => import('@/pages/superadmin/SaTenants.vue') },
         { path: 'demo-requests', name: 'sa-demo-requests', component: () => import('@/pages/superadmin/SaDemoRequests.vue') },
         { path: 'plans',         name: 'sa-plans',         component: () => import('@/pages/superadmin/SaPlans.vue') },
         { path: 'orders',        name: 'sa-orders',        component: () => import('@/pages/superadmin/SaOrders.vue') },
