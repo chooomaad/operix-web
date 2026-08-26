@@ -165,11 +165,13 @@
     "reportedBy": "Rapporté par",
     "types": {
       "LTI": "LTI — Accident avec arrêt",
-      "FIRE": "Incendie",
       "MTC": "MTC — Soin médical",
       "RWC": "RWC — Travail adapté",
-      "FIRST_AID": "Premiers secours",
-      "HPI": "HPI — Incident à haut potentiel"
+      "FAC": "FAC — Premiers secours",
+      "HPI": "HPI — Incident à haut potentiel",
+      "Fire": "Incendie",
+      "Security": "Sûreté",
+      "Autre": "Autre"
     },
     "detail": {
       "location": "Lieu",
@@ -339,9 +341,72 @@
     "nearMiss": "Presqu'accidents",
     "breaches": "Infractions",
     "environment": "Environnement",
-    "formations": "Formations",
-    "certifications": "Certifications",
-    "medical": "Visites médicales",
+    "formations": {
+      "addTitle": "Ajouter une formation",
+      "title": "Titre",
+      "organism": "Organisme",
+      "startDate": "Date début",
+      "endDate": "Date fin",
+      "status": "Statut",
+      "completed": "Terminée",
+      "inProgress": "En cours",
+      "planned": "Planifiée",
+      "noData": "Aucune formation",
+      "columns": {
+        "title": "Titre",
+        "organism": "Organisme",
+        "start": "Début",
+        "end": "Fin",
+        "status": "Statut"
+      },
+      "added": "Formation ajoutée"
+    },
+    "certifications": {
+      "addTitle": "Ajouter une certification",
+      "title": "Certification",
+      "organism": "Organisme",
+      "issueDate": "Date d'obtention",
+      "expiryDate": "Date d'expiration",
+      "valid": "Valide",
+      "expired": "Expiré",
+      "noData": "Aucune certification",
+      "columns": {
+        "title": "Certification",
+        "organism": "Organisme",
+        "issued": "Obtention",
+        "expiry": "Expiration",
+        "status": "Statut"
+      },
+      "added": "Certification ajoutée"
+    },
+    "medical": {
+      "addTitle": "Ajouter une visite médicale",
+      "date": "Date",
+      "type": "Type",
+      "doctor": "Médecin",
+      "result": "Résultat",
+      "nextVisit": "Prochaine visite",
+      "types": {
+        "embauche": "À l'embauche",
+        "periodique": "Périodique",
+        "reprise": "Reprise de travail",
+        "autre": "Autre"
+      },
+      "results": {
+        "apte": "Apte",
+        "apte_restriction": "Apte avec restriction",
+        "inapte": "Inapte"
+      },
+      "noData": "Aucune visite médicale",
+      "columns": {
+        "date": "Date",
+        "type": "Type",
+        "doctor": "Médecin",
+        "result": "Résultat",
+        "nextVisit": "Prochaine visite"
+      },
+      "added": "Visite médicale ajoutée"
+    },
     "noIncidents": "Aucun incident enregistré",
     "noNearMiss": "Aucun presqu'accident enregistré",
     "noBreaches": "Aucune infraction enregistrée",
@@ -366,45 +431,6 @@
       "nationality": "Nationalité",
       "gender": "Genre",
       "section": "Section"
-    },
-    "formations": {
-      "addTitle": "Ajouter une formation",
-      "title": "Titre",
-      "organism": "Organisme",
-      "startDate": "Date début",
-      "endDate": "Date fin",
-      "status": "Statut",
-      "completed": "Terminée",
-      "inProgress": "En cours",
-      "planned": "Planifiée",
-      "noData": "Aucune formation",
-      "columns": { "title": "Titre", "organism": "Organisme", "start": "Début", "end": "Fin", "status": "Statut" },
-      "added": "Formation ajoutée"
-    },
-    "certifications": {
-      "addTitle": "Ajouter une certification",
-      "title": "Certification",
-      "organism": "Organisme",
-      "issueDate": "Date d'obtention",
-      "expiryDate": "Date d'expiration",
-      "valid": "Valide",
-      "expired": "Expiré",
-      "noData": "Aucune certification",
-      "columns": { "title": "Certification", "organism": "Organisme", "issued": "Obtention", "expiry": "Expiration", "status": "Statut" },
-      "added": "Certification ajoutée"
-    },
-    "medical": {
-      "addTitle": "Ajouter une visite médicale",
-      "date": "Date",
-      "type": "Type",
-      "doctor": "Médecin",
-      "result": "Résultat",
-      "nextVisit": "Prochaine visite",
-      "types": { "embauche": "À l'embauche", "periodique": "Périodique", "reprise": "Reprise de travail", "autre": "Autre" },
-      "results": { "apte": "Apte", "apte_restriction": "Apte avec restriction", "inapte": "Inapte" },
-      "noData": "Aucune visite médicale",
-      "columns": { "date": "Date", "type": "Type", "doctor": "Médecin", "result": "Résultat", "nextVisit": "Prochaine visite" },
-      "added": "Visite médicale ajoutée"
     },
     "loading": "Chargement du profil..."
   },
@@ -605,8 +631,17 @@
     "logoUpdated": "Logo mis à jour",
     "logoDeleted": "Logo supprimé",
     "confirmDeleteLogo": "Supprimer le logo ?",
-    "countries": { "MR": "Mauritanie", "SN": "Sénégal", "MA": "Maroc", "FR": "France", "CI": "Côte d'Ivoire" },
-    "languages": { "fr": "Français", "en": "English" }
+    "countries": {
+      "MR": "Mauritanie",
+      "SN": "Sénégal",
+      "MA": "Maroc",
+      "FR": "France",
+      "CI": "Côte d'Ivoire"
+    },
+    "languages": {
+      "fr": "Français",
+      "en": "English"
+    }
   },
   "users": {
     "title": "Utilisateurs",
@@ -735,7 +770,11 @@
     "importing": "Import en cours...",
     "importLines": "Importer {n} lignes",
     "moreErrors": "+ {n} autres erreurs",
-    "modules": { "employees": "Employés", "incidents": "Incidents", "near-miss": "Presqu'accidents" }
+    "modules": {
+      "employees": "Employés",
+      "incidents": "Incidents",
+      "near-miss": "Presqu'accidents"
+    }
   },
   "safetyTracker": {
     "title": "Safety Tracker",
@@ -750,6 +789,19 @@
     "date": "Date",
     "type": "Type",
     "location": "Lieu",
-    "months": ["Jan","Fév","Mar","Avr","Mai","Jun","Jul","Aoû","Sep","Oct","Nov","Déc"]
+    "months": [
+      "Jan",
+      "Fév",
+      "Mar",
+      "Avr",
+      "Mai",
+      "Jun",
+      "Jul",
+      "Aoû",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Déc"
+    ]
   }
 }

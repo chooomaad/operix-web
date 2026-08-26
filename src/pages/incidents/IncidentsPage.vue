@@ -32,12 +32,9 @@
       </select>
       <select v-model="filters.type" @change="load" class="input w-36">
         <option value="">{{ t('incidents.allTypes') }}</option>
-        <option value="LTI">LTI</option>
-        <option value="FIRE">FIRE</option>
-        <option value="MTC">MTC</option>
-        <option value="RWC">RWC</option>
-        <option value="FIRST_AID">FIRST AID</option>
-        <option value="HPI">HPI</option>
+        <option v-for="code in INCIDENT_TYPES" :key="code" :value="code">
+          {{ t(`incidents.types.${code}`) }}
+        </option>
       </select>
       <select v-model="filters.status" @change="load" class="input w-36">
         <option value="">{{ t('status.allStatuses') }}</option>
@@ -83,6 +80,7 @@ import { useDownload } from '@/composables/useDownload'
 import DataTable from '@/components/ui/DataTable.vue'
 import IncidentFormModal from './IncidentFormModal.vue'
 import { PlusIcon, ArrowDownTrayIcon, DocumentArrowDownIcon } from '@heroicons/vue/24/outline'
+import { INCIDENT_TYPES } from '@/types/incident'
 
 const { t } = useI18n()
 const auth   = useAuthStore()

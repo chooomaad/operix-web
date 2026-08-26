@@ -16,12 +16,9 @@
           <div>
             <label class="label">{{ t('incidents.type') }} *</label>
             <select v-model="form.type" class="input" required>
-              <option value="LTI">{{ t('incidents.types.LTI') }}</option>
-              <option value="FIRE">{{ t('incidents.types.FIRE') }}</option>
-              <option value="MTC">{{ t('incidents.types.MTC') }}</option>
-              <option value="RWC">{{ t('incidents.types.RWC') }}</option>
-              <option value="FIRST_AID">{{ t('incidents.types.FIRST_AID') }}</option>
-              <option value="HPI">{{ t('incidents.types.HPI') }}</option>
+              <option v-for="code in INCIDENT_TYPES" :key="code" :value="code">
+                {{ t(`incidents.types.${code}`) }}
+              </option>
             </select>
           </div>
           <div>
@@ -70,6 +67,7 @@ import { incidentsApi } from '@/api'
 import { useDashboardStore } from '@/stores/dashboard'
 import { XMarkIcon, UserGroupIcon } from '@heroicons/vue/24/outline'
 import EmployeePicker from '@/components/ui/EmployeePicker.vue'
+import { INCIDENT_TYPES } from '@/types/incident'
 
 const props  = defineProps<{ preloadEmployee?: { id: number; nom: string; prenom: string; matricule: string } }>()
 const { t }  = useI18n()
