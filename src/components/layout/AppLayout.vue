@@ -30,6 +30,12 @@
 import { ref } from 'vue'
 import Sidebar from './Sidebar.vue'
 import TopBar from './TopBar.vue'
+import { useRealtime } from '@/realtime/useRealtime'
+
+// Branche le flux temps reel UNE seule fois, ici : cette mise en page enveloppe
+// toutes les vues authentifiees. L'appeler depuis chaque page ouvrirait autant de
+// connexions WebSocket, et chaque evenement serait recu en double.
+useRealtime()
 
 const sidebarOpen = ref(false)
 

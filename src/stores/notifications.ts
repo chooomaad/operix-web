@@ -44,5 +44,18 @@ export const useNotificationsStore = defineStore('notifications', () => {
     unreadCount.value = 0
   }
 
-  return { items, unreadCount, loading, fetchUnreadCount, fetchAll, markRead, markAllRead }
+  /**
+   * Insere une notification recue en temps reel.
+   *
+   * Idempotent : une reconnexion WebSocket peut rejouer un message deja recu, et
+   * une notification affichee deux fois ferait mentir le compteur de non-lues.
+   */
+  function prependRealtime(notification: Notification) {
+    if (items.value.some(n => n.id === notification.id)) return
+
+    items.value = [notification, ...items.value]
+    if (!notification.read_at) unreadCount.value++
+  }
+
+  return { items, unreadCount, loading, fetchUnreadCount, fetchAll, markRead, markAllRead, prependRealtime }
 })
