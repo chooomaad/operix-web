@@ -49,8 +49,8 @@
       <NavItem to="/reports"      :icon="ChartBarIcon"   :label="t('nav.reports')"   v-if="auth.isAdmin" />
       <NavItem to="/audit"        :icon="ClockIcon"      :label="t('nav.audit')"      v-if="auth.isAdmin" />
 
-      <SidebarSection :label="t('nav.sectionAdmin')" v-if="auth.isSuperAdmin" />
-      <NavItem to="/settings/users" :icon="UserCircleIcon" :label="t('nav.users')" v-if="auth.isSuperAdmin" />
+      <SidebarSection :label="t('nav.sectionAdmin')" v-if="auth.can('users.manage')" />
+      <NavItem to="/settings/users" :icon="UserCircleIcon" :label="t('nav.users')" v-if="auth.can('users.manage')" />
 
     </nav>
 

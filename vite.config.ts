@@ -2,6 +2,16 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
+// Cible du proxy de developpement.
+//
+// Configurable plutot que figee : selon le montage local, l'API peut vivre
+// ailleurs que sur le port 8000 — par exemple derriere une terminaison TLS qui
+// occupe ce port et repousse le service en clair sur un autre.
+//
+//   VITE_API_PROXY_TARGET=http://127.0.0.1:8001 npm run dev
+const apiProxyTarget =
+  process.env.VITE_API_PROXY_TARGET ?? 'http://localhost:8000'
+
 export default defineConfig({
   plugins: [vue()],
   resolve: {
@@ -17,18 +27,18 @@ export default defineConfig({
       // developpement alors qu'il fonctionne en production, ou tout est servi
       // depuis le meme hote.
       '/broadcasting': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
       },
       '/api': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path,
       },
       '/storage': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
       }
     }

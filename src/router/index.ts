@@ -56,10 +56,10 @@ const router = createRouter({
         { path: 'notifications',          name: 'notifications',   component: () => import('@/pages/notifications/NotificationsPage.vue') },
         { path: 'audit',                  name: 'audit',           component: () => import('@/pages/audit/AuditPage.vue') },
 
-        // Settings — super_admin only
-        { path: 'settings',               name: 'settings',        component: () => import('@/pages/settings/SettingsPage.vue'),    meta: { requiresSuperAdmin: true } },
-        { path: 'settings/users',         name: 'users',           component: () => import('@/pages/settings/UsersPage.vue'),       meta: { requiresSuperAdmin: true } },
-        { path: 'settings/departments',   name: 'departments',     component: () => import('@/pages/settings/DepartmentsPage.vue'), meta: { requiresSuperAdmin: true } },
+        // Settings — administrateur d'entreprise (permission backend, pas role)
+        { path: 'settings',               name: 'settings',        component: () => import('@/pages/settings/SettingsPage.vue'),    meta: { requiresPermission: 'settings.manage' } },
+        { path: 'settings/users',         name: 'users',           component: () => import('@/pages/settings/UsersPage.vue'),       meta: { requiresPermission: 'users.manage' } },
+        { path: 'settings/departments',   name: 'departments',     component: () => import('@/pages/settings/DepartmentsPage.vue'), meta: { requiresPermission: 'departments.manage' } },
 
         // 403
         { path: 'forbidden',              name: 'forbidden',       component: () => import('@/pages/auth/ForbiddenPage.vue') },
@@ -124,6 +124,13 @@ router.beforeEach(async (to) => {
   }
 
   if (to.meta.requiresSuperAdmin && !auth.isSuperAdmin) {
+    return { name: 'forbidden' }
+  }
+
+  // Garde par permission : le serveur reste seul juge — cette regle ne fait
+  // qu'eviter d'afficher un ecran dont l'API refuserait de toute facon les
+  // appels. C'est la meme permission des deux cotes.
+  if (to.meta.requiresPermission && !auth.can(to.meta.requiresPermission)) {
     return { name: 'forbidden' }
   }
 

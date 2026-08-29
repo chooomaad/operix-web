@@ -19,9 +19,12 @@
           <div>
             <label class="label">{{ t('users.role') }} *</label>
             <select v-model="form.role" class="input" required>
+              <!-- Les seuls roles que l'API accepte pour un compte d'entreprise.
+                   `super_admin` en est exclu : il ne s'attribue pas depuis ici. -->
               <option value="agent">{{ t('users.roleAgent') }}</option>
-              <option value="admin">{{ t('users.roleAdmin') }}</option>
-              <option value="super_admin">{{ t('users.roleSuperAdmin') }}</option>
+              <option value="supervisor">{{ t('users.roleSupervisor') }}</option>
+              <option value="hsse_manager">{{ t('users.roleHsseManager') }}</option>
+              <option value="company_admin">{{ t('users.roleCompanyAdmin') }}</option>
             </select>
           </div>
         </div>

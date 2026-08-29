@@ -12,8 +12,9 @@
       <input v-model="filters.search" @input="debouncedLoad" :placeholder="t('users.searchPlaceholder')" class="input flex-1 min-w-48" />
       <select v-model="filters.role" @change="load" class="input w-36">
         <option value="">{{ t('users.allRoles') }}</option>
-        <option value="super_admin">{{ t('users.roleSuperAdmin') }}</option>
-        <option value="admin">{{ t('users.roleAdmin') }}</option>
+        <option value="company_admin">{{ t('users.roleCompanyAdmin') }}</option>
+        <option value="hsse_manager">{{ t('users.roleHsseManager') }}</option>
+        <option value="supervisor">{{ t('users.roleSupervisor') }}</option>
         <option value="agent">{{ t('users.roleAgent') }}</option>
       </select>
       <select v-model="filters.is_active" @change="load" class="input w-32">
@@ -26,9 +27,7 @@
 
     <DataTable :columns="columns" :rows="records" :loading="loading" :meta="meta" :empty-text="t('users.noUsers')" @page="loadPage">
       <template #cell-role="{ value }">
-        <span :class="value === 'super_admin' ? 'badge-critical' : value === 'admin' ? 'badge-approved' : 'badge-active'">
-          {{ value === 'super_admin' ? t('users.roleSuperAdmin') : value === 'admin' ? t('users.roleAdmin') : t('users.roleAgent') }}
-        </span>
+        <span :class="roleBadgeClass(value)">{{ roleLabel(value) }}</span>
       </template>
       <template #cell-is_active="{ value }">
         <span :class="value ? 'badge-active' : 'badge-inactive'">{{ value ? t('users.statusActive') : t('users.statusInactive') }}</span>
@@ -65,6 +64,29 @@ const meta     = ref<any>(null)
 const showForm = ref(false)
 const editRow  = ref<any>(null)
 const filters  = reactive({ search: '', role: '', is_active: '', page: 1 })
+
+// Libelles et couleurs des roles, alignes sur la matrice du serveur. Une valeur
+// inconnue est affichee telle quelle plutot que masquee : si le backend ajoute
+// un role, il reste visible.
+const ROLE_LABELS: Record<string, string> = {
+  company_admin: 'users.roleCompanyAdmin',
+  hsse_manager:  'users.roleHsseManager',
+  supervisor:    'users.roleSupervisor',
+  agent:         'users.roleAgent',
+  super_admin:   'users.roleSuperAdmin',
+}
+
+function roleLabel(role: string): string {
+  const key = ROLE_LABELS[role]
+  return key ? t(key) : role
+}
+
+function roleBadgeClass(role: string): string {
+  if (role === 'super_admin') return 'badge-critical'
+  if (role === 'company_admin') return 'badge-approved'
+  if (role === 'hsse_manager' || role === 'supervisor') return 'badge-active'
+  return 'badge-active'
+}
 
 const columns = computed(() => [
   { key: 'name',          label: t('users.columnName') },
