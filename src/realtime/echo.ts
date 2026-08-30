@@ -114,6 +114,11 @@ function ablyOptions(token: string) {
   return {
     broadcaster: 'pusher' as const,
     key: env('VITE_ABLY_PUBLIC_KEY'),
+    // pusher-js v8 EXIGE un `cluster` a l'instanciation (sinon il leve une
+    // exception). La valeur est ignoree ici puisque `wsHost` pointe explicitement
+    // sur Ably — mais elle doit etre presente. Sans elle, `new Echo(...)` jetait au
+    // login et cassait toute l'application.
+    cluster: 'mt1',
     wsHost: 'realtime-pusher.ably.io',
     wsPort: 443,
     wssPort: 443,
@@ -205,8 +210,20 @@ export function connectRealtime(token: string): EchoClient | null {
 
   state.value = 'connecting'
   const options = transport === 'ably' ? ablyOptions(token) : reverbOptions(token)
-  echo = new Echo(options as any)
-  trackConnection(echo)
+
+  // Le temps reel est une AMELIORATION, jamais une dependance bloquante : si
+  // l'instanciation du transport echoue (config invalide, librairie qui jette),
+  // on degrade proprement en `failed` et l'application continue de fonctionner —
+  // plutot que de laisser l'exception casser le rendu.
+  try {
+    echo = new Echo(options as any)
+    trackConnection(echo)
+  } catch (e) {
+    console.warn('[realtime] transport indisponible, application non bloquee', e)
+    echo = null
+    state.value = 'failed'
+    return null
+  }
 
   return echo
 }
