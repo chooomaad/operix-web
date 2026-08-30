@@ -2,6 +2,7 @@ import { onBeforeUnmount, watch } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { useAuthStore } from '@/stores/auth'
 import { useNotificationsStore } from '@/stores/notifications'
+import { useDashboardStore } from '@/stores/dashboard'
 import { useRealtimeFeedStore, type HseEventPayload } from '@/stores/realtimeFeed'
 import { connectRealtime, disconnectRealtime, realtime } from './echo'
 
@@ -34,6 +35,7 @@ export function useRealtime() {
   const auth = useAuthStore()
   const notifications = useNotificationsStore()
   const feed = useRealtimeFeedStore()
+  const dashboard = useDashboardStore()
   const toast = useToast()
 
   // Empeche un double abonnement : si la session change sans se fermer (jeton
@@ -58,6 +60,10 @@ export function useRealtime() {
         .private(`tenant.${tenantId}`)
         .listen('.hse.event.created', (payload: HseEventPayload) => {
           feed.prepend(payload)
+
+          // KPI du tableau de bord mis a jour en direct, sans tout recharger :
+          // seuls les compteurs du module concerne bougent.
+          dashboard.bumpForHseEvent(payload.kind)
 
           toast.add({
             severity: severityOf(payload),

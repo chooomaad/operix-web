@@ -100,6 +100,35 @@ export const useDashboardStore = defineStore('dashboard', () => {
     }
   }
 
+  /**
+   * Incremente en direct les KPI concernes par un nouvel evenement HSE.
+   *
+   * Declenche par le temps reel (canal de l'entreprise). On ne recharge PAS tout
+   * le tableau de bord a chaque evenement — on ajuste UNIQUEMENT les compteurs
+   * touches. Un nouvel evenement est ouvert et compte pour la periode courante :
+   * on incremente donc les compteurs « mois », « ytd » et « ouverts » du module.
+   *
+   * Prudence : on n'incremente qu'un compteur deja charge (un nombre). Sinon le
+   * tableau de bord n'a pas encore ete recupere, et fabriquer une valeur a partir
+   * de rien afficherait un chiffre faux. Le prochain rafraichissement (2 min, ou
+   * retour d'onglet) reconcilie de toute facon avec la source de verite.
+   */
+  function bumpForHseEvent(kind: 'incident' | 'near_miss' | 'environment') {
+    const bump = (bag: Record<string, number>, keys: string[]) => {
+      for (const k of keys) {
+        if (typeof bag[k] === 'number') bag[k] += 1
+      }
+    }
+
+    if (kind === 'incident') {
+      bump(safety, ['incidents_mois', 'incidents_ytd', 'incidents_ouverts'])
+    } else if (kind === 'near_miss') {
+      bump(safety, ['near_miss_mois', 'near_miss_ytd', 'near_miss_ouverts'])
+    } else if (kind === 'environment') {
+      bump(environment, ['rapports_mois', 'rapports_ytd', 'rapports_ouverts'])
+    }
+  }
+
   async function refreshTimeline(year: number) {
     _selectedYear = year
     try {
@@ -130,6 +159,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
   return {
     loading, lastFetch, fromCache, tracker, timelineData, empBreakdown, topZones,
     employees, safety, environment, gemba, equipment, visitors, contractors,
-    loadFromCache, refresh, refreshTimeline, startAutoRefresh, stopAutoRefresh,
+    loadFromCache, refresh, refreshTimeline, bumpForHseEvent, startAutoRefresh, stopAutoRefresh,
   }
 })
