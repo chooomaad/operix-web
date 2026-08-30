@@ -730,7 +730,7 @@
     "sendRequest": "Envoyer la demande",
     "goToLogin": "Aller à la connexion",
     "resetPinTitle": "Réinitialiser le PIN",
-    "resetPinSubtitle": "Entrez votre adresse email de compte",
+    "resetPinSubtitle": "Entrez l'adresse email de votre compte. Si elle correspond à un compte autorisé, vous recevrez un lien de réinitialisation.",
     "accountEmail": "Email du compte",
     "sendCode": "Envoyer le code",
     "verificationTitle": "Vérification",
@@ -755,7 +755,14 @@
       "fillAllFields": "Remplissez tous les champs.",
       "invalidCode": "Code incorrect ou expiré.",
       "registrationError": "Erreur lors de l'inscription."
-    }
+    },
+    "sendResetLink": "Envoyer le lien",
+    "newPinTitle": "Définir un nouveau PIN",
+    "newPinSubtitle": "Choisissez un nouveau code PIN pour votre compte.",
+    "resetLinkInvalidTitle": "Lien invalide",
+    "resetLinkInvalidBody": "Ce lien de réinitialisation est incomplet ou a expiré. Demandez-en un nouveau depuis la page de connexion.",
+    "resetDoneTitle": "PIN réinitialisé",
+    "resetDoneBody": "Votre PIN a été réinitialisé avec succès. Redirection vers la connexion…"
   },
   "import": {
     "title": "Import",

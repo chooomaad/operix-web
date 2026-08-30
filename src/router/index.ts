@@ -74,6 +74,14 @@ const router = createRouter({
       meta: { public: true },
     },
 
+    // ── Reinitialisation du PIN (public, via lien email) ──────────────────────
+    {
+      path: '/reset-pin',
+      name: 'reset-pin',
+      component: () => import('@/pages/auth/ResetPinPage.vue'),
+      meta: { public: true },
+    },
+
     // ── Console Super Admin plateforme (super_admin uniquement) ───────────────
     {
       path: '/superadmin',

@@ -161,8 +161,9 @@
             {{ t('auth.backToLogin') }}
           </button>
 
-          <!-- Step 1: email -->
-          <div v-if="forgotStep === 1">
+          <!-- Demande : email uniquement. La reinitialisation se fait ensuite sur
+               la page /reset-pin ouverte depuis le lien recu par email. -->
+          <div v-if="!success">
             <h2 class="text-2xl font-bold text-gray-900 mb-1">{{ t('auth.resetPinTitle') }}</h2>
             <p class="text-gray-500 text-sm mb-6">{{ t('auth.resetPinSubtitle') }}</p>
             <div>
@@ -175,44 +176,15 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
               </svg>
-              {{ loading ? t('auth.sending') : t('auth.sendCode') }}
+              {{ loading ? t('auth.sending') : t('auth.sendResetLink') }}
             </button>
           </div>
 
-          <!-- Step 2: code + new pin -->
-          <div v-else-if="forgotStep === 2">
-            <h2 class="text-2xl font-bold text-gray-900 mb-1">{{ t('auth.verificationTitle') }}</h2>
-            <p class="text-gray-500 text-sm mb-6">
-              {{ t('auth.codeSentTo') }} <strong>{{ forgot.email }}</strong>. {{ t('auth.validFor') }}
-            </p>
-            <div class="space-y-3">
-              <div>
-                <label class="label">{{ t('auth.sixDigitCode') }}</label>
-                <input v-model="forgot.code" type="text" maxlength="6" class="input text-center text-xl tracking-[0.5em] font-mono" placeholder="000000" />
-              </div>
-              <div>
-                <label class="label">{{ t('auth.newPin') }}</label>
-                <input v-model="forgot.new_pin" type="password" class="input" placeholder="••••••" maxlength="50" />
-              </div>
-              <div>
-                <label class="label">{{ t('auth.confirmNewPin') }}</label>
-                <input v-model="forgot.new_pin_confirmation" type="password" class="input" placeholder="••••••" maxlength="50" @keyup.enter="doReset" />
-              </div>
-            </div>
-            <div v-if="error" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">{{ error }}</div>
-            <div v-if="success" class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">{{ success }}</div>
-            <button v-if="!success" @click="doReset" :disabled="loading" class="mt-5 w-full py-3 bg-[#0f2847] hover:bg-[#1a3a6b] text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 disabled:opacity-60">
-              <svg v-if="loading" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-              </svg>
-              {{ loading ? t('auth.resetting') : t('auth.resetPinBtn') }}
-            </button>
-            <button v-else @click="view = 'login'; clearForm()" class="mt-5 w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition-colors">
-              {{ t('auth.signInNow') }}
-            </button>
-            <button @click="forgotStep = 1; error = ''" class="w-full text-center text-sm text-gray-500 hover:text-gray-700 mt-3">
-              {{ t('auth.changeEmail') }}
+          <!-- Confirmation generique : ne revele jamais si le compte existe. -->
+          <div v-else>
+            <div class="mt-2 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">{{ success }}</div>
+            <button @click="view = 'login'; clearForm()" class="mt-5 w-full py-3 bg-[#0f2847] hover:bg-[#1a3a6b] text-white font-semibold rounded-xl transition-colors">
+              {{ t('auth.backToLogin') }}
             </button>
           </div>
         </div>
@@ -334,11 +306,12 @@ const loading   = ref(false)
 const error     = ref('')
 const success   = ref('')
 const showPin   = ref(false)
-const forgotStep = ref(1)
 
 const form = reactive({ matricule: '', pin: '' })
 const reg  = reactive({ prenom: '', nom: '', matricule: '', email: '', pin: '', pin_confirmation: '' })
-const forgot = reactive({ email: '', code: '', new_pin: '', new_pin_confirmation: '' })
+// Le reset ne demande plus qu'un email : la definition du nouveau PIN se fait sur
+// la page /reset-pin ouverte depuis le lien recu par email.
+const forgot = reactive({ email: '' })
 
 const pillarWords  = ['Health', 'Safety', 'Security', 'Environment']
 const pillarColors = ['#34d399', '#fbbf24', '#60a5fa', '#4ade80']
@@ -361,10 +334,9 @@ onMounted(async () => {
 function clearForm() {
   error.value   = ''
   success.value = ''
-  forgotStep.value = 1
   Object.assign(form,   { matricule: '', pin: '' })
   Object.assign(reg,    { prenom: '', nom: '', matricule: '', email: '', pin: '', pin_confirmation: '' })
-  Object.assign(forgot, { email: '', code: '', new_pin: '', new_pin_confirmation: '' })
+  Object.assign(forgot, { email: '' })
 }
 
 async function loginPin() {
@@ -397,27 +369,13 @@ async function sendForgot() {
   if (!forgot.email) { error.value = t('auth.errors.emailRequired'); return }
   loading.value = true; error.value = ''
   try {
-    await authApi.forgotPin(forgot.email)
-    forgotStep.value = 2
-  } catch (e: any) {
-    error.value = e.response?.data?.message ?? t('common.error')
-  } finally { loading.value = false }
-}
-
-async function doReset() {
-  if (!forgot.code || !forgot.new_pin) { error.value = t('auth.errors.fillAllFields'); return }
-  if (forgot.new_pin !== forgot.new_pin_confirmation) { error.value = t('auth.errors.pinMismatch'); return }
-  loading.value = true; error.value = ''
-  try {
-    const { data } = await authApi.resetPin({
-      email: forgot.email,
-      code:  forgot.code,
-      new_pin: forgot.new_pin,
-      new_pin_confirmation: forgot.new_pin_confirmation,
-    })
+    // La reponse du serveur est deja GENERIQUE (anti-enumeration) : on l'affiche
+    // telle quelle. La reinitialisation se poursuit sur /reset-pin via le lien
+    // recu par email.
+    const { data } = await authApi.forgotPin(forgot.email)
     success.value = data.message
   } catch (e: any) {
-    error.value = e.response?.data?.message ?? t('auth.errors.invalidCode')
+    error.value = e.response?.data?.message ?? t('common.error')
   } finally { loading.value = false }
 }
 </script>

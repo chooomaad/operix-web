@@ -730,7 +730,7 @@
     "sendRequest": "Send request",
     "goToLogin": "Go to sign in",
     "resetPinTitle": "Reset PIN",
-    "resetPinSubtitle": "Enter your account email address",
+    "resetPinSubtitle": "Enter your account email. If it matches an authorised account, you will receive a reset link.",
     "accountEmail": "Account email",
     "sendCode": "Send code",
     "verificationTitle": "Verification",
@@ -755,7 +755,14 @@
       "fillAllFields": "Fill in all fields.",
       "invalidCode": "Code incorrect or expired.",
       "registrationError": "An error occurred during registration."
-    }
+    },
+    "sendResetLink": "Send link",
+    "newPinTitle": "Set a new PIN",
+    "newPinSubtitle": "Choose a new PIN code for your account.",
+    "resetLinkInvalidTitle": "Invalid link",
+    "resetLinkInvalidBody": "This reset link is incomplete or has expired. Request a new one from the sign-in page.",
+    "resetDoneTitle": "PIN reset",
+    "resetDoneBody": "Your PIN has been reset successfully. Redirecting to sign-in…"
   },
   "import": {
     "title": "Import",
