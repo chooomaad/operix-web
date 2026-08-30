@@ -39,6 +39,12 @@
           <button @click="toggleActive(row as any)" class="btn-secondary text-xs py-1 px-2">
             {{ (row as any).is_active ? t('users.deactivate') : t('users.activate') }}
           </button>
+          <!-- Suppression : indisponible sur son propre compte (garde-fou serveur aussi). -->
+          <button
+            v-if="(row as any).id !== auth.user?.id"
+            @click="confirmDelete(row as any)"
+            class="btn-secondary text-xs py-1 px-2 !text-red-600 !border-red-200 hover:!bg-red-50"
+          >{{ t('users.deleteBtn') }}</button>
         </div>
       </template>
     </DataTable>
@@ -51,13 +57,17 @@
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useToast } from 'primevue/usetoast'
+import { useConfirm } from 'primevue/useconfirm'
 import { usersApi } from '@/api'
+import { useAuthStore } from '@/stores/auth'
 import DataTable from '@/components/ui/DataTable.vue'
 import UserFormModal from './UserFormModal.vue'
 import { PlusIcon } from '@heroicons/vue/24/outline'
 
 const { t }    = useI18n()
 const toast    = useToast()
+const confirm  = useConfirm()
+const auth     = useAuthStore()
 const records  = ref<any[]>([])
 const loading  = ref(false)
 const meta     = ref<any>(null)
@@ -119,6 +129,31 @@ async function toggleActive(row: any) {
     load()
   } catch (e: any) {
     toast.add({ severity: 'error', summary: e.response?.data?.message ?? t('common.error'), life: 4000 })
+  }
+}
+
+// Suppression DÉFINITIVE d'un compte : action irréversible, donc confirmation
+// explicite. La désactivation (préservant l'attribution) reste rappelée dans le
+// message. Le serveur applique aussi ses garde-fous (dernier admin, propre compte).
+function confirmDelete(row: any) {
+  confirm.require({
+    header: t('users.deleteTitle'),
+    message: t('users.deleteConfirm', { name: row.name }),
+    icon: 'pi pi-exclamation-triangle',
+    acceptLabel: t('users.deleteBtn'),
+    rejectLabel: t('common.cancel'),
+    acceptClass: 'p-button-danger',
+    accept: () => removeUser(row),
+  })
+}
+
+async function removeUser(row: any) {
+  try {
+    await usersApi.destroy(row.id)
+    toast.add({ severity: 'success', summary: t('users.deleted'), life: 3000 })
+    load()
+  } catch (e: any) {
+    toast.add({ severity: 'error', summary: e.response?.data?.message ?? t('common.error'), life: 5000 })
   }
 }
 

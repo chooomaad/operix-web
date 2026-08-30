@@ -626,7 +626,11 @@
     "saving": "Enregistrement...",
     "createAccount": "Créer le compte",
     "updated": "Utilisateur modifié",
-    "created": "Compte créé"
+    "created": "Compte créé",
+    "deleteBtn": "Supprimer",
+    "deleteTitle": "Supprimer le compte",
+    "deleteConfirm": "Supprimer définitivement le compte de « {name} » ? Cette action est irréversible. Pour conserver l’attribution de ses données, désactivez-le plutôt.",
+    "deleted": "Compte supprimé"
   },
   "departments": {
     "title": "Départements",
