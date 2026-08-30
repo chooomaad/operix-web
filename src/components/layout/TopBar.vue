@@ -21,14 +21,8 @@
         >EN</button>
       </div>
 
-      <!-- Notifications -->
-      <RouterLink to="/notifications" class="relative p-2 rounded-lg hover:bg-gray-100 transition-colors">
-        <BellIcon class="w-5 h-5 text-gray-600" />
-        <span
-          v-if="notifStore.unreadCount > 0"
-          class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-white text-[10px] font-bold"
-        >{{ notifStore.unreadCount > 9 ? '9+' : notifStore.unreadCount }}</span>
-      </RouterLink>
+      <!-- Centre de notifications (cloche deroulante) -->
+      <NotificationBell />
 
       <!-- User avatar -->
       <RouterLink to="/settings" class="flex items-center gap-2 p-1 rounded-lg hover:bg-gray-100 transition-colors">
@@ -44,9 +38,10 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { BellIcon, Bars3Icon } from '@heroicons/vue/24/outline'
+import { Bars3Icon } from '@heroicons/vue/24/outline'
 import { useAuthStore } from '@/stores/auth'
 import { useNotificationsStore } from '@/stores/notifications'
+import NotificationBell from '@/components/notifications/NotificationBell.vue'
 import { setLocale, getLocale } from '@/i18n'
 import { useI18n } from 'vue-i18n'
 

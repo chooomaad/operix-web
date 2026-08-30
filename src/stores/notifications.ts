@@ -2,10 +2,20 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { notificationsApi } from '@/api'
 
-interface Notification {
+export interface Notification {
   id: string
   type: string
-  data: { title: string; body: string; type: string }
+  data: {
+    title: string
+    body: string
+    type: string
+    // Renseignes pour les notifications d'evenement HSE : de quoi pointer vers la
+    // ressource sans exposer de donnee sensible (le client recharge via l'API).
+    link?: string
+    resource_kind?: string
+    resource_id?: number
+    severity?: string | null
+  }
   read_at: string | null
   created_at: string
 }
