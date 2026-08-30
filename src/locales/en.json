@@ -815,8 +815,9 @@
     ]
   },
   "realtime": {
-    "reconnecting": "Reconnecting…",
-    "offline": "Real-time notifications are temporarily unavailable."
+    "reconnecting": "Reconnecting to notifications…",
+    "offline": "Real-time notifications unavailable",
+    "connecting": "Connecting to notifications…"
   },
   "notif": {
     "viewAll": "View all notifications",

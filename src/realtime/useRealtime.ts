@@ -52,6 +52,9 @@ export function useRealtime() {
     if (!token || !user || subscribed) return
 
     const echo = connectRealtime(token)
+    // Aucun transport temps réel configuré : rien à abonner, aucun socket ouvert.
+    // L'application fonctionne normalement, sans temps réel (état « indisponible »).
+    if (!echo) return
     subscribed = true
 
     // ── Évènements HSE de l'entreprise ────────────────────────────────────────

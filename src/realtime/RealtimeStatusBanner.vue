@@ -26,24 +26,36 @@ import { realtimeState } from './echo'
 const { t } = useI18n()
 
 /**
- * On ne montre un message QUE pour un etat degrade. « connecting » initial et
- * « connected » restent muets : l'utilisateur n'a pas a suivre la mecanique.
+ * Message par etat, aligne sur la machine d'etats de echo.ts :
+ *
+ *   connected / initializing / disconnected → aucun message (rien a signaler,
+ *                                              ou fermeture volontaire).
+ *   connecting                              → phase initiale de connexion.
+ *   reconnecting                            → connexion ETABLIE puis perdue.
+ *   unavailable / failed                    → temps reel indisponible.
+ *
+ * Point corrige : `unavailable` ne doit PAS afficher « reconnexion ». Sans transport
+ * configure (dev sans Ably), l'etat est `unavailable` d'emblee — afficher
+ * « reconnexion en cours » y serait faux et permanent.
  */
 const message = computed(() => {
   switch (realtimeState.value) {
+    case 'connecting':
+      return t('realtime.connecting')
     case 'reconnecting':
-    case 'unavailable':
       return t('realtime.reconnecting')
+    case 'unavailable':
     case 'failed':
-    case 'disconnected':
       return t('realtime.offline')
+    // connected, initializing, disconnected : rien.
     default:
       return ''
   }
 })
 
+/** Transitoire (connexion/reconnexion en cours) = ambre ; degrade stable = gris neutre. */
 const isTransient = computed(
-  () => realtimeState.value === 'reconnecting' || realtimeState.value === 'unavailable',
+  () => realtimeState.value === 'connecting' || realtimeState.value === 'reconnecting',
 )
 
 const tone = computed(() =>
