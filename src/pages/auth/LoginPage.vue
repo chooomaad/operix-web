@@ -161,22 +161,23 @@
             {{ t('auth.backToLogin') }}
           </button>
 
-          <!-- Demande : email uniquement. La reinitialisation se fait ensuite sur
+          <!-- Demande : MATRICULE (identifiant de connexion). L'email de reset part
+               vers l'adresse enregistree ; la reinitialisation se fait ensuite sur
                la page /reset-pin ouverte depuis le lien recu par email. -->
           <div v-if="!success">
             <h2 class="text-2xl font-bold text-gray-900 mb-1">{{ t('auth.resetPinTitle') }}</h2>
             <p class="text-gray-500 text-sm mb-6">{{ t('auth.resetPinSubtitle') }}</p>
             <div>
-              <label class="label">{{ t('auth.accountEmail') }}</label>
-              <input v-model="forgot.email" type="email" class="input" placeholder="vous@tcn.mr" @keyup.enter="sendForgot" />
+              <label class="label">{{ t('auth.matricule') }}</label>
+              <input v-model="forgot.matricule" type="text" class="input uppercase" placeholder="TCN-XXX-000" @keyup.enter="sendForgot" />
             </div>
             <div v-if="error" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">{{ error }}</div>
-            <button @click="sendForgot" :disabled="loading" class="mt-5 w-full py-3 bg-[#0f2847] hover:bg-[#1a3a6b] text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 disabled:opacity-60">
+            <button @click="sendForgot" :disabled="loading || cooldown > 0" class="mt-5 w-full py-3 bg-[#0f2847] hover:bg-[#1a3a6b] text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 disabled:opacity-60">
               <svg v-if="loading" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
               </svg>
-              {{ loading ? t('auth.sending') : t('auth.sendResetLink') }}
+              {{ cooldown > 0 ? t('auth.resendIn', { s: cooldown }) : (loading ? t('auth.sending') : t('auth.sendResetLink')) }}
             </button>
           </div>
 
@@ -309,9 +310,22 @@ const showPin   = ref(false)
 
 const form = reactive({ matricule: '', pin: '' })
 const reg  = reactive({ prenom: '', nom: '', matricule: '', email: '', pin: '', pin_confirmation: '' })
-// Le reset ne demande plus qu'un email : la definition du nouveau PIN se fait sur
-// la page /reset-pin ouverte depuis le lien recu par email.
-const forgot = reactive({ email: '' })
+// Le reset demande le MATRICULE : l'email de reset part vers l'adresse du compte,
+// la definition du nouveau PIN se fait sur /reset-pin via le lien recu.
+const forgot = reactive({ matricule: '' })
+
+// Cooldown anti-spam : apres un envoi (ou un 429 serveur), on empeche un renvoi
+// immediat et on affiche le decompte. Aligne sur la fenetre serveur (60 s).
+const cooldown = ref(0)
+let cooldownTimer: ReturnType<typeof setInterval> | undefined
+function startCooldown(seconds: number) {
+  cooldown.value = Math.max(0, Math.floor(seconds))
+  clearInterval(cooldownTimer)
+  cooldownTimer = setInterval(() => {
+    cooldown.value -= 1
+    if (cooldown.value <= 0) clearInterval(cooldownTimer)
+  }, 1000)
+}
 
 const pillarWords  = ['Health', 'Safety', 'Security', 'Environment']
 const pillarColors = ['#34d399', '#fbbf24', '#60a5fa', '#4ade80']
@@ -336,7 +350,7 @@ function clearForm() {
   success.value = ''
   Object.assign(form,   { matricule: '', pin: '' })
   Object.assign(reg,    { prenom: '', nom: '', matricule: '', email: '', pin: '', pin_confirmation: '' })
-  Object.assign(forgot, { email: '' })
+  Object.assign(forgot, { matricule: '' })
 }
 
 async function loginPin() {
@@ -366,16 +380,23 @@ async function doRegister() {
 }
 
 async function sendForgot() {
-  if (!forgot.email) { error.value = t('auth.errors.emailRequired'); return }
+  if (cooldown.value > 0) return
+  if (!forgot.matricule) { error.value = t('auth.errors.matriculeRequired'); return }
   loading.value = true; error.value = ''
   try {
     // La reponse du serveur est deja GENERIQUE (anti-enumeration) : on l'affiche
-    // telle quelle. La reinitialisation se poursuit sur /reset-pin via le lien
-    // recu par email.
-    const { data } = await authApi.forgotPin(forgot.email)
+    // telle quelle. La reinitialisation se poursuit sur /reset-pin via le lien recu.
+    const { data } = await authApi.forgotPin(forgot.matricule.trim().toUpperCase())
     success.value = data.message
+    startCooldown(60) // empeche un renvoi immediat (aligne sur le serveur)
   } catch (e: any) {
-    error.value = e.response?.data?.message ?? t('common.error')
+    // 429 : trop de demandes. On respecte le delai indique par le serveur.
+    if (e.response?.status === 429) {
+      startCooldown(Number(e.response?.data?.retry_after ?? 60))
+      error.value = t('auth.tooManyResets')
+    } else {
+      error.value = e.response?.data?.message ?? t('common.error')
+    }
   } finally { loading.value = false }
 }
 </script>

@@ -669,7 +669,7 @@
     "sendRequest": "Envoyer la demande",
     "goToLogin": "Aller à la connexion",
     "resetPinTitle": "Réinitialiser le PIN",
-    "resetPinSubtitle": "Entrez l'adresse email de votre compte. Si elle correspond à un compte autorisé, vous recevrez un lien de réinitialisation.",
+    "resetPinSubtitle": "Entrez votre matricule. S'il correspond à un compte autorisé, un lien de réinitialisation sera envoyé à l'email du compte.",
     "accountEmail": "Email du compte",
     "sendCode": "Envoyer le code",
     "verificationTitle": "Vérification",
@@ -693,7 +693,8 @@
       "emailRequired": "Email requis.",
       "fillAllFields": "Remplissez tous les champs.",
       "invalidCode": "Code incorrect ou expiré.",
-      "registrationError": "Erreur lors de l'inscription."
+      "registrationError": "Erreur lors de l'inscription.",
+      "matriculeRequired": "Matricule requis"
     },
     "sendResetLink": "Envoyer le lien",
     "newPinTitle": "Définir un nouveau PIN",
@@ -701,7 +702,10 @@
     "resetLinkInvalidTitle": "Lien invalide",
     "resetLinkInvalidBody": "Ce lien de réinitialisation est incomplet ou a expiré. Demandez-en un nouveau depuis la page de connexion.",
     "resetDoneTitle": "PIN réinitialisé",
-    "resetDoneBody": "Votre PIN a été réinitialisé avec succès. Redirection vers la connexion…"
+    "resetDoneBody": "Votre PIN a été réinitialisé avec succès. Redirection vers la connexion…",
+    "matricule": "Matricule",
+    "resendIn": "Renvoyer dans {s} s",
+    "tooManyResets": "Trop de demandes. Réessayez dans un instant."
   },
   "import": {
     "title": "Import",
