@@ -49,8 +49,9 @@
       <NavItem to="/reports"      :icon="ChartBarIcon"   :label="t('nav.reports')"   v-if="auth.isAdmin" />
       <NavItem to="/audit"        :icon="ClockIcon"      :label="t('nav.audit')"      v-if="auth.isAdmin" />
 
-      <SidebarSection :label="t('nav.sectionAdmin')" v-if="auth.can('users.manage')" />
+      <SidebarSection :label="t('nav.sectionAdmin')" v-if="auth.can('users.manage') || auth.can('settings.manage')" />
       <NavItem to="/settings/users" :icon="UserCircleIcon" :label="t('nav.users')" v-if="auth.can('users.manage')" />
+      <NavItem to="/settings" :icon="Cog6ToothIcon" :label="t('nav.settings')" v-if="auth.can('settings.manage')" />
 
     </nav>
 
@@ -83,7 +84,7 @@ import {
   HomeIcon, ShieldCheckIcon, UsersIcon, ExclamationTriangleIcon,
   EyeIcon, XCircleIcon, GlobeAltIcon, ClipboardIcon,
   BuildingOfficeIcon, UserGroupIcon, ChartBarIcon, ClockIcon,
-  UserCircleIcon, ArrowRightOnRectangleIcon, XMarkIcon,
+  UserCircleIcon, ArrowRightOnRectangleIcon, XMarkIcon, Cog6ToothIcon,
 } from '@heroicons/vue/24/outline'
 
 defineProps<{ open: boolean }>()
