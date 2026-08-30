@@ -36,14 +36,21 @@ export function useRealtime() {
   const feed = useRealtimeFeedStore()
   const toast = useToast()
 
+  // Empeche un double abonnement : si la session change sans se fermer (jeton
+  // rafraichi), on ne rebranche pas .listen() par-dessus les ecouteurs existants,
+  // ce qui ferait recevoir chaque evenement deux fois. La reconnexion reseau, elle,
+  // est geree par le transport qui reabonne seul ses canaux — sans repasser ici.
+  let subscribed = false
+
   function subscribe(): void {
     const token = auth.token
     const user = auth.user
     const tenantId = auth.tenant?.id
 
-    if (!token || !user) return
+    if (!token || !user || subscribed) return
 
     const echo = connectRealtime(token)
+    subscribed = true
 
     // ── Évènements HSE de l'entreprise ────────────────────────────────────────
     if (tenantId) {
@@ -91,7 +98,15 @@ export function useRealtime() {
   // coupure, le socket resterait abonné aux canaux du compte precedent.
   watch(
     () => auth.token,
-    (token) => (token ? subscribe() : disconnectRealtime()),
+    (token) => {
+      if (token) {
+        subscribe()
+      } else {
+        disconnectRealtime()
+        // La session est fermee : on autorise un nouvel abonnement au prochain login.
+        subscribed = false
+      }
+    },
     { immediate: true },
   )
 

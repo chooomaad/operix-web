@@ -813,5 +813,17 @@
       "Nov",
       "Déc"
     ]
+  },
+  "realtime": {
+    "reconnecting": "Reconnexion en cours…",
+    "offline": "Les notifications en temps réel sont temporairement indisponibles."
+  },
+  "notif": {
+    "viewAll": "Voir toutes les notifications",
+    "empty": "Aucune notification pour le moment",
+    "justNow": "À l'instant",
+    "minutesAgo": "Il y a {n} min",
+    "hoursAgo": "Il y a {n} h",
+    "daysAgo": "Il y a {n} j"
   }
 }

@@ -13,6 +13,7 @@
 
     <div class="flex-1 flex flex-col overflow-hidden min-w-0">
       <TopBar @toggle-sidebar="sidebarOpen = !sidebarOpen" />
+      <RealtimeStatusBanner />
       <main class="flex-1 overflow-y-auto">
         <RouterView v-slot="{ Component, route }">
           <Transition name="fade" mode="out-in">
@@ -30,6 +31,7 @@
 import { ref } from 'vue'
 import Sidebar from './Sidebar.vue'
 import TopBar from './TopBar.vue'
+import RealtimeStatusBanner from '@/realtime/RealtimeStatusBanner.vue'
 import { useRealtime } from '@/realtime/useRealtime'
 
 // Branche le flux temps reel UNE seule fois, ici : cette mise en page enveloppe
