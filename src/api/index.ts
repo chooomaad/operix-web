@@ -10,6 +10,12 @@ export const searchApi = {
   search: (q: string, signal?: AbortSignal) => api.get('/search', { params: { q }, signal }),
 }
 
+// ── Recherche employé réservée à l'AGENT (endpoint dédié, champs minimaux) ──────
+export const agentApi = {
+  searchEmployees: (q: string, signal?: AbortSignal) =>
+    api.get('/agent/employees/search', { params: { q }, signal }),
+}
+
 // ── Auth ──────────────────────────────────────────────────────────────────────
 export const authApi = {
   requestOtp: (email: string) => api.post('/auth/request-otp', { email }),

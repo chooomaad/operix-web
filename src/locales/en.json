@@ -761,5 +761,25 @@
     "minutesAgo": "{n} min ago",
     "hoursAgo": "{n} h ago",
     "daysAgo": "{n} d ago"
+  },
+  "agent": {
+    "role": "Agent",
+    "hint": "Search for an employee to verify their identity and status.",
+    "logout": "Logout",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "search": {
+      "title": "Search for an employee",
+      "subtitle": "Search by employee ID or name",
+      "placeholder": "Employee ID or name...",
+      "idle": "Start your search",
+      "minChars": "Enter at least 2 characters",
+      "searching": "Searching...",
+      "noResults": "No employee found",
+      "results": "result(s)",
+      "clear": "Clear"
+    }
   }
 }

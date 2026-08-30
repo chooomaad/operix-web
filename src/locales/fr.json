@@ -761,5 +761,25 @@
     "minutesAgo": "Il y a {n} min",
     "hoursAgo": "Il y a {n} h",
     "daysAgo": "Il y a {n} j"
+  },
+  "agent": {
+    "role": "Agent",
+    "hint": "Recherchez un employé pour vérifier son identité et son statut.",
+    "logout": "Déconnexion",
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif"
+    },
+    "search": {
+      "title": "Rechercher un employé",
+      "subtitle": "Recherchez par matricule ou par nom",
+      "placeholder": "Matricule ou nom de l'employé...",
+      "idle": "Commencez votre recherche",
+      "minChars": "Saisissez au moins 2 caractères",
+      "searching": "Recherche en cours...",
+      "noResults": "Aucun employé trouvé",
+      "results": "résultat(s)",
+      "clear": "Effacer"
+    }
   }
 }
