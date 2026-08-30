@@ -74,7 +74,6 @@ const pageTitleMap = computed((): Record<string, string> => ({
   'near-miss-detail': t('nav.nearMiss'),
   breaches:        t('nav.breaches'),
   environment:     t('nav.environment'),
-  gemba:           t('nav.gemba'),
   permits:         t('nav.permits'),
   'permit-detail': t('nav.permits'),
   equipment:       t('nav.equipment'),

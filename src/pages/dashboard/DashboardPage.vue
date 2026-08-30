@@ -149,14 +149,6 @@
               </div>
             </div>
             <div class="card">
-              <div class="text-xs font-semibold text-gray-500 uppercase mb-3">{{ t('nav.gemba') }}</div>
-              <div class="space-y-2">
-                <div class="flex justify-between text-sm"><span class="text-gray-600">{{ t('status.open') }}</span><strong>{{ db.gemba.total_ouverts ?? 0 }}</strong></div>
-                <div class="flex justify-between text-sm"><span class="text-gray-600">{{ t('dashboard.late') }}</span><strong class="text-red-600">{{ db.gemba.en_retard ?? 0 }}</strong></div>
-                <RouterLink to="/gemba-walks" class="text-xs text-brand-600 hover:underline">{{ t('common.view') }} →</RouterLink>
-              </div>
-            </div>
-            <div class="card">
               <div class="text-xs font-semibold text-gray-500 uppercase mb-3">{{ t('nav.breaches') }}</div>
               <div class="space-y-2">
                 <div class="flex justify-between text-sm"><span class="text-gray-600">{{ t('dashboard.thisMonth') }}</span><strong>{{ db.safety.infractions_mois ?? 0 }}</strong></div>

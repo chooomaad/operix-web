@@ -51,7 +51,6 @@ const cachedPages = [
 
   'ContractorsPage',
   'VisitorsPage',
-  'GembaPage',
 ]
 </script>
 

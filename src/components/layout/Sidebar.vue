@@ -41,7 +41,6 @@
       <NavItem to="/environment"  :icon="GlobeAltIcon"   :label="t('nav.environment')" />
 
       <SidebarSection :label="t('nav.sectionOps')" />
-      <NavItem to="/gemba-walks"  :icon="ClipboardIcon"  :label="t('nav.gemba')" />
       <NavItem to="/contractors"  :icon="BuildingOfficeIcon" :label="t('nav.contractors')" />
       <NavItem to="/visitors"     :icon="UserGroupIcon"  :label="t('nav.visitors')" />
 
@@ -81,7 +80,7 @@ import NavItem from './NavItem.vue'
 import SidebarSection from './SidebarSection.vue'
 import {
   HomeIcon, ShieldCheckIcon, UsersIcon, ExclamationTriangleIcon,
-  EyeIcon, XCircleIcon, GlobeAltIcon, ClipboardIcon,
+  EyeIcon, XCircleIcon, GlobeAltIcon,
   BuildingOfficeIcon, UserGroupIcon, ChartBarIcon, ClockIcon,
   UserCircleIcon, ArrowRightOnRectangleIcon, XMarkIcon,
 } from '@heroicons/vue/24/outline'

@@ -136,16 +136,6 @@ export const environmentApi = {
   stats:   (params?: Record<string, unknown>) => api.get('/environment/stats', { params }),
 }
 
-// ── Gemba Walks ───────────────────────────────────────────────────────────────
-export const gembaApi = {
-  list:    (params?: Record<string, unknown>) => api.get('/gemba-walks', { params }),
-  show:    (id: number) => api.get(`/gemba-walks/${id}`),
-  create:  (data: FormData) => api.post('/gemba-walks', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  update:  (id: number, data: FormData) => api.post(`/gemba-walks/${id}?_method=PUT`, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  destroy: (id: number) => api.delete(`/gemba-walks/${id}`),
-  resolve: (id: number) => api.post(`/gemba-walks/${id}/resolve`, {}),
-  stats:   (params?: Record<string, unknown>) => api.get('/gemba-walks/stats', { params }),
-}
 
 // ── Permits to Work ───────────────────────────────────────────────────────────
 export const permitsApi = {

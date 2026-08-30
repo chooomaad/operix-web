@@ -31,7 +31,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
   const employees    = reactive<Record<string, number>>({})
   const safety       = reactive<Record<string, number>>({})
   const environment  = reactive<Record<string, number>>({})
-  const gemba        = reactive<Record<string, number>>({})
   const equipment    = reactive<Record<string, number>>({})
   const visitors     = reactive<Record<string, number>>({})
   const contractors  = reactive<Record<string, number>>({})
@@ -43,7 +42,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
     Object.assign(employees,   snap.employees   ?? {})
     Object.assign(safety,      snap.safety      ?? {})
     Object.assign(environment, snap.environment ?? {})
-    Object.assign(gemba,       snap.gemba       ?? {})
     Object.assign(equipment,   snap.equipment   ?? {})
     Object.assign(visitors,    snap.visitors    ?? {})
     Object.assign(contractors, snap.contractors ?? {})
@@ -79,7 +77,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
         employees:   dash.data.employees   ?? {},
         safety:      dash.data.safety      ?? {},
         environment: dash.data.environment ?? {},
-        gemba:       dash.data.gemba       ?? {},
         equipment:   dash.data.equipment   ?? {},
         visitors:    dash.data.visitors    ?? {},
         contractors: dash.data.contractors ?? {},
@@ -158,7 +155,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
 
   return {
     loading, lastFetch, fromCache, tracker, timelineData, empBreakdown, topZones,
-    employees, safety, environment, gemba, equipment, visitors, contractors,
+    employees, safety, environment, equipment, visitors, contractors,
     loadFromCache, refresh, refreshTimeline, bumpForHseEvent, startAutoRefresh, stopAutoRefresh,
   }
 })

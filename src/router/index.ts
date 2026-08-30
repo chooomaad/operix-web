@@ -49,7 +49,6 @@ const router = createRouter({
         { path: 'equipment',              name: 'equipment',       component: () => import('@/pages/equipment/EquipmentPage.vue') },
         { path: 'contractors',            name: 'contractors',     component: () => import('@/pages/contractors/ContractorsPage.vue') },
         { path: 'visitors',               name: 'visitors',        component: () => import('@/pages/visitors/VisitorsPage.vue') },
-        { path: 'gemba-walks',            name: 'gemba',           component: () => import('@/pages/gemba/GembaPage.vue') },
 
         // Reports & Data
         { path: 'reports',                name: 'reports',         component: () => import('@/pages/reports/ReportsPage.vue') },
