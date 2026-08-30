@@ -669,7 +669,7 @@
     "sendRequest": "Envoyer la demande",
     "goToLogin": "Aller à la connexion",
     "resetPinTitle": "Réinitialiser le PIN",
-    "resetPinSubtitle": "Entrez votre matricule. S'il correspond à un compte autorisé, un lien de réinitialisation sera envoyé à l'email du compte.",
+    "resetPinSubtitle": "Entrez votre adresse email. Si un compte associé existe, un lien de réinitialisation vous sera envoyé.",
     "accountEmail": "Email du compte",
     "sendCode": "Envoyer le code",
     "verificationTitle": "Vérification",
@@ -696,7 +696,7 @@
       "registrationError": "Erreur lors de l'inscription.",
       "matriculeRequired": "Matricule requis"
     },
-    "sendResetLink": "Envoyer le lien",
+    "sendResetLink": "Envoyer le lien de réinitialisation",
     "newPinTitle": "Définir un nouveau PIN",
     "newPinSubtitle": "Choisissez un nouveau code PIN pour votre compte.",
     "resetLinkInvalidTitle": "Lien invalide",
@@ -705,7 +705,9 @@
     "resetDoneBody": "Votre PIN a été réinitialisé avec succès. Redirection vers la connexion…",
     "matricule": "Matricule",
     "resendIn": "Renvoyer dans {s} s",
-    "tooManyResets": "Trop de demandes. Réessayez dans un instant."
+    "tooManyResets": "Trop de demandes. Réessayez dans un instant.",
+    "emailAddress": "Adresse email",
+    "emailPlaceholder": "Entrez votre adresse email"
   },
   "import": {
     "title": "Import",

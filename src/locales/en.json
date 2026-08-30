@@ -669,7 +669,7 @@
     "sendRequest": "Send request",
     "goToLogin": "Go to sign in",
     "resetPinTitle": "Reset PIN",
-    "resetPinSubtitle": "Enter your employee ID. If it matches an authorized account, a reset link will be sent to the account email.",
+    "resetPinSubtitle": "Enter your email address. If an associated account exists, a reset link will be sent to you.",
     "accountEmail": "Account email",
     "sendCode": "Send code",
     "verificationTitle": "Verification",
@@ -696,7 +696,7 @@
       "registrationError": "An error occurred during registration.",
       "matriculeRequired": "Employee ID required"
     },
-    "sendResetLink": "Send link",
+    "sendResetLink": "Send reset link",
     "newPinTitle": "Set a new PIN",
     "newPinSubtitle": "Choose a new PIN code for your account.",
     "resetLinkInvalidTitle": "Invalid link",
@@ -705,7 +705,9 @@
     "resetDoneBody": "Your PIN has been reset successfully. Redirecting to sign-in…",
     "matricule": "Employee ID",
     "resendIn": "Resend in {s}s",
-    "tooManyResets": "Too many requests. Please try again shortly."
+    "tooManyResets": "Too many requests. Please try again shortly.",
+    "emailAddress": "Email address",
+    "emailPlaceholder": "Enter your email address"
   },
   "import": {
     "title": "Import",

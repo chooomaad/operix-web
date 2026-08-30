@@ -161,15 +161,15 @@
             {{ t('auth.backToLogin') }}
           </button>
 
-          <!-- Demande : MATRICULE (identifiant de connexion). L'email de reset part
-               vers l'adresse enregistree ; la reinitialisation se fait ensuite sur
-               la page /reset-pin ouverte depuis le lien recu par email. -->
+          <!-- Demande : ADRESSE EMAIL. Le lien de reset part vers cette meme
+               adresse ; la reinitialisation se fait ensuite sur /reset-pin ouverte
+               depuis le lien recu par email. -->
           <div v-if="!success">
             <h2 class="text-2xl font-bold text-gray-900 mb-1">{{ t('auth.resetPinTitle') }}</h2>
             <p class="text-gray-500 text-sm mb-6">{{ t('auth.resetPinSubtitle') }}</p>
             <div>
-              <label class="label">{{ t('auth.matricule') }}</label>
-              <input v-model="forgot.matricule" type="text" class="input uppercase" placeholder="TCN-XXX-000" @keyup.enter="sendForgot" />
+              <label class="label">{{ t('auth.emailAddress') }}</label>
+              <input v-model="forgot.email" type="email" class="input" :placeholder="t('auth.emailPlaceholder')" autocomplete="email" @keyup.enter="sendForgot" />
             </div>
             <div v-if="error" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">{{ error }}</div>
             <button @click="sendForgot" :disabled="loading || cooldown > 0" class="mt-5 w-full py-3 bg-[#0f2847] hover:bg-[#1a3a6b] text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 disabled:opacity-60">
@@ -310,9 +310,9 @@ const showPin   = ref(false)
 
 const form = reactive({ matricule: '', pin: '' })
 const reg  = reactive({ prenom: '', nom: '', matricule: '', email: '', pin: '', pin_confirmation: '' })
-// Le reset demande le MATRICULE : l'email de reset part vers l'adresse du compte,
-// la definition du nouveau PIN se fait sur /reset-pin via le lien recu.
-const forgot = reactive({ matricule: '' })
+// Le reset demande l'ADRESSE EMAIL ; le lien part vers cette adresse et la
+// definition du nouveau PIN se fait sur /reset-pin via le lien recu.
+const forgot = reactive({ email: '' })
 
 // Cooldown anti-spam : apres un envoi (ou un 429 serveur), on empeche un renvoi
 // immediat et on affiche le decompte. Aligne sur la fenetre serveur (60 s).
@@ -350,7 +350,7 @@ function clearForm() {
   success.value = ''
   Object.assign(form,   { matricule: '', pin: '' })
   Object.assign(reg,    { prenom: '', nom: '', matricule: '', email: '', pin: '', pin_confirmation: '' })
-  Object.assign(forgot, { matricule: '' })
+  Object.assign(forgot, { email: '' })
 }
 
 async function loginPin() {
@@ -381,12 +381,12 @@ async function doRegister() {
 
 async function sendForgot() {
   if (cooldown.value > 0) return
-  if (!forgot.matricule) { error.value = t('auth.errors.matriculeRequired'); return }
+  if (!forgot.email) { error.value = t('auth.errors.emailRequired'); return }
   loading.value = true; error.value = ''
   try {
     // La reponse du serveur est deja GENERIQUE (anti-enumeration) : on l'affiche
     // telle quelle. La reinitialisation se poursuit sur /reset-pin via le lien recu.
-    const { data } = await authApi.forgotPin(forgot.matricule.trim().toUpperCase())
+    const { data } = await authApi.forgotPin(forgot.email.trim().toLowerCase())
     success.value = data.message
     startCooldown(60) // empeche un renvoi immediat (aligne sur le serveur)
   } catch (e: any) {
