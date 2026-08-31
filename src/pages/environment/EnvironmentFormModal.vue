@@ -16,11 +16,11 @@
           <div>
             <label class="label">{{ t('environment.type') }} *</label>
             <select v-model="form.type" class="input" required>
-              <option value="dechets">{{ t('environment.types.dechets') }}</option>
-              <option value="deversement">{{ t('environment.types.deversement') }}</option>
-              <option value="emissions">{{ t('environment.types.emissions') }}</option>
-              <option value="bruit">{{ t('environment.types.bruit') }}</option>
-              <option value="autre">{{ t('environment.types.autre') }}</option>
+              <option value="waste">{{ t('environment.types.dechets') }}</option>
+              <option value="spill">{{ t('environment.types.deversement') }}</option>
+              <option value="emission">{{ t('environment.types.emissions') }}</option>
+              <option value="noise">{{ t('environment.types.bruit') }}</option>
+              <option value="other">{{ t('environment.types.autre') }}</option>
             </select>
           </div>
           <div>
@@ -78,7 +78,7 @@ const dbStore = useDashboardStore()
 
 const loading = ref(false)
 const form = reactive({
-  date: '', time: '', location: '', type: 'autre', severity: 'medium',
+  date: '', time: '', location: '', type: 'other', severity: 'medium',
   description: '', impact: '', corrective_action: '',
   corrective_action_due: '', employees: props.preloadEmployee ? [props.preloadEmployee.id] : [] as number[],
 })

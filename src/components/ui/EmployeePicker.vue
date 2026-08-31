@@ -104,7 +104,7 @@ function onInput() {
 
 async function search() {
   try {
-    const { data } = await employeesApi.list({ search: query.value, per_page: 10, is_active: true })
+    const { data } = await employeesApi.list({ search: query.value, per_page: 10, is_active: true, light: 1 })
     results.value  = data.data ?? []
     noResults.value = results.value.length === 0
     highlighted.value = -1
