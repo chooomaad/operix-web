@@ -10,7 +10,7 @@
               :key="col.key"
               :class="['px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider', col.class]"
             >{{ col.label }}</th>
-            <th v-if="$slots.actions" class="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase">Actions</th>
+            <th v-if="$slots.actions" class="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase">{{ t('common.actions') }}</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100 bg-white">
@@ -43,17 +43,19 @@
 
     <!-- Pagination -->
     <div v-if="meta && meta.last_page > 1" class="flex items-center justify-between mt-4 text-sm text-gray-600">
-      <span>{{ meta.total }} résultats</span>
+      <span>{{ meta.total }} {{ t('common.results') }}</span>
       <div class="flex gap-2">
-        <button @click="$emit('page', meta.current_page - 1)" :disabled="meta.current_page <= 1" class="btn-secondary py-1 px-3 text-xs disabled:opacity-40">Préc.</button>
+        <button @click="$emit('page', meta.current_page - 1)" :disabled="meta.current_page <= 1" class="btn-secondary py-1 px-3 text-xs disabled:opacity-40">{{ t('common.prev') }}</button>
         <span class="px-3 py-1 rounded-lg bg-gray-100">{{ meta.current_page }} / {{ meta.last_page }}</span>
-        <button @click="$emit('page', meta.current_page + 1)" :disabled="meta.current_page >= meta.last_page" class="btn-secondary py-1 px-3 text-xs disabled:opacity-40">Suiv.</button>
+        <button @click="$emit('page', meta.current_page + 1)" :disabled="meta.current_page >= meta.last_page" class="btn-secondary py-1 px-3 text-xs disabled:opacity-40">{{ t('common.next') }}</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 defineProps<{
   columns: { key: string; label: string; class?: string }[]
   rows: unknown[]
