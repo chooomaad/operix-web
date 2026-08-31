@@ -78,6 +78,20 @@ export const useAuthStore = defineStore('auth', () => {
    */
   const abilities = ref<string[]>([])
 
+  /**
+   * Les droits (`abilities`) et le `tenant` ne sont JAMAIS mis en cache local — ce
+   * sont des donnees d'autorisation qui doivent venir fraiches du serveur. Au
+   * rechargement de page, le `user` est restaure du cache (pour eviter le flash
+   * blanc) mais les droits, eux, valent `[]` tant que fetchMe n'a pas repondu.
+   *
+   * `hydrated` distingue donc « session complete chargee depuis le serveur » d'une
+   * « session restauree du cache, droits pas encore recharges ». Sans ce flag, le
+   * guard considerait la session comme prete (token + user en cache) et sautait
+   * fetchMe : les droits restaient vides et la section Users disparaissait jusqu'a
+   * une reconnexion. On l'expose pour que le guard rehydrate au besoin.
+   */
+  const hydrated = ref(false)
+
   function can(ability: string): boolean {
     return abilities.value.includes(ability)
   }
@@ -129,6 +143,7 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = u
       applySession(data)
       saveUserCache(u)
+      hydrated.value = true
     } catch {
       logout()
     }
@@ -141,6 +156,7 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = u
     applySession(data)
     saveUserCache(u)
+    hydrated.value = true
     localStorage.setItem('operix_token', data.token)
   }
 
@@ -151,6 +167,7 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = u
     applySession(data)
     saveUserCache(u)
+    hydrated.value = true
     localStorage.setItem('operix_token', data.token)
   }
 
@@ -162,9 +179,10 @@ export const useAuthStore = defineStore('auth', () => {
     user.value      = null
     tenant.value    = null
     abilities.value = []
+    hydrated.value  = false
     localStorage.removeItem('operix_token')
     localStorage.removeItem(USER_CACHE_KEY)
   }
 
-  return { user, token, tenant, abilities, can, loading, isAuthenticated, isAdmin, isSuperAdmin, orgColor, orgName, orgLogo, orgShortLabel, fetchMe, loginOtp, loginMatricule, logout }
+  return { user, token, tenant, abilities, hydrated, can, loading, isAuthenticated, isAdmin, isSuperAdmin, orgColor, orgName, orgLogo, orgShortLabel, fetchMe, loginOtp, loginMatricule, logout }
 })

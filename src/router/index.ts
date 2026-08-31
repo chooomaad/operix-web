@@ -111,6 +111,14 @@ router.beforeEach(async (to) => {
     if (!auth.token) return { name: 'login' }
     await auth.fetchMe()
     if (!auth.isAuthenticated) return { name: 'login' }
+  } else if (!auth.hydrated) {
+    // Session RESTAUREE depuis le cache (rechargement de page) : le user vient du
+    // cache local mais les droits (abilities) et le tenant, jamais mis en cache,
+    // valent encore []. On les recharge frais AVANT de rendre la vue — sinon la
+    // Sidebar se calcule sans droits et la section Users disparait jusqu'a une
+    // reconnexion. fetchMe pose hydrated=true.
+    await auth.fetchMe()
+    if (!auth.isAuthenticated) return { name: 'login' }
   }
 
   const role = auth.user?.role
