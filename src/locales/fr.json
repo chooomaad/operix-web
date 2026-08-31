@@ -793,5 +793,67 @@
       "results": "résultat(s)",
       "clear": "Effacer"
     }
+  },
+  "audit": {
+    "title": "Journal d'audit",
+    "entries": "entrées",
+    "searchPlaceholder": "Action, modèle, utilisateur...",
+    "allActions": "Toutes actions",
+    "detail": "Détail",
+    "detailTitle": "Détail audit",
+    "empty": "Aucune entrée d'audit",
+    "colDate": "Date",
+    "colAction": "Action",
+    "colModel": "Modèle",
+    "colId": "ID",
+    "colUser": "Utilisateur",
+    "colIp": "IP",
+    "oldValues": "Valeurs avant",
+    "newValues": "Valeurs après",
+    "verb": {
+      "created": "créé",
+      "updated": "modifié",
+      "deleted": "supprimé",
+      "uploaded": "ajouté",
+      "approved": "approuvé",
+      "closed": "clôturé",
+      "excel": "Excel",
+      "pdf": "PDF",
+      "run": "exécuté"
+    },
+    "model": {
+      "incident": "Incident",
+      "near_miss": "Presqu'accident",
+      "environment": "Rapport environnement",
+      "breach": "Infraction",
+      "employee": "Employé",
+      "user": "Compte utilisateur",
+      "visitor": "Visiteur",
+      "contractor": "Prestataire",
+      "equipment": "Équipement",
+      "department": "Département",
+      "settings": "Paramètres",
+      "logo": "Logo",
+      "export": "Export",
+      "permit": "Permis"
+    },
+    "action": {
+      "login": "Connexion",
+      "logout": "Déconnexion"
+    },
+    "modelType": {
+      "SafetyIncident": "Incident",
+      "SafetyNearMiss": "Presqu'accident",
+      "EnvironmentReport": "Environnement",
+      "Breach": "Infraction",
+      "Employee": "Employé",
+      "User": "Utilisateur",
+      "Visitor": "Visiteur",
+      "Contractor": "Prestataire",
+      "Equipment": "Équipement",
+      "Department": "Département",
+      "Tenant": "Entreprise",
+      "PermitToWork": "Permis"
+    }
   }
 }

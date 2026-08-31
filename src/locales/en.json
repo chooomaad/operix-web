@@ -793,5 +793,67 @@
       "results": "result(s)",
       "clear": "Clear"
     }
+  },
+  "audit": {
+    "title": "Audit log",
+    "entries": "entries",
+    "searchPlaceholder": "Action, model, user...",
+    "allActions": "All actions",
+    "detail": "Detail",
+    "detailTitle": "Audit detail",
+    "empty": "No audit entries",
+    "colDate": "Date",
+    "colAction": "Action",
+    "colModel": "Model",
+    "colId": "ID",
+    "colUser": "User",
+    "colIp": "IP",
+    "oldValues": "Previous values",
+    "newValues": "New values",
+    "verb": {
+      "created": "created",
+      "updated": "updated",
+      "deleted": "deleted",
+      "uploaded": "uploaded",
+      "approved": "approved",
+      "closed": "closed",
+      "excel": "Excel",
+      "pdf": "PDF",
+      "run": "run"
+    },
+    "model": {
+      "incident": "Incident",
+      "near_miss": "Near miss",
+      "environment": "Environment report",
+      "breach": "Breach",
+      "employee": "Employee",
+      "user": "User account",
+      "visitor": "Visitor",
+      "contractor": "Contractor",
+      "equipment": "Equipment",
+      "department": "Department",
+      "settings": "Settings",
+      "logo": "Logo",
+      "export": "Export",
+      "permit": "Permit"
+    },
+    "action": {
+      "login": "Login",
+      "logout": "Logout"
+    },
+    "modelType": {
+      "SafetyIncident": "Incident",
+      "SafetyNearMiss": "Near miss",
+      "EnvironmentReport": "Environment",
+      "Breach": "Breach",
+      "Employee": "Employee",
+      "User": "User",
+      "Visitor": "Visitor",
+      "Contractor": "Contractor",
+      "Equipment": "Equipment",
+      "Department": "Department",
+      "Tenant": "Company",
+      "PermitToWork": "Permit"
+    }
   }
 }
