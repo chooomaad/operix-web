@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/api/:path*",          "destination": "https://REMPLACER-PAR-VOTRE-API.onrender.com/api/:path*" },
+    { "source": "/broadcasting/:path*", "destination": "https://REMPLACER-PAR-VOTRE-API.onrender.com/broadcasting/:path*" },
+    { "source": "/(.*)",                "destination": "/index.html" }
+  ]
+}
