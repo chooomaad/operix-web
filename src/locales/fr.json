@@ -630,7 +630,9 @@
     "deleteBtn": "Supprimer",
     "deleteTitle": "Supprimer le compte",
     "deleteConfirm": "Supprimer définitivement le compte de « {name} » ? Cette action est irréversible. Pour conserver l’attribution de ses données, désactivez-le plutôt.",
-    "deleted": "Compte supprimé"
+    "deleted": "Compte supprimé",
+    "online": "En ligne",
+    "offline": "Hors ligne"
   },
   "departments": {
     "title": "Départements",

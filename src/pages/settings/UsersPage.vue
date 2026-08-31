@@ -10,14 +10,14 @@
 
     <div class="card-sm flex flex-wrap gap-3">
       <input v-model="filters.search" @input="debouncedLoad" :placeholder="t('users.searchPlaceholder')" class="input flex-1 min-w-48" />
-      <select v-model="filters.role" @change="load" class="input w-36">
+      <select v-model="filters.role" @change="() => load()" class="input w-36">
         <option value="">{{ t('users.allRoles') }}</option>
         <option value="company_admin">{{ t('users.roleCompanyAdmin') }}</option>
         <option value="hsse_manager">{{ t('users.roleHsseManager') }}</option>
         <option value="supervisor">{{ t('users.roleSupervisor') }}</option>
         <option value="agent">{{ t('users.roleAgent') }}</option>
       </select>
-      <select v-model="filters.is_active" @change="load" class="input w-32">
+      <select v-model="filters.is_active" @change="() => load()" class="input w-32">
         <option value="">{{ t('users.allStatuses') }}</option>
         <option value="1">{{ t('users.statusActive') }}</option>
         <option value="0">{{ t('users.statusInactive') }}</option>
@@ -26,6 +26,16 @@
     </div>
 
     <DataTable :columns="columns" :rows="records" :loading="loading" :meta="meta" :empty-text="t('users.noUsers')" @page="loadPage">
+      <template #cell-name="{ value, row }">
+        <div class="flex items-center gap-2">
+          <span
+            class="w-2 h-2 rounded-full flex-shrink-0"
+            :class="(row as any).is_online ? 'bg-green-500 animate-pulse' : 'bg-gray-300'"
+            :title="(row as any).is_online ? t('users.online') : t('users.offline')"
+          />
+          <span>{{ value }}</span>
+        </div>
+      </template>
       <template #cell-role="{ value }">
         <span :class="roleBadgeClass(value)">{{ roleLabel(value) }}</span>
       </template>
@@ -49,12 +59,12 @@
       </template>
     </DataTable>
 
-    <UserFormModal v-if="showForm || editRow" :user="editRow" @close="showForm = false; editRow = null" @saved="load" />
+    <UserFormModal v-if="showForm || editRow" :user="editRow" @close="showForm = false; editRow = null" @saved="() => load()" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted, onBeforeUnmount, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getLocale } from '@/i18n'
 import { useToast } from 'primevue/usetoast'
@@ -119,13 +129,14 @@ const columns = computed(() => [
 let timer: ReturnType<typeof setTimeout>
 function debouncedLoad() { clearTimeout(timer); timer = setTimeout(load, 300) }
 
-async function load() {
-  loading.value = true
+async function load(silent = false) {
+  if (!silent) loading.value = true
   try {
     const params = Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== ''))
     const { data } = await usersApi.list(params)
     records.value = data.data; meta.value = data.meta
-  } finally { loading.value = false }
+  } catch { /* auto-refresh silencieux : on ignore une erreur transitoire */ }
+  finally { if (!silent) loading.value = false }
 }
 
 function loadPage(page: number) { filters.page = page; load() }
@@ -166,5 +177,13 @@ async function removeUser(row: any) {
   }
 }
 
-onMounted(load)
+// Rafraichissement automatique chaque minute : les dates de derniere connexion et
+// l'etat « en ligne » (last_seen < 2 min) restent a jour sans action de l'utilisateur.
+// Silencieux (sans spinner) pour ne pas gener la navigation ni la saisie.
+let refreshTimer: ReturnType<typeof setInterval> | undefined
+onMounted(() => {
+  load()
+  refreshTimer = setInterval(() => load(true), 60_000)
+})
+onBeforeUnmount(() => clearInterval(refreshTimer))
 </script>

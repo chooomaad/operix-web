@@ -630,7 +630,9 @@
     "deleteBtn": "Delete",
     "deleteTitle": "Delete account",
     "deleteConfirm": "Permanently delete the account of \"{name}\"? This action cannot be undone. To keep their data attribution, deactivate the account instead.",
-    "deleted": "Account deleted"
+    "deleted": "Account deleted",
+    "online": "Online",
+    "offline": "Offline"
   },
   "departments": {
     "title": "Departments",
