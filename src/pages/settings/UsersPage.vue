@@ -32,7 +32,7 @@
       <template #cell-is_active="{ value }">
         <span :class="value ? 'badge-active' : 'badge-inactive'">{{ value ? t('users.statusActive') : t('users.statusInactive') }}</span>
       </template>
-      <template #cell-last_login_at="{ value }"><span class="text-xs text-gray-500">{{ value ? new Date(value).toLocaleDateString('fr-FR') : '—' }}</span></template>
+      <template #cell-last_login_at="{ value }"><span class="text-xs text-gray-500">{{ formatLastLogin(value) }}</span></template>
       <template #actions="{ row }">
         <div class="flex justify-end gap-2">
           <button @click="editRow = row as any" class="btn-secondary text-xs py-1 px-2">{{ t('users.editBtn') }}</button>
@@ -56,6 +56,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { getLocale } from '@/i18n'
 import { useToast } from 'primevue/usetoast'
 import { useConfirm } from 'primevue/useconfirm'
 import { usersApi } from '@/api'
@@ -89,6 +90,14 @@ const ROLE_LABELS: Record<string, string> = {
 function roleLabel(role: string): string {
   const key = ROLE_LABELS[role]
   return key ? t(key) : role
+}
+
+// Derniere connexion : date + heure, ou « — » si le compte ne s'est jamais connecte.
+function formatLastLogin(value: string | null | undefined): string {
+  if (!value) return '—'
+  return new Date(value).toLocaleString(getLocale() === 'fr' ? 'fr-FR' : 'en-GB', {
+    day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit',
+  })
 }
 
 function roleBadgeClass(role: string): string {
