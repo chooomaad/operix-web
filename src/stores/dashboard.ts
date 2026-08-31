@@ -28,6 +28,10 @@ export const useDashboardStore = defineStore('dashboard', () => {
   const timelineData = ref<Record<string, any>>({})
   const empBreakdown = ref<Record<string, any>>({})
   const topZones     = ref<any[]>([])
+  const topPersons   = ref<any[]>([])
+  const severityDist = ref<Record<string, number>>({})
+  const typeDist     = ref<Record<string, number>>({})
+  const activities   = ref<any[]>([])
   const employees    = reactive<Record<string, number>>({})
   const safety       = reactive<Record<string, number>>({})
   const environment  = reactive<Record<string, number>>({})
@@ -49,6 +53,10 @@ export const useDashboardStore = defineStore('dashboard', () => {
     if (snap.timeline)     timelineData.value = snap.timeline
     if (snap.empBreakdown) empBreakdown.value = snap.empBreakdown
     if (snap.topZones)     topZones.value     = snap.topZones
+    if (snap.topPersons)   topPersons.value   = snap.topPersons
+    if (snap.severityDist) severityDist.value = snap.severityDist
+    if (snap.typeDist)     typeDist.value     = snap.typeDist
+    if (snap.activities)   activities.value   = snap.activities
   }
 
   // Charge le cache localStorage instantanément (avant l'API)
@@ -65,12 +73,14 @@ export const useDashboardStore = defineStore('dashboard', () => {
     loading.value = true
     fromCache.value = false
     try {
-      const [dash, tl, emp, tr, zones] = await Promise.all([
+      const [dash, tl, tr, zones, persons, istats, act] = await Promise.all([
         dashboardApi.index(),
         dashboardApi.safetyTimeline(_selectedYear),
-        dashboardApi.employeeBreakdown(),
         safetyTrackerApi.index(_selectedYear),
         dashboardApi.topZones(),
+        dashboardApi.topPersons(),
+        dashboardApi.incidentStats(_selectedYear),
+        dashboardApi.recentActivity(),
       ])
 
       const snap = {
@@ -82,8 +92,11 @@ export const useDashboardStore = defineStore('dashboard', () => {
         contractors: dash.data.contractors ?? {},
         tracker:     tr.data,
         timeline:    tl.data.timeline  ?? {},
-        empBreakdown:emp.data,
         topZones:    zones.data.zones  ?? [],
+        topPersons:  persons.data.persons ?? [],
+        severityDist: istats.data.by_severity ?? {},
+        typeDist:     istats.data.by_type ?? {},
+        activities:   act.data.activities ?? [],
       }
 
       _applySnapshot(snap)
@@ -129,8 +142,13 @@ export const useDashboardStore = defineStore('dashboard', () => {
   async function refreshTimeline(year: number) {
     _selectedYear = year
     try {
-      const { data } = await dashboardApi.safetyTimeline(year)
-      timelineData.value = data.timeline ?? {}
+      const [tl, istats] = await Promise.all([
+        dashboardApi.safetyTimeline(year),
+        dashboardApi.incidentStats(year),
+      ])
+      timelineData.value = tl.data.timeline ?? {}
+      severityDist.value = istats.data.by_severity ?? {}
+      typeDist.value     = istats.data.by_type ?? {}
     } catch {}
   }
 
@@ -154,7 +172,8 @@ export const useDashboardStore = defineStore('dashboard', () => {
   }
 
   return {
-    loading, lastFetch, fromCache, tracker, timelineData, empBreakdown, topZones,
+    loading, lastFetch, fromCache, tracker, timelineData, empBreakdown, topZones, topPersons,
+    severityDist, typeDist, activities,
     employees, safety, environment, equipment, visitors, contractors,
     loadFromCache, refresh, refreshTimeline, bumpForHseEvent, startAutoRefresh, stopAutoRefresh,
   }

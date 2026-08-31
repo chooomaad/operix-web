@@ -10,11 +10,11 @@
   <div v-if="failed" class="eb-wrap">
     <div class="eb-card">
       <div class="eb-emoji">⚠️</div>
-      <h1 class="eb-title">Une erreur est survenue</h1>
-      <p class="eb-sub">An unexpected error occurred. Vous pouvez réessayer ou recharger la page.</p>
+      <h1 class="eb-title">{{ txt.title }}</h1>
+      <p class="eb-sub">{{ txt.sub }}</p>
       <div class="eb-actions">
-        <button class="eb-btn eb-btn-ghost" @click="retry">Réessayer</button>
-        <button class="eb-btn eb-btn-primary" @click="reload">Recharger</button>
+        <button class="eb-btn eb-btn-ghost" @click="retry">{{ txt.retry }}</button>
+        <button class="eb-btn eb-btn-primary" @click="reload">{{ txt.reload }}</button>
       </div>
     </div>
   </div>
@@ -27,6 +27,17 @@ import { useRoute } from 'vue-router'
 
 const failed = ref(false)
 const route = useRoute()
+
+// Textes cohérents dans une seule langue, lus directement depuis localStorage : ce
+// filet de sécurité reste volontairement SANS dépendance i18n (il doit s'afficher
+// même si le store/i18n est ce qui a cassé).
+const MESSAGES = {
+  fr: { title: 'Une erreur est survenue', sub: 'Vous pouvez réessayer ou recharger la page.', retry: 'Réessayer', reload: 'Recharger' },
+  en: { title: 'Something went wrong',    sub: 'You can try again or reload the page.',       retry: 'Try again', reload: 'Reload' },
+}
+let _lang: 'fr' | 'en' = 'en'
+try { if (localStorage.getItem('operix_locale') === 'fr') _lang = 'fr' } catch {}
+const txt = MESSAGES[_lang]
 
 // Capture toute erreur remontant des composants enfants. `return false` stoppe la
 // propagation : l'app ne se demonte pas, on bascule sur l'ecran de recuperation.

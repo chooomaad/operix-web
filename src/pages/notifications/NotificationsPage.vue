@@ -8,6 +8,8 @@
       <button v-if="unreadCount > 0" @click="markAllRead" class="btn-secondary text-sm">{{ t('notifications.markAllRead') }}</button>
     </div>
 
+    <LoadErrorBanner v-if="loadError" :loading="loading" @retry="load" />
+
     <div v-if="loading" class="text-center py-10 text-gray-400">{{ t('notifications.loading') }}</div>
 
     <div v-else-if="!items.length" class="text-center py-16 text-gray-400">
@@ -48,6 +50,7 @@ import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { notificationsApi } from '@/api'
 import { useNotificationsStore } from '@/stores/notifications'
+import LoadErrorBanner from '@/components/ui/LoadErrorBanner.vue'
 import { BellIcon } from '@heroicons/vue/24/outline'
 
 const { t } = useI18n()
@@ -57,6 +60,7 @@ const { unreadCount } = storeToRefs(notifStore)
 
 const items      = ref<any[]>([])
 const meta       = ref<any>(null)
+const loadError = ref(false)
 const loading    = ref(false)
 const loadingMore = ref(false)
 
@@ -66,9 +70,14 @@ function formatDate(d: string) {
 
 async function load() {
   loading.value = true
+  loadError.value = false
   try {
     const { data } = await notificationsApi.list({ page: 1 })
     items.value = data.data; meta.value = data.meta
+  } catch (e) {
+    // Un echec de chargement ne doit jamais faire tomber toute la page :
+    // on affiche une banniere « Reessayer » plutot que l'ErrorBoundary global.
+    loadError.value = true
   } finally { loading.value = false }
 }
 

@@ -26,6 +26,8 @@
     "from": "Début",
     "to": "Fin",
     "date": "Date",
+    "loadError": "Impossible de charger les données. Vérifiez votre connexion.",
+    "retry": "Réessayer",
     "noData": "Aucune donnée",
     "confirm": "Confirmer",
     "select": "— Sélectionner —",
@@ -64,7 +66,7 @@
     "sectionSafety": "Sécurité",
     "incidents": "Incidents",
     "nearMiss": "Presqu'accidents",
-    "breaches": "Manquements",
+    "breaches": "Manquements au processus",
     "environment": "Environnement",
     "sectionOps": "Opérations",
     "contractors": "Prestataires",
@@ -118,6 +120,8 @@
     "recentActivity": "Activité récente",
     "noRecentActivity": "Aucune activité récente",
     "topRiskAreas": "Top zones à risque",
+    "topPersonsInvolved": "Top personnes impliquées",
+    "eventsShort": "évén.",
     "safetyTrackerLabel": "Safety Tracker",
     "incidentsYtd": "Incidents YTD",
     "ltiYtd": "LTI YTD",
@@ -129,7 +133,36 @@
     "visitorsToday": "Visiteurs aujourd'hui",
     "openNearMiss": "Near miss ouverts",
     "openBreaches": "Manquements ouverts",
-    "openEnvironment": "Rapports env. ouverts"
+    "openEnvironment": "Rapports env. ouverts",
+    "pageTitle": "Dashboard HSSE",
+    "subtitle": "Vue d'ensemble de la performance santé, sécurité et environnement",
+    "period": "Période",
+    "refresh": "Actualiser",
+    "safetyStatus": "Statut sécurité",
+    "statusNormal": "NORMAL",
+    "statusAttention": "ATTENTION",
+    "statusCritical": "CRITIQUE",
+    "statusNormalHint": "Aucun événement ouvert ne nécessite d'action immédiate.",
+    "statusAttentionHint": "Des événements ouverts nécessitent un suivi.",
+    "statusCriticalHint": "Événement critique ouvert — action immédiate requise.",
+    "executiveOverview": "Vue d'ensemble sécurité",
+    "totalIncidents": "Total incidents",
+    "criticalEvents": "Événements critiques",
+    "firstAid": "Premiers soins",
+    "trendTitle": "Tendance des incidents & événements",
+    "eventDistribution": "Répartition des événements",
+    "severityRisk": "Gravité / Risque",
+    "actionRequired": "Actions requises",
+    "allClear": "Rien ne nécessite votre attention.",
+    "actionCritical": "événement(s) critique(s)",
+    "actionOpenIncidents": "incident(s) ouvert(s)",
+    "actionOpenBreaches": "manquement(s) ouvert(s)",
+    "actionOpenNearMiss": "near miss ouvert(s)",
+    "actionOpenEnvironment": "rapport(s) env. ouvert(s)",
+    "actionInspectionsDue": "inspection(s) équipement dues",
+    "hssePerformance": "Performance HSSE",
+    "gravityRate": "Taux de gravité",
+    "ytdShort": "YTD"
   },
   "incidents": {
     "title": "Incidents",
@@ -218,7 +251,7 @@
     }
   },
   "breaches": {
-    "title": "Manquements",
+    "title": "Manquements au processus",
     "new": "Nouveau manquement",
     "add": "Nouveau manquement",
     "searchPlaceholder": "Rechercher un manquement...",
@@ -241,7 +274,8 @@
       "epi": "EPI",
       "consigne": "Consigne de sécurité",
       "autre": "Autre"
-    }
+    },
+    "subtitle": "Suivi des manquements au processus par personne."
   },
   "environment": {
     "title": "Environnement",
@@ -334,9 +368,10 @@
     }
   },
   "profile": {
+    "attachment": "Justificatif (image)",
     "incidents": "Incidents",
     "nearMiss": "Presqu'accidents",
-    "breaches": "Infractions",
+    "breaches": "Manquements",
     "environment": "Environnement",
     "formations": {
       "addTitle": "Ajouter une formation",
@@ -356,7 +391,9 @@
         "end": "Fin",
         "status": "Statut"
       },
-      "added": "Formation ajoutée"
+      "added": "Formation ajoutée",
+      "titrePlaceholder": "Ex : Secourisme SST",
+      "organismPlaceholder": "Organisme de formation"
     },
     "certifications": {
       "addTitle": "Ajouter une certification",
@@ -374,7 +411,9 @@
         "expiry": "Expiration",
         "status": "Statut"
       },
-      "added": "Certification ajoutée"
+      "added": "Certification ajoutée",
+      "titrePlaceholder": "Ex : ATEX, Travail en hauteur…",
+      "organismPlaceholder": "Organisme certificateur"
     },
     "medical": {
       "addTitle": "Ajouter une visite médicale",
@@ -402,7 +441,8 @@
         "result": "Résultat",
         "nextVisit": "Prochaine visite"
       },
-      "added": "Visite médicale ajoutée"
+      "added": "Visite médicale ajoutée",
+      "doctorPlaceholder": "Nom du médecin"
     },
     "noIncidents": "Aucun incident enregistré",
     "noNearMiss": "Aucun presqu'accident enregistré",
@@ -415,10 +455,11 @@
     "kpi": {
       "incidents": "Incidents",
       "nearMiss": "Presqu'accidents",
-      "breaches": "Infractions",
+      "breaches": "Manquements",
       "environment": "Environnement",
       "formations": "Formations",
-      "certifications": "Certifications"
+      "certifications": "Certifications",
+      "medical": "Visites médicales"
     },
     "info": {
       "email": "Email",
@@ -825,7 +866,7 @@
       "incident": "Incident",
       "near_miss": "Presqu'accident",
       "environment": "Rapport environnement",
-      "breach": "Infraction",
+      "breach": "Manquement au processus",
       "employee": "Employé",
       "user": "Compte utilisateur",
       "visitor": "Visiteur",
@@ -835,7 +876,10 @@
       "settings": "Paramètres",
       "logo": "Logo",
       "export": "Export",
-      "permit": "Permis"
+      "permit": "Permis",
+      "training": "Formation",
+      "certification": "Certification",
+      "medical_visit": "Visite médicale"
     },
     "action": {
       "login": "Connexion",
@@ -845,7 +889,7 @@
       "SafetyIncident": "Incident",
       "SafetyNearMiss": "Presqu'accident",
       "EnvironmentReport": "Environnement",
-      "Breach": "Infraction",
+      "Breach": "Manquement au processus",
       "Employee": "Employé",
       "User": "Utilisateur",
       "Visitor": "Visiteur",
@@ -853,7 +897,10 @@
       "Equipment": "Équipement",
       "Department": "Département",
       "Tenant": "Entreprise",
-      "PermitToWork": "Permis"
+      "PermitToWork": "Permis",
+      "Formation": "Formation",
+      "Certification": "Certification",
+      "MedicalVisit": "Visite médicale"
     }
   }
 }

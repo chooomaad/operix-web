@@ -46,6 +46,8 @@
       <button @click="resetFilters" class="btn-secondary text-xs">{{ t('common.reset') }}</button>
     </div>
 
+    <LoadErrorBanner v-if="loadError" :loading="loading" @retry="load" />
+
     <DataTable :columns="columns" :rows="incidents" :loading="loading" :meta="meta" :empty-text="t('incidents.empty')" @page="loadPage">
       <template #cell-reference="{ value }"><span class="font-mono text-xs font-medium">{{ value }}</span></template>
       <template #cell-severity="{ value }">
@@ -78,6 +80,7 @@ import { incidentsApi, exportsApi, reportsApi } from '@/api'
 import { useAuthStore } from '@/stores/auth'
 import { useDownload } from '@/composables/useDownload'
 import DataTable from '@/components/ui/DataTable.vue'
+import LoadErrorBanner from '@/components/ui/LoadErrorBanner.vue'
 import IncidentFormModal from './IncidentFormModal.vue'
 import { PlusIcon, ArrowDownTrayIcon, DocumentArrowDownIcon } from '@heroicons/vue/24/outline'
 import { INCIDENT_TYPES } from '@/types/incident'
@@ -91,6 +94,7 @@ const incidents = ref<any[]>([])
 const stats     = ref<any>({})
 const loading   = ref(false)
 const meta      = ref<any>(null)
+const loadError = ref(false)
 const showForm  = ref(false)
 const filters   = reactive({ search: '', severity: '', type: '', status: '', from: '', to: '', page: 1 })
 
@@ -109,12 +113,18 @@ function debouncedLoad() { clearTimeout(debounceTimer); debounceTimer = setTimeo
 
 async function load() {
   loading.value = true
+  loadError.value = false
   try {
     const params = Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== ''))
     const [list, st] = await Promise.all([incidentsApi.list(params), incidentsApi.stats()])
     incidents.value = list.data.data
     meta.value      = list.data.meta
     stats.value     = st.data
+  } catch (e) {
+    // Un echec de chargement (backend injoignable, 500, hors-ligne) ne doit JAMAIS
+    // faire tomber toute la page : on garde l'ecran affiche avec une banniere
+    // « Reessayer » au lieu de laisser l'erreur remonter a l'ErrorBoundary global.
+    loadError.value = true
   } finally { loading.value = false }
 }
 

@@ -1,207 +1,242 @@
 <template>
-  <div class="p-6 space-y-6">
+  <div class="p-4 sm:p-6 space-y-5 bg-slate-50/60 min-h-full">
 
-    <!-- Refresh indicator -->
-    <div v-if="db.fromCache || db.loading" class="flex items-center gap-2 text-xs text-gray-400">
-      <div v-if="db.loading" class="w-3 h-3 border-2 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
-      <span v-if="db.loading">{{ t('common.loading') }}</span>
-      <span v-else-if="db.fromCache">{{ t('dashboard.fromCache') }}</span>
-      <span v-if="db.lastFetch && !db.loading" class="ml-auto">
-        {{ t('dashboard.lastUpdate') }} {{ timeAgo(db.lastFetch) }}
+    <!-- ══ HEADER ═══════════════════════════════════════════════════════════ -->
+    <header class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <h1 class="text-xl font-bold tracking-tight text-slate-900">{{ t('dashboard.pageTitle') }}</h1>
+        <p class="mt-0.5 text-sm text-slate-500">{{ t('dashboard.subtitle') }}</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="mr-1 hidden items-center gap-1.5 text-sm text-slate-500 sm:inline-flex">
+          <CalendarDaysIcon class="h-4 w-4 text-slate-400" />
+          <span class="capitalize">{{ todayLabel }}</span>
+        </span>
+        <button
+          @click="db.refresh(selectedYear)"
+          class="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+        >
+          <ArrowPathIcon :class="['h-4 w-4', db.loading && 'animate-spin']" />
+          <span class="hidden sm:inline">{{ t('dashboard.refresh') }}</span>
+        </button>
+      </div>
+    </header>
+
+    <div v-if="db.lastFetch || db.fromCache" class="-mt-2 flex items-center gap-2 text-xs text-slate-400">
+      <span v-if="db.fromCache" class="inline-flex items-center gap-1">
+        <span class="h-1.5 w-1.5 rounded-full bg-amber-400" />{{ t('dashboard.fromCache') }}
       </span>
+      <span v-if="db.lastFetch">{{ t('dashboard.lastUpdate') }} · {{ relTime(db.lastFetch) }}</span>
     </div>
 
-    <!-- Skeleton while first load (no cache) -->
+    <!-- ══ SKELETON (premier chargement sans cache) ═════════════════════════ -->
     <template v-if="db.loading && !db.lastFetch">
-      <div>
-        <div class="h-4 bg-gray-200 rounded w-20 mb-3 animate-pulse"></div>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <SkeletonCard v-for="i in 6" :key="i" />
-        </div>
+      <div class="grid gap-4 lg:grid-cols-3">
+        <div class="h-32 animate-pulse rounded-xl bg-slate-200/70 lg:col-span-2" />
+        <div class="h-32 animate-pulse rounded-xl bg-slate-200/70" />
       </div>
-      <div class="card animate-pulse h-20"></div>
-      <div>
-        <div class="h-4 bg-gray-200 rounded w-24 mb-3 animate-pulse"></div>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <SkeletonCard v-for="i in 6" :key="i" />
-        </div>
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 xl:grid-cols-8">
+        <div v-for="i in 8" :key="i" class="h-24 animate-pulse rounded-xl bg-slate-200/70" />
       </div>
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="card animate-pulse h-64"></div>
-        <div class="card animate-pulse h-64"></div>
-        <div class="card animate-pulse h-64"></div>
+      <div class="grid gap-4 lg:grid-cols-3">
+        <div class="h-72 animate-pulse rounded-xl bg-slate-200/70 lg:col-span-2" />
+        <div class="h-72 animate-pulse rounded-xl bg-slate-200/70" />
       </div>
     </template>
 
     <template v-else>
 
-      <!-- ── Section Sécurité ─────────────────────────────────────────────── -->
-      <section>
-        <h2 class="section-label">{{ t('nav.sectionSafety') }}</h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <KpiCard :label="t('incidents.title') + ' / mois'" :value="db.safety.incidents_mois   ?? 0" color="red" />
-          <KpiCard :label="t('dashboard.incidentsYtd')"          :value="db.safety.incidents_ytd    ?? 0" color="red" />
-          <KpiCard :label="t('status.open')"                  :value="db.safety.incidents_ouverts ?? 0" color="amber" />
-          <KpiCard :label="t('nav.nearMiss') + ' YTD'"        :value="db.safety.near_miss_ytd    ?? 0" color="orange" />
-          <KpiCard :label="t('dashboard.ltiYtd')"               :value="db.safety.lti_ytd           ?? 0" color="red" />
-          <KpiCard :label="t('incidents.tf')"                 :value="db.safety.taux_frequence    ?? 0" color="brand" suffix="TF" />
-        </div>
-      </section>
-
-      <!-- ── Safety Tracker ─────────────────────────────────────────────── -->
-      <div v-if="db.tracker" class="card flex items-center gap-6 bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
-        <div class="text-center flex-shrink-0">
-          <div class="text-5xl font-black text-green-600">{{ db.tracker.days_without_accident }}</div>
-          <div class="text-[10px] font-bold text-green-700 mt-1 uppercase tracking-wider">{{ t('dashboard.daysWithoutAccident') }}</div>
-        </div>
-        <div class="flex-1">
-          <div class="font-semibold text-green-800">{{ t('dashboard.safetyTrackerLabel') }}</div>
-          <div class="text-sm text-green-600 mt-1">
-            <span v-if="db.tracker.last_incident">{{ t('dashboard.lastAccident') }} : {{ db.tracker.last_incident.date }}</span>
-            <span v-else>{{ t('dashboard.noAccident') }}</span>
+      <!-- ══ ROW A — SAFETY STATUS + JOURS SANS ACCIDENT ════════════════════ -->
+      <div class="grid gap-4 lg:grid-cols-3">
+        <!-- Statut sécurité (dérivé de vraies données : ouverts + critiques) -->
+        <div
+          class="relative overflow-hidden rounded-xl border bg-white p-5 lg:col-span-2"
+          :class="statusUi.border"
+        >
+          <span class="absolute inset-y-0 left-0 w-1.5" :class="statusUi.bar" aria-hidden="true" />
+          <div class="flex flex-col gap-4 pl-2 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ t('dashboard.safetyStatus') }}</div>
+              <div class="mt-1 flex items-center gap-2">
+                <component :is="statusUi.icon" :class="['h-7 w-7', statusUi.text]" />
+                <span class="text-2xl font-bold" :class="statusUi.text">{{ statusUi.label }}</span>
+              </div>
+              <p class="mt-1 max-w-md text-xs text-slate-500">{{ statusUi.hint }}</p>
+            </div>
+            <div class="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <div class="text-2xl font-bold tabular-nums" :class="openIncidents > 0 ? 'text-amber-600' : 'text-slate-900'">{{ openIncidents }}</div>
+                <div class="mt-0.5 text-[11px] font-medium text-slate-500">{{ t('dashboard.openIncidents') }}</div>
+              </div>
+              <div>
+                <div class="text-2xl font-bold tabular-nums" :class="criticalEvents > 0 ? 'text-red-600' : 'text-slate-900'">{{ criticalEvents }}</div>
+                <div class="mt-0.5 text-[11px] font-medium text-slate-500">{{ t('dashboard.criticalEvents') }}</div>
+              </div>
+              <div>
+                <div class="text-2xl font-bold tabular-nums text-slate-900">{{ db.safety.near_miss_ouverts ?? 0 }}</div>
+                <div class="mt-0.5 text-[11px] font-medium text-slate-500">{{ t('dashboard.openNearMiss') }}</div>
+              </div>
+            </div>
           </div>
-          <RouterLink to="/safety-tracker" class="inline-flex items-center gap-1 text-xs text-green-700 hover:text-green-900 mt-2 font-medium">
-            {{ t('dashboard.seeDetail') }} →
-          </RouterLink>
         </div>
-        <div class="text-center flex-shrink-0">
-          <div class="text-2xl font-bold text-green-700">{{ db.tracker.best_streak_days ?? '-' }}</div>
-          <div class="text-xs text-green-600">{{ t('dashboard.bestRecord') }}</div>
-        </div>
+
+        <!-- Jours sans accident -->
+        <RouterLink
+          to="/safety-tracker"
+          class="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-5 transition-shadow hover:shadow-card"
+        >
+          <div>
+            <div class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ t('dashboard.daysWithoutAccident') }}</div>
+            <div class="mt-1 text-4xl font-black tabular-nums text-emerald-600">{{ db.tracker?.days_without_accident ?? '—' }}</div>
+            <div class="mt-1 text-[11px] text-slate-500">
+              <template v-if="db.tracker?.best_streak_days">{{ t('dashboard.bestRecord') }} : {{ db.tracker.best_streak_days }}</template>
+            </div>
+          </div>
+          <ShieldCheckIcon class="h-12 w-12 text-emerald-200" />
+        </RouterLink>
       </div>
 
-      <!-- ── Section Personnels & Accès ─────────────────────────────────── -->
+      <!-- ══ ROW B — EXECUTIVE OVERVIEW (KPI) ═══════════════════════════════ -->
       <section>
-        <h2 class="section-label">{{ t('dashboard.personnelAccess') }}</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-          <RouterLink to="/employees" class="card hover:shadow-md transition-shadow cursor-pointer">
-            <div class="text-xs font-semibold text-gray-400 uppercase mb-2">{{ t('employees.totalActive') }}</div>
-            <div class="text-3xl font-black text-blue-600">{{ db.employees.total_actifs ?? 0 }}</div>
-            <div class="text-xs text-gray-500 mt-1">+{{ db.employees.nouvelles_entrees ?? 0 }} {{ t('dashboard.thisMonth') }}</div>
-          </RouterLink>
-          <div class="card">
-            <div class="text-xs font-semibold text-gray-400 uppercase mb-2">{{ t('employees.totalInactive') }}</div>
-            <div class="text-3xl font-black text-gray-400">{{ db.employees.total_inactifs ?? 0 }}</div>
-            <div class="text-xs text-gray-500 mt-1">YTD: {{ db.employees.entrees_ytd ?? 0 }}</div>
-          </div>
-          <RouterLink to="/contractors" class="card hover:shadow-md transition-shadow cursor-pointer">
-            <div class="text-xs font-semibold text-gray-400 uppercase mb-2">{{ t('nav.contractors') }}</div>
-            <div class="text-3xl font-black text-purple-600">{{ db.contractors.total_actifs ?? 0 }}</div>
-            <div class="flex items-center gap-1 mt-1">
-              <span class="text-xs text-red-500 font-semibold">{{ db.contractors.total_suspendus ?? 0 }} {{ t('contractors.suspended').toLowerCase() }}</span>
-            </div>
-          </RouterLink>
-          <div class="card">
-            <div class="text-xs font-semibold text-gray-400 uppercase mb-2">{{ t('contractors.expiresSoon') }}</div>
-            <div class="text-3xl font-black text-amber-500">{{ db.contractors.expires_30j ?? 0 }}</div>
-            <RouterLink to="/contractors" class="text-xs text-amber-600 hover:underline mt-1 block">{{ t('common.view') }} →</RouterLink>
-          </div>
-          <RouterLink to="/visitors" class="card hover:shadow-md transition-shadow cursor-pointer">
-            <div class="text-xs font-semibold text-gray-400 uppercase mb-2">{{ t('visitors.onSite') }}</div>
-            <div class="text-3xl font-black text-green-600">{{ db.visitors.presents ?? 0 }}</div>
-            <div class="text-xs text-gray-500 mt-1">{{ db.visitors.entrees_auj ?? 0 }} {{ t('dashboard.todayEntries') }}</div>
-          </RouterLink>
-          <div class="card">
-            <div class="text-xs font-semibold text-gray-400 uppercase mb-2">{{ t('visitors.thisMonth') }}</div>
-            <div class="text-3xl font-black text-teal-600">{{ db.visitors.entrees_mois ?? 0 }}</div>
-            <div class="text-xs text-gray-500 mt-1">{{ t('dashboard.thisMonth') }}</div>
-          </div>
+        <h2 class="section-label">{{ t('dashboard.executiveOverview') }}</h2>
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 xl:grid-cols-8">
+          <StatKpi :label="t('dashboard.totalIncidents')" :value="db.safety.incidents_ytd ?? 0" :context="t('common.year') + ' ' + selectedYear" tone="neutral" to="/incidents">
+            <template #icon><FireIcon class="h-4 w-4" /></template>
+          </StatKpi>
+          <StatKpi :label="t('dashboard.openIncidents')" :value="openIncidents" :tone="openIncidents > 0 ? 'warn' : 'neutral'" to="/incidents">
+            <template #icon><ExclamationTriangleIcon class="h-4 w-4" /></template>
+          </StatKpi>
+          <StatKpi :label="t('nav.nearMiss')" :value="db.safety.near_miss_ytd ?? 0" tone="neutral" to="/near-miss">
+            <template #icon><EyeIcon class="h-4 w-4" /></template>
+          </StatKpi>
+          <StatKpi :label="t('nav.environment')" :value="db.environment.rapports_ytd ?? 0" tone="neutral" to="/environment">
+            <template #icon><BeakerIcon class="h-4 w-4" /></template>
+          </StatKpi>
+          <StatKpi :label="t('nav.breaches')" :value="db.safety.infractions_ytd ?? 0" tone="neutral" to="/breaches">
+            <template #icon><ShieldExclamationIcon class="h-4 w-4" /></template>
+          </StatKpi>
+          <StatKpi label="LTI" :value="db.safety.lti_ytd ?? 0" :context="t('incidents.tf') + ' ' + (db.safety.taux_frequence ?? 0)" :tone="(db.safety.lti_ytd ?? 0) > 0 ? 'critical' : 'safe'">
+            <template #icon><BoltIcon class="h-4 w-4" /></template>
+          </StatKpi>
+          <StatKpi label="MTC" :value="db.typeDist?.MTC ?? 0" tone="neutral">
+            <template #icon><PlusCircleIcon class="h-4 w-4" /></template>
+          </StatKpi>
+          <StatKpi :label="t('dashboard.firstAid')" :value="db.typeDist?.FAC ?? 0" tone="neutral">
+            <template #icon><PlusCircleIcon class="h-4 w-4" /></template>
+          </StatKpi>
         </div>
       </section>
 
-      <!-- ── Charts ──────────────────────────────────────────────────────── -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="card">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="font-semibold text-gray-900 text-sm">{{ t('nav.incidents') }} — {{ selectedYear }}</h3>
-            <select v-model="selectedYear" @change="db.refreshTimeline(selectedYear)" class="text-xs border border-gray-200 rounded-lg px-2 py-1 focus:outline-none">
-              <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
-            </select>
+      <!-- ══ ROW C — TREND + DISTRIBUTION ═══════════════════════════════════ -->
+      <div class="grid gap-4 lg:grid-cols-3">
+        <div class="rounded-xl border border-slate-200 bg-white p-5 lg:col-span-2">
+          <div class="mb-4 flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-slate-800">{{ t('dashboard.trendTitle') }}</h3>
+            <span class="text-xs text-slate-400">{{ selectedYear }}</span>
           </div>
           <IncidentsChart :data="db.timelineData" />
         </div>
-        <div class="card">
-          <h3 class="font-semibold text-gray-900 mb-4 text-sm">🔥 {{ t('dashboard.topRiskAreas') }}</h3>
-          <TopZonesChart :zones="db.topZones" />
-        </div>
-        <div class="card">
-          <h3 class="font-semibold text-gray-900 mb-4 text-sm">{{ t('dashboard.contractTypes') }}</h3>
-          <ContractTypeChart
-            :by-contract="db.empBreakdown.by_contract ?? {}"
-            :by-gender="db.empBreakdown.by_gender ?? {}"
-          />
+        <div class="rounded-xl border border-slate-200 bg-white p-5">
+          <h3 class="mb-4 text-sm font-semibold text-slate-800">{{ t('dashboard.eventDistribution') }}</h3>
+          <MetricBars :rows="distributionRows" :empty-text="t('common.noData')" />
         </div>
       </div>
 
-      <!-- ── Section Opérations + Activité récente ────────────────────── -->
-      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-
-        <!-- Opérations KPIs -->
-        <div class="xl:col-span-2">
-          <h2 class="section-label">{{ t('nav.sectionOps') }}</h2>
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div class="card">
-              <div class="text-xs font-semibold text-gray-500 uppercase mb-3">{{ t('nav.environment') }}</div>
-              <div class="space-y-2">
-                <div class="flex justify-between text-sm"><span class="text-gray-600">YTD</span><strong>{{ db.environment.rapports_ytd ?? 0 }}</strong></div>
-                <div class="flex justify-between text-sm"><span class="text-gray-600">{{ t('status.open') }}</span><strong class="text-red-600">{{ db.environment.rapports_ouverts ?? 0 }}</strong></div>
-                <RouterLink to="/environment" class="text-xs text-brand-600 hover:underline">{{ t('common.view') }} →</RouterLink>
-              </div>
-            </div>
-            <div class="card">
-              <div class="text-xs font-semibold text-gray-500 uppercase mb-3">{{ t('nav.breaches') }}</div>
-              <div class="space-y-2">
-                <div class="flex justify-between text-sm"><span class="text-gray-600">{{ t('dashboard.thisMonth') }}</span><strong>{{ db.safety.infractions_mois ?? 0 }}</strong></div>
-                <div class="flex justify-between text-sm"><span class="text-gray-600">YTD</span><strong class="text-amber-600">{{ db.safety.infractions_ytd ?? 0 }}</strong></div>
-                <RouterLink to="/breaches" class="text-xs text-brand-600 hover:underline">{{ t('common.view') }} →</RouterLink>
-              </div>
-            </div>
+      <!-- ══ ROW D — ACTION REQUIRED + SEVERITY + PERFORMANCE ═══════════════ -->
+      <div class="grid gap-4 lg:grid-cols-3">
+        <!-- Action required -->
+        <div class="rounded-xl border border-slate-200 bg-white p-5">
+          <h3 class="mb-4 flex items-center gap-2 text-sm font-semibold text-slate-800">
+            <ExclamationTriangleIcon class="h-4 w-4 text-amber-500" />{{ t('dashboard.actionRequired') }}
+          </h3>
+          <div v-if="!actionItems.length" class="flex flex-col items-center justify-center py-8 text-center">
+            <CheckCircleIcon class="mb-2 h-8 w-8 text-emerald-400" />
+            <p class="text-xs text-slate-500">{{ t('dashboard.allClear') }}</p>
           </div>
+          <ul v-else class="space-y-2">
+            <RouterLink
+              v-for="a in actionItems" :key="a.key" :to="a.link"
+              class="flex items-center gap-3 rounded-lg border border-slate-100 px-3 py-2 hover:bg-slate-50"
+            >
+              <span :class="['flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-xs font-bold tabular-nums', a.chip]">{{ a.count }}</span>
+              <span class="flex-1 text-xs text-slate-600">{{ a.label }}</span>
+              <ChevronRightIcon class="h-4 w-4 text-slate-300" />
+            </RouterLink>
+          </ul>
         </div>
 
-        <!-- Activité récente -->
-        <div class="card flex flex-col">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="font-semibold text-gray-900 text-sm">{{ t('dashboard.recentActivity') }}</h3>
-            <button @click="loadActivity" class="text-xs text-gray-400 hover:text-gray-600">
-              <ArrowPathIcon class="w-4 h-4" />
-            </button>
-          </div>
+        <!-- Severity / risk -->
+        <div class="rounded-xl border border-slate-200 bg-white p-5">
+          <h3 class="mb-4 text-sm font-semibold text-slate-800">{{ t('dashboard.severityRisk') }}</h3>
+          <MetricBars :rows="severityRows" :empty-text="t('common.noData')" />
+        </div>
 
-          <div v-if="activityLoading" class="flex-1 flex items-center justify-center py-8">
-            <div class="w-5 h-5 border-2 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
-          </div>
+        <!-- HSSE performance -->
+        <div class="rounded-xl border border-slate-200 bg-white p-5">
+          <h3 class="mb-4 text-sm font-semibold text-slate-800">{{ t('dashboard.hssePerformance') }}</h3>
+          <dl class="grid grid-cols-2 gap-x-4 gap-y-4">
+            <div v-for="p in performanceItems" :key="p.label">
+              <dt class="text-[11px] font-medium uppercase tracking-wide text-slate-400">{{ p.label }}</dt>
+              <dd class="mt-0.5 text-lg font-bold tabular-nums text-slate-900">{{ p.value }}</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
 
-          <div v-else-if="!activities.length" class="flex-1 flex flex-col items-center justify-center py-8 text-gray-300">
-            <ClockIcon class="w-8 h-8 mb-2" />
+      <!-- ══ ROW E — RECENT ACTIVITY + ZONES/PERSONS ════════════════════════ -->
+      <div class="grid gap-4 lg:grid-cols-3">
+        <!-- Recent activity -->
+        <div class="flex flex-col rounded-xl border border-slate-200 bg-white p-5 lg:col-span-2">
+          <h3 class="mb-4 text-sm font-semibold text-slate-800">{{ t('dashboard.recentActivity') }}</h3>
+          <div v-if="!db.activities.length" class="flex flex-1 flex-col items-center justify-center py-10 text-slate-300">
+            <ClockIcon class="mb-2 h-8 w-8" />
             <p class="text-xs">{{ t('dashboard.noRecentActivity') }}</p>
           </div>
-
-          <div v-else class="space-y-3 flex-1 overflow-y-auto">
+          <ul v-else class="divide-y divide-slate-100">
             <RouterLink
-              v-for="act in activities"
-              :key="`${act.type}-${act.id}`"
-              :to="act.link"
-              class="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group"
+              v-for="act in db.activities" :key="`${act.type}-${act.id}`" :to="act.link"
+              class="group flex items-center gap-3 py-2.5 hover:bg-slate-50 -mx-2 px-2 rounded-lg"
             >
-              <!-- Icône -->
-              <div :class="['w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5', activityColor(act.type)]">
-                <ExclamationTriangleIcon v-if="act.type === 'incident'" class="w-3.5 h-3.5" />
-                <EyeIcon v-else-if="act.type === 'near_miss'" class="w-3.5 h-3.5" />
-                <ShieldExclamationIcon v-else-if="act.type === 'breach'" class="w-3.5 h-3.5" />
-                <UserIcon v-else class="w-3.5 h-3.5" />
+              <span :class="['flex h-8 w-8 shrink-0 items-center justify-center rounded-lg', activityChip(act.type)]">
+                <FireIcon v-if="act.type === 'incident'" class="h-4 w-4" />
+                <EyeIcon v-else-if="act.type === 'near_miss'" class="h-4 w-4" />
+                <ShieldExclamationIcon v-else-if="act.type === 'breach'" class="h-4 w-4" />
+                <UserIcon v-else class="h-4 w-4" />
+              </span>
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-xs font-medium text-slate-800 group-hover:text-slate-900">{{ act.title }}</p>
+                <p class="truncate text-[11px] text-slate-400">{{ act.subtitle }}</p>
               </div>
-
-              <!-- Contenu -->
-              <div class="flex-1 min-w-0">
-                <p class="text-xs font-medium text-gray-900 truncate group-hover:text-brand-600">{{ act.title }}</p>
-                <p class="text-xs text-gray-400 truncate">{{ act.subtitle }}</p>
-                <p class="text-[10px] text-gray-300 mt-0.5">{{ timeAgoFromStr(act.created_at) }}</p>
+              <div class="flex shrink-0 flex-col items-end gap-1">
+                <span v-if="act.severity" :class="`badge-${act.severity} !py-0 !text-[10px]`">{{ t(`severity.${act.severity}`) }}</span>
+                <span class="text-[10px] text-slate-300">{{ relTimeStr(act.created_at) }}</span>
               </div>
-
-              <!-- Severity dot -->
-              <div v-if="act.severity" :class="['w-2 h-2 rounded-full flex-shrink-0 mt-2', severityDot(act.severity)]" />
             </RouterLink>
+          </ul>
+        </div>
+
+        <!-- Zones + Persons -->
+        <div class="space-y-4">
+          <div class="rounded-xl border border-slate-200 bg-white p-5">
+            <h3 class="mb-3 text-sm font-semibold text-slate-800">{{ t('dashboard.topRiskAreas') }}</h3>
+            <TopZonesChart :zones="db.topZones" />
+          </div>
+          <div class="rounded-xl border border-slate-200 bg-white p-5">
+            <h3 class="mb-3 text-sm font-semibold text-slate-800">{{ t('dashboard.topPersonsInvolved') }}</h3>
+            <div v-if="!db.topPersons.length" class="py-4 text-center text-sm text-slate-400">{{ t('common.noData') }}</div>
+            <ul v-else class="divide-y divide-slate-100">
+              <li v-for="(p, i) in db.topPersons" :key="p.id" class="flex items-center gap-3 py-2">
+                <span class="w-4 text-xs font-semibold tabular-nums text-slate-400">{{ i + 1 }}</span>
+                <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600">
+                  {{ (p.name || '?').charAt(0) }}
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div class="truncate text-xs font-medium text-slate-800">{{ p.name }}</div>
+                  <div class="text-[11px] text-slate-400">{{ p.matricule }}</div>
+                </div>
+                <span class="shrink-0 text-xs font-semibold tabular-nums text-slate-600">{{ p.count }} {{ t('dashboard.eventsShort') }}</span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -211,76 +246,123 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDashboardStore } from '@/stores/dashboard'
-import { dashboardApi } from '@/api'
-import KpiCard from '@/components/ui/KpiCard.vue'
-import SkeletonCard from '@/components/ui/SkeletonCard.vue'
+import StatKpi from '@/components/dashboard/StatKpi.vue'
+import MetricBars from '@/components/dashboard/MetricBars.vue'
 import IncidentsChart from '@/components/charts/IncidentsChart.vue'
 import TopZonesChart from '@/components/charts/TopZonesChart.vue'
-import ContractTypeChart from '@/components/charts/ContractTypeChart.vue'
 import {
-  ArrowPathIcon, ClockIcon,
-  ExclamationTriangleIcon, EyeIcon, ShieldExclamationIcon, UserIcon,
+  ArrowPathIcon, ClockIcon, ExclamationTriangleIcon, EyeIcon, ShieldExclamationIcon,
+  ShieldCheckIcon, CheckCircleIcon, ChevronRightIcon, UserIcon, FireIcon, BeakerIcon,
+  BoltIcon, PlusCircleIcon, CalendarDaysIcon,
 } from '@heroicons/vue/24/outline'
 
-const { t } = useI18n()
-const db    = useDashboardStore()
+const { t, locale } = useI18n()
+const db = useDashboardStore()
 
 const currentYear  = new Date().getFullYear()
 const selectedYear = ref(currentYear)
-const years        = Array.from({ length: 5 }, (_, i) => currentYear - i)
 
-const activities      = ref<any[]>([])
-const activityLoading = ref(false)
+// Date du jour complète, dans la langue active (ex. « lundi 31 août 2026 »).
+const todayLabel = computed(() =>
+  new Date().toLocaleDateString(locale.value === 'fr' ? 'fr-FR' : 'en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+  })
+)
 
-function timeAgo(date: Date): string {
-  const secs = Math.floor((Date.now() - date.getTime()) / 1000)
-  if (secs < 60)  return `${secs}s`
-  if (secs < 3600) return `${Math.floor(secs / 60)}min`
-  return `${Math.floor(secs / 3600)}h`
-}
+// ── Signaux réels dérivés ────────────────────────────────────────────────────
+const openIncidents  = computed(() => db.safety.incidents_ouverts ?? 0)
+const criticalEvents = computed(() => db.severityDist?.critical ?? 0)
+const openNearMiss   = computed(() => db.safety.near_miss_ouverts ?? 0)
+const openEnv        = computed(() => db.environment.rapports_ouverts ?? 0)
+const openBreaches   = computed(() => db.safety.infractions_ouverts ?? 0)
+const inspectionsDue = computed(() => db.equipment.inspections_dues ?? 0)
 
-function timeAgoFromStr(dt: string): string {
-  if (!dt) return ''
-  const secs = Math.floor((Date.now() - new Date(dt).getTime()) / 1000)
-  if (secs < 60)  return `Il y a ${secs}s`
-  if (secs < 3600) return `Il y a ${Math.floor(secs / 60)}min`
-  if (secs < 86400) return `Il y a ${Math.floor(secs / 3600)}h`
-  return `Il y a ${Math.floor(secs / 86400)}j`
-}
+/**
+ * Statut sécurité calculé UNIQUEMENT à partir de données réelles :
+ *  - CRITIQUE : au moins un incident ouvert ET au moins un événement critique (année)
+ *  - ATTENTION : au moins un élément ouvert (incident / near miss / env / manquement)
+ *  - NORMAL : rien d'ouvert
+ */
+const status = computed<'normal' | 'attention' | 'critical'>(() => {
+  if (openIncidents.value > 0 && criticalEvents.value > 0) return 'critical'
+  if (openIncidents.value + openNearMiss.value + openEnv.value + openBreaches.value > 0) return 'attention'
+  return 'normal'
+})
 
-function activityColor(type: string): string {
+const statusUi = computed(() => ({
+  normal:    { label: t('dashboard.statusNormal'),    hint: t('dashboard.statusNormalHint'),    text: 'text-emerald-600', bar: 'bg-emerald-500', border: 'border-emerald-200', icon: ShieldCheckIcon },
+  attention: { label: t('dashboard.statusAttention'), hint: t('dashboard.statusAttentionHint'), text: 'text-amber-600',   bar: 'bg-amber-500',   border: 'border-amber-200',   icon: ExclamationTriangleIcon },
+  critical:  { label: t('dashboard.statusCritical'),  hint: t('dashboard.statusCriticalHint'),  text: 'text-red-600',     bar: 'bg-red-500',     border: 'border-red-200',     icon: ExclamationTriangleIcon },
+}[status.value]))
+
+// ── Répartition par type d'événement (totaux YTD réels) ─────────────────────
+const distributionRows = computed(() => [
+  { label: t('nav.incidents'),   value: db.safety.incidents_ytd ?? 0,     color: 'bg-red-500' },
+  { label: t('nav.nearMiss'),    value: db.safety.near_miss_ytd ?? 0,     color: 'bg-amber-400' },
+  { label: t('nav.environment'), value: db.environment.rapports_ytd ?? 0, color: 'bg-sky-500' },
+  { label: t('nav.breaches'),    value: db.safety.infractions_ytd ?? 0,   color: 'bg-slate-400' },
+])
+
+// ── Gravité (répartition réelle des incidents de l'année) ───────────────────
+const severityRows = computed(() => [
+  { label: t('severity.critical'), value: db.severityDist?.critical ?? 0, color: 'bg-red-500' },
+  { label: t('severity.high'),     value: db.severityDist?.high ?? 0,     color: 'bg-orange-500' },
+  { label: t('severity.medium'),   value: db.severityDist?.medium ?? 0,   color: 'bg-amber-400' },
+  { label: t('severity.low'),      value: db.severityDist?.low ?? 0,      color: 'bg-emerald-500' },
+])
+
+// ── Actions requises — uniquement des compteurs réels > 0 ───────────────────
+const actionItems = computed(() => {
+  const items: { key: string; count: number; label: string; link: string; chip: string }[] = []
+  if (criticalEvents.value > 0) items.push({ key: 'critical', count: criticalEvents.value, label: t('dashboard.actionCritical'), link: '/incidents', chip: 'bg-red-100 text-red-700' })
+  if (openIncidents.value > 0)  items.push({ key: 'inc',      count: openIncidents.value,  label: t('dashboard.actionOpenIncidents'), link: '/incidents', chip: 'bg-amber-100 text-amber-700' })
+  if (openBreaches.value > 0)   items.push({ key: 'breach',   count: openBreaches.value,   label: t('dashboard.actionOpenBreaches'), link: '/breaches', chip: 'bg-amber-100 text-amber-700' })
+  if (openNearMiss.value > 0)   items.push({ key: 'nm',       count: openNearMiss.value,   label: t('dashboard.actionOpenNearMiss'), link: '/near-miss', chip: 'bg-slate-100 text-slate-600' })
+  if (openEnv.value > 0)        items.push({ key: 'env',      count: openEnv.value,        label: t('dashboard.actionOpenEnvironment'), link: '/environment', chip: 'bg-slate-100 text-slate-600' })
+  if (inspectionsDue.value > 0) items.push({ key: 'insp',     count: inspectionsDue.value, label: t('dashboard.actionInspectionsDue'), link: '/equipment', chip: 'bg-amber-100 text-amber-700' })
+  return items
+})
+
+// ── Performance HSSE (indicateurs réels uniquement) ─────────────────────────
+const performanceItems = computed(() => [
+  { label: t('incidents.tf'),           value: db.safety.taux_frequence ?? db.tracker?.kpis?.taux_frequence ?? 0 },
+  { label: t('dashboard.gravityRate'),  value: db.tracker?.kpis?.taux_gravite ?? 0 },
+  { label: 'LTI ' + t('dashboard.ytdShort'), value: db.safety.lti_ytd ?? 0 },
+  { label: t('nav.nearMiss'),           value: db.safety.near_miss_ytd ?? 0 },
+  { label: t('nav.environment'),        value: db.environment.rapports_ytd ?? 0 },
+  { label: t('nav.breaches'),           value: db.safety.infractions_ytd ?? 0 },
+])
+
+// ── Utilitaires ──────────────────────────────────────────────────────────────
+function activityChip(type: string): string {
   return {
-    incident:  'bg-red-100 text-red-600',
-    near_miss: 'bg-orange-100 text-orange-600',
-    breach:    'bg-amber-100 text-amber-600',
-    visitor:   'bg-blue-100 text-blue-600',
-  }[type] ?? 'bg-gray-100 text-gray-500'
+    incident:  'bg-red-50 text-red-600',
+    near_miss: 'bg-amber-50 text-amber-600',
+    breach:    'bg-slate-100 text-slate-600',
+    visitor:   'bg-sky-50 text-sky-600',
+  }[type] ?? 'bg-slate-100 text-slate-500'
 }
 
-function severityDot(sev: string): string {
-  return { critical: 'bg-red-500', high: 'bg-orange-500', medium: 'bg-amber-400', low: 'bg-green-400' }[sev] ?? 'bg-gray-300'
+const rtf = computed(() => new Intl.RelativeTimeFormat(locale.value === 'fr' ? 'fr' : 'en', { numeric: 'auto' }))
+function relFromSecs(secs: number): string {
+  if (secs < 60)    return rtf.value.format(-secs, 'second')
+  if (secs < 3600)  return rtf.value.format(-Math.floor(secs / 60), 'minute')
+  if (secs < 86400) return rtf.value.format(-Math.floor(secs / 3600), 'hour')
+  return rtf.value.format(-Math.floor(secs / 86400), 'day')
 }
-
-async function loadActivity() {
-  activityLoading.value = true
-  try {
-    const { data } = await dashboardApi.recentActivity()
-    activities.value = data.activities ?? []
-  } catch { activities.value = [] }
-  finally { activityLoading.value = false }
+function relTime(date: Date): string { return relFromSecs(Math.floor((Date.now() - date.getTime()) / 1000)) }
+function relTimeStr(dt: string): string {
+  if (!dt) return ''
+  return relFromSecs(Math.floor((Date.now() - new Date(dt).getTime()) / 1000))
 }
 
 onMounted(() => {
   db.loadFromCache()
-  db.refresh()
+  db.refresh(selectedYear.value)
   db.startAutoRefresh()
-  loadActivity()
 })
-
-onUnmounted(() => {
-  db.stopAutoRefresh()
-})
+onUnmounted(() => { db.stopAutoRefresh() })
 </script>

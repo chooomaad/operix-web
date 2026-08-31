@@ -67,6 +67,7 @@ export const dashboardApi = {
   incidentStats:     (year?: number) => api.get('/dashboard/incident-stats', { params: { year } }),
   recentActivity:    () => api.get('/dashboard/recent-activity'),
   topZones:          () => api.get('/dashboard/top-zones'),
+  topPersons:        () => api.get('/dashboard/top-persons'),
 }
 
 // ── Safety Tracker ────────────────────────────────────────────────────────────
@@ -85,11 +86,11 @@ export const employeesApi = {
   history: (id: number) => api.get(`/employees/${id}/history`),
   // Nested
   formations:    (empId: number, params?: Record<string, unknown>) => api.get(`/employees/${empId}/formations`, { params }),
-  addFormation:  (empId: number, data: Record<string, unknown>) => api.post(`/employees/${empId}/formations`, data),
+  addFormation:  (empId: number, data: FormData | Record<string, unknown>) => api.post(`/employees/${empId}/formations`, data),
   certifications:(empId: number) => api.get(`/employees/${empId}/certifications`),
-  addCert:       (empId: number, data: Record<string, unknown>) => api.post(`/employees/${empId}/certifications`, data),
+  addCert:       (empId: number, data: FormData | Record<string, unknown>) => api.post(`/employees/${empId}/certifications`, data),
   medicalVisits: (empId: number) => api.get(`/employees/${empId}/medical-visits`),
-  addMedical:    (empId: number, data: Record<string, unknown>) => api.post(`/employees/${empId}/medical-visits`, data),
+  addMedical:    (empId: number, data: FormData | Record<string, unknown>) => api.post(`/employees/${empId}/medical-visits`, data),
 }
 
 // ── Departments ───────────────────────────────────────────────────────────────

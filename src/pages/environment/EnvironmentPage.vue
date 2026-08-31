@@ -39,6 +39,8 @@
       <button @click="resetFilters" class="btn-secondary text-xs">{{ t('common.reset') }}</button>
     </div>
 
+    <LoadErrorBanner v-if="loadError" :loading="loading" @retry="load" />
+
     <DataTable :columns="columns" :rows="records" :loading="loading" :meta="meta" :empty-text="t('environment.empty')" @page="loadPage">
       <template #cell-reference="{ value }"><span class="font-mono text-xs font-medium">{{ value }}</span></template>
       <template #cell-status="{ value }"><span :class="`badge-${value}`">{{ t(`status.${value}`) }}</span></template>
@@ -96,6 +98,7 @@ import { environmentApi, exportsApi, reportsApi } from '@/api'
 import { useAuthStore } from '@/stores/auth'
 import { useDownload } from '@/composables/useDownload'
 import DataTable from '@/components/ui/DataTable.vue'
+import LoadErrorBanner from '@/components/ui/LoadErrorBanner.vue'
 import EnvironmentFormModal from './EnvironmentFormModal.vue'
 import { PlusIcon, ArrowDownTrayIcon, DocumentArrowDownIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 
@@ -108,6 +111,7 @@ const records  = ref<any[]>([])
 const stats    = ref<any>({})
 const loading  = ref(false)
 const meta     = ref<any>(null)
+const loadError = ref(false)
 const showForm = ref(false)
 const viewRow  = ref<any>(null)
 const closeCA  = ref('')
@@ -127,10 +131,15 @@ function debouncedLoad() { clearTimeout(timer); timer = setTimeout(load, 300) }
 
 async function load() {
   loading.value = true
+  loadError.value = false
   try {
     const params = Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== ''))
     const [list, st] = await Promise.all([environmentApi.list(params), environmentApi.stats()])
     records.value = list.data.data; meta.value = list.data.meta; stats.value = st.data
+  } catch (e) {
+    // Un echec de chargement ne doit jamais faire tomber toute la page :
+    // on affiche une banniere « Reessayer » plutot que l'ErrorBoundary global.
+    loadError.value = true
   } finally { loading.value = false }
 }
 

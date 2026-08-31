@@ -20,6 +20,8 @@
       <button @click="resetFilters" class="btn-secondary text-xs">{{ t('common.reset') }}</button>
     </div>
 
+    <LoadErrorBanner v-if="loadError" :loading="loading" @retry="load" />
+
     <DataTable :columns="columns" :rows="records" :loading="loading" :meta="meta" :empty-text="t('audit.empty')" @page="loadPage">
       <template #cell-action="{ value }">
         <span :class="actionClass(value)" class="badge text-xs">{{ actionLabel(value) }}</span>
@@ -68,6 +70,7 @@ import { useI18n } from 'vue-i18n'
 import { getLocale } from '@/i18n'
 import { auditApi } from '@/api'
 import DataTable from '@/components/ui/DataTable.vue'
+import LoadErrorBanner from '@/components/ui/LoadErrorBanner.vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 
 const { t, te } = useI18n()
@@ -75,6 +78,7 @@ const { t, te } = useI18n()
 const records  = ref<any[]>([])
 const loading  = ref(false)
 const meta     = ref<any>(null)
+const loadError = ref(false)
 const viewRow  = ref<any>(null)
 const filters  = reactive({ search: '', verb: '', from: '', to: '', page: 1 })
 
@@ -136,10 +140,15 @@ function debouncedLoad() { clearTimeout(timer); timer = setTimeout(load, 300) }
 
 async function load() {
   loading.value = true
+  loadError.value = false
   try {
     const params = Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== ''))
     const { data } = await auditApi.list(params)
     records.value = data.data; meta.value = data.meta
+  } catch (e) {
+    // Un echec de chargement ne doit jamais faire tomber toute la page :
+    // on affiche une banniere « Reessayer » plutot que l'ErrorBoundary global.
+    loadError.value = true
   } finally { loading.value = false }
 }
 

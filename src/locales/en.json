@@ -26,6 +26,8 @@
     "from": "From",
     "to": "To",
     "date": "Date",
+    "loadError": "Could not load data. Check your connection.",
+    "retry": "Retry",
     "noData": "No data",
     "confirm": "Confirm",
     "select": "— Select —",
@@ -64,7 +66,7 @@
     "sectionSafety": "Safety",
     "incidents": "Incidents",
     "nearMiss": "Near Miss",
-    "breaches": "Breaches",
+    "breaches": "Breach of Process",
     "environment": "Environment",
     "sectionOps": "Operations",
     "contractors": "Contractors",
@@ -118,6 +120,8 @@
     "recentActivity": "Recent activity",
     "noRecentActivity": "No recent activity",
     "topRiskAreas": "Top risk areas",
+    "topPersonsInvolved": "Top persons involved",
+    "eventsShort": "events",
     "safetyTrackerLabel": "Safety Tracker",
     "incidentsYtd": "Incidents YTD",
     "ltiYtd": "LTI YTD",
@@ -129,7 +133,36 @@
     "visitorsToday": "Visitors today",
     "openNearMiss": "Open near miss",
     "openBreaches": "Open breaches",
-    "openEnvironment": "Open env. reports"
+    "openEnvironment": "Open env. reports",
+    "pageTitle": "HSSE Dashboard",
+    "subtitle": "Overview of health, safety and environment performance",
+    "period": "Period",
+    "refresh": "Refresh",
+    "safetyStatus": "Safety status",
+    "statusNormal": "NORMAL",
+    "statusAttention": "ATTENTION",
+    "statusCritical": "CRITICAL",
+    "statusNormalHint": "No open event requires immediate action.",
+    "statusAttentionHint": "Open events require follow-up.",
+    "statusCriticalHint": "Open critical event — immediate action required.",
+    "executiveOverview": "Executive safety overview",
+    "totalIncidents": "Total incidents",
+    "criticalEvents": "Critical events",
+    "firstAid": "First aid",
+    "trendTitle": "Incident & event trend",
+    "eventDistribution": "Event distribution",
+    "severityRisk": "Severity / Risk",
+    "actionRequired": "Action required",
+    "allClear": "Nothing requires your attention.",
+    "actionCritical": "critical event(s)",
+    "actionOpenIncidents": "open incident(s)",
+    "actionOpenBreaches": "open breach(es)",
+    "actionOpenNearMiss": "open near miss",
+    "actionOpenEnvironment": "open environmental report(s)",
+    "actionInspectionsDue": "equipment inspection(s) due",
+    "hssePerformance": "HSSE performance",
+    "gravityRate": "Severity rate",
+    "ytdShort": "YTD"
   },
   "incidents": {
     "title": "Incidents",
@@ -218,7 +251,7 @@
     }
   },
   "breaches": {
-    "title": "Breaches",
+    "title": "Breach of Process",
     "new": "New breach",
     "add": "New breach",
     "searchPlaceholder": "Search breaches...",
@@ -241,7 +274,8 @@
       "epi": "PPE",
       "consigne": "Safety instructions",
       "autre": "Other"
-    }
+    },
+    "subtitle": "Track procedural breaches per person."
   },
   "environment": {
     "title": "Environment",
@@ -334,9 +368,10 @@
     }
   },
   "profile": {
+    "attachment": "Attachment (image)",
     "incidents": "Incidents",
     "nearMiss": "Near Miss",
-    "breaches": "Breaches",
+    "breaches": "Breach of Process",
     "environment": "Environment",
     "formations": {
       "addTitle": "Add training",
@@ -356,7 +391,9 @@
         "end": "End",
         "status": "Status"
       },
-      "added": "Training added"
+      "added": "Training added",
+      "titrePlaceholder": "e.g. First-aid (SST)",
+      "organismPlaceholder": "Training organization"
     },
     "certifications": {
       "addTitle": "Add certification",
@@ -374,7 +411,9 @@
         "expiry": "Expiry",
         "status": "Status"
       },
-      "added": "Certification added"
+      "added": "Certification added",
+      "titrePlaceholder": "e.g. ATEX, Working at height…",
+      "organismPlaceholder": "Certifying body"
     },
     "medical": {
       "addTitle": "Add medical visit",
@@ -402,7 +441,8 @@
         "result": "Result",
         "nextVisit": "Next visit"
       },
-      "added": "Medical visit added"
+      "added": "Medical visit added",
+      "doctorPlaceholder": "Doctor's name"
     },
     "noIncidents": "No incidents recorded",
     "noNearMiss": "No near miss recorded",
@@ -415,10 +455,11 @@
     "kpi": {
       "incidents": "Incidents",
       "nearMiss": "Near Miss",
-      "breaches": "Breaches",
+      "breaches": "Breach of Process",
       "environment": "Environment",
       "formations": "Training",
-      "certifications": "Certifications"
+      "certifications": "Certifications",
+      "medical": "Medical Visits"
     },
     "info": {
       "email": "Email",
@@ -518,7 +559,7 @@
     "incidentsDesc": "Complete incidents report",
     "nearMiss": "Near Miss",
     "nearMissDesc": "Near miss & observations",
-    "breaches": "Breaches",
+    "breaches": "Breach of Process",
     "breachesDesc": "Breach of process",
     "environment": "Environment",
     "environmentDesc": "Environmental reports",
@@ -825,7 +866,7 @@
       "incident": "Incident",
       "near_miss": "Near miss",
       "environment": "Environment report",
-      "breach": "Breach",
+      "breach": "Breach of Process",
       "employee": "Employee",
       "user": "User account",
       "visitor": "Visitor",
@@ -835,7 +876,10 @@
       "settings": "Settings",
       "logo": "Logo",
       "export": "Export",
-      "permit": "Permit"
+      "permit": "Permit",
+      "training": "Training",
+      "certification": "Certification",
+      "medical_visit": "Medical Visit"
     },
     "action": {
       "login": "Login",
@@ -845,7 +889,7 @@
       "SafetyIncident": "Incident",
       "SafetyNearMiss": "Near miss",
       "EnvironmentReport": "Environment",
-      "Breach": "Breach",
+      "Breach": "Breach of Process",
       "Employee": "Employee",
       "User": "User",
       "Visitor": "Visitor",
@@ -853,7 +897,10 @@
       "Equipment": "Equipment",
       "Department": "Department",
       "Tenant": "Company",
-      "PermitToWork": "Permit"
+      "PermitToWork": "Permit",
+      "Formation": "Training",
+      "Certification": "Certification",
+      "MedicalVisit": "Medical Visit"
     }
   }
 }

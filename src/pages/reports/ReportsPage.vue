@@ -152,6 +152,7 @@ import { reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { reportsApi, exportsApi } from '@/api'
 import { useDownload } from '@/composables/useDownload'
+import { availableYears } from '@/utils/years'
 import {
   ChartBarIcon, ExclamationTriangleIcon, BellAlertIcon, ShieldExclamationIcon,
   GlobeAltIcon, UsersIcon, AcademicCapIcon,
@@ -164,7 +165,7 @@ const { downloadPdf, downloadExcel } = useDownload()
 const busy: Record<string, boolean> = reactive({})
 
 const currentYear = new Date().getFullYear()
-const years = Array.from({ length: 5 }, (_, i) => currentYear - i)
+const years = availableYears()
 
 const dashFilters = reactive({ year: currentYear })
 const incFilters  = reactive({ from: '', to: '' })

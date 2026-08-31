@@ -191,7 +191,13 @@
         { key:'date_debut', label: t('profile.formations.columns.start') },
         { key:'date_fin',   label: t('profile.formations.columns.end') },
         { key:'statut',     label: t('profile.formations.columns.status') },
-      ]" :rows="history.formations ?? []" :empty-text="t('profile.formations.noData')" />
+        { key:'image_url',  label: t('profile.attachment') },
+      ]" :rows="history.formations ?? []" :empty-text="t('profile.formations.noData')">
+        <template #cell-image_url="{ value }">
+          <a v-if="value" :href="value" target="_blank" rel="noopener"><img :src="value" class="w-10 h-10 object-cover rounded border border-gray-200" /></a>
+          <span v-else class="text-gray-300">—</span>
+        </template>
+      </DataTable>
     </div>
 
     <!-- ── Certifications ─────────────────────────────────────────────── -->
@@ -201,12 +207,17 @@
         { key:'organisme',      label: t('profile.certifications.columns.organism') },
         { key:'date_obtention', label: t('profile.certifications.columns.issued') },
         { key:'date_expiration',label: t('profile.certifications.columns.expiry') },
-        { key:'statut',         label: t('profile.certifications.columns.status') },
+        { key:'is_expired',     label: t('profile.certifications.columns.status') },
+        { key:'image_url',      label: t('profile.attachment') },
       ]" :rows="history.certifications ?? []" :empty-text="t('profile.certifications.noData')">
-        <template #cell-statut="{ value }">
-          <span :class="value === 'expired' ? 'badge-inactive' : 'badge-active'" class="text-xs">
-            {{ value === 'expired' ? t('profile.certifications.expired') : t('profile.certifications.valid') }}
+        <template #cell-is_expired="{ value }">
+          <span :class="value ? 'badge-inactive' : 'badge-active'" class="text-xs">
+            {{ value ? t('profile.certifications.expired') : t('profile.certifications.valid') }}
           </span>
+        </template>
+        <template #cell-image_url="{ value }">
+          <a v-if="value" :href="value" target="_blank" rel="noopener"><img :src="value" class="w-10 h-10 object-cover rounded border border-gray-200" /></a>
+          <span v-else class="text-gray-300">—</span>
         </template>
       </DataTable>
     </div>
@@ -219,7 +230,13 @@
         { key:'medecin',          label: t('profile.medical.columns.doctor') },
         { key:'resultat',         label: t('profile.medical.columns.result') },
         { key:'prochaine_visite', label: t('profile.medical.columns.nextVisit') },
-      ]" :rows="history.medical_visits ?? []" :empty-text="t('profile.medical.noData')" />
+        { key:'image_url',        label: t('profile.attachment') },
+      ]" :rows="history.medical_visits ?? []" :empty-text="t('profile.medical.noData')">
+        <template #cell-image_url="{ value }">
+          <a v-if="value" :href="value" target="_blank" rel="noopener"><img :src="value" class="w-10 h-10 object-cover rounded border border-gray-200" /></a>
+          <span v-else class="text-gray-300">—</span>
+        </template>
+      </DataTable>
     </div>
   </div>
 
@@ -259,11 +276,11 @@
       <form @submit.prevent="saveFormation" class="px-6 py-4 space-y-3">
         <div>
           <label class="label">{{ t('profile.formations.title') }} *</label>
-          <input v-model="formFormation.titre" class="input" required placeholder="Ex: Secourisme SST" />
+          <input v-model="formFormation.titre" class="input" required :placeholder="t('profile.formations.titrePlaceholder')" />
         </div>
         <div>
           <label class="label">{{ t('profile.formations.organism') }}</label>
-          <input v-model="formFormation.organisme" class="input" placeholder="Organisme de formation" />
+          <input v-model="formFormation.organisme" class="input" :placeholder="t('profile.formations.organismPlaceholder')" />
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div><label class="label">{{ t('profile.formations.startDate') }}</label><input v-model="formFormation.date_debut" type="date" class="input" /></div>
@@ -272,10 +289,14 @@
         <div>
           <label class="label">{{ t('profile.formations.status') }}</label>
           <select v-model="formFormation.statut" class="input">
-            <option value="completed">{{ t('profile.formations.completed') }}</option>
-            <option value="in_progress">{{ t('profile.formations.inProgress') }}</option>
-            <option value="planned">{{ t('profile.formations.planned') }}</option>
+            <option value="terminee">{{ t('profile.formations.completed') }}</option>
+            <option value="en_cours">{{ t('profile.formations.inProgress') }}</option>
+            <option value="planifiee">{{ t('profile.formations.planned') }}</option>
           </select>
+        </div>
+        <div>
+          <label class="label">{{ t('profile.attachment') }}</label>
+          <input type="file" accept="image/*" @change="formationImage = ($event.target as HTMLInputElement).files?.[0] ?? null" class="input text-sm" />
         </div>
         <div class="flex justify-end gap-3 pt-1">
           <button type="button" @click="showAddFormation = false" class="btn-secondary">{{ t('common.cancel') }}</button>
@@ -295,15 +316,19 @@
       <form @submit.prevent="saveCert" class="px-6 py-4 space-y-3">
         <div>
           <label class="label">{{ t('profile.certifications.title') }} *</label>
-          <input v-model="formCert.titre" class="input" required placeholder="Ex: ATEX, Travail en hauteur..." />
+          <input v-model="formCert.titre" class="input" required :placeholder="t('profile.certifications.titrePlaceholder')" />
         </div>
         <div>
           <label class="label">{{ t('profile.certifications.organism') }}</label>
-          <input v-model="formCert.organisme" class="input" placeholder="Organisme certificateur" />
+          <input v-model="formCert.organisme" class="input" :placeholder="t('profile.certifications.organismPlaceholder')" />
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div><label class="label">{{ t('profile.certifications.issueDate') }}</label><input v-model="formCert.date_obtention" type="date" class="input" /></div>
           <div><label class="label">{{ t('profile.certifications.expiryDate') }}</label><input v-model="formCert.date_expiration" type="date" class="input" /></div>
+        </div>
+        <div>
+          <label class="label">{{ t('profile.attachment') }}</label>
+          <input type="file" accept="image/*" @change="certImage = ($event.target as HTMLInputElement).files?.[0] ?? null" class="input text-sm" />
         </div>
         <div class="flex justify-end gap-3 pt-1">
           <button type="button" @click="showAddCert = false" class="btn-secondary">{{ t('common.cancel') }}</button>
@@ -329,25 +354,29 @@
               <option value="embauche">{{ t('profile.medical.types.embauche') }}</option>
               <option value="periodique">{{ t('profile.medical.types.periodique') }}</option>
               <option value="reprise">{{ t('profile.medical.types.reprise') }}</option>
-              <option value="autre">{{ t('profile.medical.types.autre') }}</option>
+              <option value="spontanee">{{ t('profile.medical.types.autre') }}</option>
             </select>
           </div>
         </div>
         <div>
           <label class="label">{{ t('profile.medical.doctor') }}</label>
-          <input v-model="formMedical.medecin" class="input" placeholder="Nom du médecin" />
+          <input v-model="formMedical.medecin" class="input" :placeholder="t('profile.medical.doctorPlaceholder')" />
         </div>
         <div>
           <label class="label">{{ t('profile.medical.result') }}</label>
           <select v-model="formMedical.resultat" class="input">
             <option value="apte">{{ t('profile.medical.results.apte') }}</option>
-            <option value="apte_restriction">{{ t('profile.medical.results.apte_restriction') }}</option>
+            <option value="apte_restrictions">{{ t('profile.medical.results.apte_restriction') }}</option>
             <option value="inapte">{{ t('profile.medical.results.inapte') }}</option>
           </select>
         </div>
         <div>
           <label class="label">{{ t('profile.medical.nextVisit') }}</label>
           <input v-model="formMedical.prochaine_visite" type="date" class="input" />
+        </div>
+        <div>
+          <label class="label">{{ t('profile.attachment') }}</label>
+          <input type="file" accept="image/*" @change="medicalImage = ($event.target as HTMLInputElement).files?.[0] ?? null" class="input text-sm" />
         </div>
         <div class="flex justify-end gap-3 pt-1">
           <button type="button" @click="showAddMedical = false" class="btn-secondary">{{ t('common.cancel') }}</button>
@@ -414,18 +443,32 @@ const showAddCert      = ref(false)
 const showAddMedical   = ref(false)
 const subLoading       = ref(false)
 
-const formFormation = reactive({ titre: '', organisme: '', date_debut: '', date_fin: '', statut: 'completed' })
+const formFormation = reactive({ titre: '', organisme: '', date_debut: '', date_fin: '', statut: 'terminee' })
 const formCert      = reactive({ titre: '', organisme: '', date_obtention: '', date_expiration: '' })
 const formMedical   = reactive({ date: '', type: 'periodique', medecin: '', resultat: 'apte', prochaine_visite: '' })
+
+// Justificatifs image (optionnels) attachés à chaque enregistrement RH.
+const formationImage = ref<File | null>(null)
+const certImage      = ref<File | null>(null)
+const medicalImage   = ref<File | null>(null)
+
+// Construit un payload : FormData si une image est jointe (multipart), sinon l'objet brut.
+function buildPayload(fields: Record<string, any>, image: File | null): FormData | Record<string, any> {
+  if (!image) return { ...fields }
+  const fd = new FormData()
+  Object.entries(fields).forEach(([k, v]) => { if (v !== '' && v != null) fd.append(k, String(v)) })
+  fd.append('image', image)
+  return fd
+}
 
 const tabs = computed(() => [
   { key:'incidents',      label: t('profile.incidents'),        count: stats.value.incidents_count,     alert: true },
   { key:'near_miss',      label: t('profile.nearMiss'),         count: stats.value.near_miss_count,     alert: true },
   { key:'breaches',       label: t('profile.breaches'),         count: stats.value.breaches_count,      alert: true },
   { key:'environment',    label: t('profile.environment'),      count: stats.value.environment_count,   alert: true },
-  { key:'formations',     label: t('profile.formations'),       count: stats.value.formations_count,    alert: false },
-  { key:'certifications', label: t('profile.certifications'),   count: stats.value.certifications_count,alert: false },
-  { key:'medical',        label: t('profile.medical'),          count: history.value.medical_visits?.length ?? 0, alert: false },
+  { key:'formations',     label: t('profile.kpi.formations'),     count: stats.value.formations_count,    alert: false },
+  { key:'certifications', label: t('profile.kpi.certifications'),  count: stats.value.certifications_count,alert: false },
+  { key:'medical',        label: t('profile.kpi.medical'),        count: history.value.medical_visits?.length ?? 0, alert: false },
 ])
 
 function severityClass(s: string) {
@@ -452,7 +495,7 @@ function openAddModal() {
     near_miss:    () => { showAddNearMiss.value     = true },
     breaches:     () => { showAddBreach.value       = true },
     environment:  () => { showAddEnvironment.value  = true },
-    formations:   () => { Object.assign(formFormation, { titre:'', organisme:'', date_debut:'', date_fin:'', statut:'completed' }); showAddFormation.value = true },
+    formations:   () => { Object.assign(formFormation, { titre:'', organisme:'', date_debut:'', date_fin:'', statut:'terminee' }); showAddFormation.value = true },
     certifications:() => { Object.assign(formCert, { titre:'', organisme:'', date_obtention:'', date_expiration:'' }); showAddCert.value = true },
     medical:      () => { Object.assign(formMedical, { date:'', type:'periodique', medecin:'', resultat:'apte', prochaine_visite:'' }); showAddMedical.value = true },
   }
@@ -473,8 +516,9 @@ async function loadHistory() {
 async function saveFormation() {
   subLoading.value = true
   try {
-    await employeesApi.addFormation(Number(route.params.id), { ...formFormation })
+    await employeesApi.addFormation(Number(route.params.id), buildPayload(formFormation, formationImage.value))
     toast.add({ severity: 'success', summary: t('profile.formations.added'), life: 3000 })
+    formationImage.value = null
     showAddFormation.value = false
     await loadHistory()
   } catch (e: any) {
@@ -485,8 +529,9 @@ async function saveFormation() {
 async function saveCert() {
   subLoading.value = true
   try {
-    await employeesApi.addCert(Number(route.params.id), { ...formCert })
+    await employeesApi.addCert(Number(route.params.id), buildPayload(formCert, certImage.value))
     toast.add({ severity: 'success', summary: t('profile.certifications.added'), life: 3000 })
+    certImage.value = null
     showAddCert.value = false
     await loadHistory()
   } catch (e: any) {
@@ -497,8 +542,9 @@ async function saveCert() {
 async function saveMedical() {
   subLoading.value = true
   try {
-    await employeesApi.addMedical(Number(route.params.id), { ...formMedical })
+    await employeesApi.addMedical(Number(route.params.id), buildPayload(formMedical, medicalImage.value))
     toast.add({ severity: 'success', summary: t('profile.medical.added'), life: 3000 })
+    medicalImage.value = null
     showAddMedical.value = false
     await loadHistory()
   } catch (e: any) {
