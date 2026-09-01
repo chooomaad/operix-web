@@ -84,6 +84,9 @@ export const peopleApi = {
   search:  (q: string, type?: string, signal?: AbortSignal) =>
     api.get('/people/search', { params: { q, type, limit: 12 }, signal }),
   history: (type: string, id: number) => api.get(`/people/${type}/${id}/history`),
+  records:    (type: string, id: number, record: string) => api.get(`/people/${type}/${id}/${record}`),
+  addRecord:  (type: string, id: number, record: string, data: FormData | Record<string, unknown>) => api.post(`/people/${type}/${id}/${record}`, data),
+  delRecord:  (type: string, id: number, record: string, recordId: number) => api.delete(`/people/${type}/${id}/${record}/${recordId}`),
 }
 
 // ── Interns / Stagiaires ──────────────────────────────────────────────────────
