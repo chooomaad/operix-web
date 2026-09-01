@@ -9,7 +9,7 @@
       <!-- Logo organisation -->
       <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-white/10 flex items-center justify-center p-1">
         <img
-          :src="auth.orgLogo ?? '/storage/logos/logo-tcn.png'"
+          :src="auth.orgLogo ?? '/logos/logo-tcn.png'"
           class="w-full h-full object-contain"
           alt="Logo TCN"
           @error="(e) => { (e.target as HTMLImageElement).style.display='none'; (e.target as HTMLImageElement).nextElementSibling!.removeAttribute('hidden') }"

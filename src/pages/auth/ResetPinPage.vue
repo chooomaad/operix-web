@@ -73,7 +73,7 @@ import { useI18n } from 'vue-i18n'
 import { authApi } from '@/api'
 
 const { t }  = useI18n()
-const operixLogoUrl = '/storage/logos/logo-operix.png'
+const operixLogoUrl = '/logos/logo-operix.png'
 const route  = useRoute()
 const router = useRouter()
 

@@ -216,16 +216,15 @@
         <!-- CENTER: Logo + Name -->
         <div class="flex flex-col items-center justify-center flex-1 text-center py-8">
 
-          <!-- TCN Logo — grand -->
+          <!-- TCN Logo — grand : uploadé → TCN bundlé → « T » (jamais cassé) -->
           <div class="mb-8">
-            <div v-if="org.logo_url"
-              class="w-40 h-40 rounded-3xl bg-white flex items-center justify-center shadow-2xl shadow-black/40 mx-auto overflow-hidden p-3">
-              <img :src="org.logo_url" class="w-full h-full object-contain" alt="Logo TCN" />
-            </div>
-            <!-- Fallback si pas de logo -->
-            <div v-else
-              class="w-40 h-40 rounded-3xl bg-white/10 border-4 border-white/20 flex items-center justify-center shadow-2xl shadow-black/40 mx-auto">
-              <span class="text-white font-black text-6xl" style="color: #FFD700">T</span>
+            <div class="w-40 h-40 rounded-3xl bg-white flex items-center justify-center shadow-2xl shadow-black/40 mx-auto overflow-hidden p-3">
+              <img
+                :src="org.logo_url ?? tcnLogoUrl"
+                class="w-full h-full object-contain" alt="Logo TCN"
+                @error="(e) => { (e.target as HTMLImageElement).style.display='none'; (e.target as HTMLImageElement).nextElementSibling!.removeAttribute('hidden') }"
+              />
+              <span hidden class="font-black text-6xl" style="color:#0f2847">T</span>
             </div>
           </div>
 
@@ -336,7 +335,8 @@ setInterval(() => {
 }, 2000)
 
 const org = reactive({ name: 'Terminal à Conteneurs de Nouakchott', short_name: 'TCN', logo_url: null as string | null })
-const operixLogoUrl = '/storage/logos/logo-operix.png'
+const operixLogoUrl = '/logos/logo-operix.png'
+const tcnLogoUrl = '/logos/logo-tcn.png'
 
 onMounted(async () => {
   try {
