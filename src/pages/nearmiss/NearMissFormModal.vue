@@ -32,9 +32,9 @@
             <UserGroupIcon class="w-4 h-4 text-gray-400" />
             {{ t('nearMiss.personsInvolved') }}
           </label>
-          <EmployeePicker
-            v-model="form.employees"
-            :placeholder="t('nearMiss.searchEmployee')"
+          <PeoplePicker
+            v-model="form.involved_people"
+            :placeholder="t('people.searchPlaceholder')"
           />
         </div>
 
@@ -56,7 +56,7 @@ import { useToast } from 'primevue/usetoast'
 import { nearMissApi } from '@/api'
 import { useDashboardStore } from '@/stores/dashboard'
 import { XMarkIcon, UserGroupIcon } from '@heroicons/vue/24/outline'
-import EmployeePicker from '@/components/ui/EmployeePicker.vue'
+import PeoplePicker from '@/components/ui/PeoplePicker.vue'
 
 const props   = defineProps<{ preloadEmployee?: { id: number; nom: string; prenom: string; matricule: string } }>()
 const { t }   = useI18n()
@@ -68,13 +68,15 @@ const loading = ref(false)
 const form = reactive({
   date: '', time: '', location: '', severity: 'medium',
   description: '', potential_consequence: '', corrective_action: '',
-  corrective_action_due: '', employees: props.preloadEmployee ? [props.preloadEmployee.id] : [] as number[],
+  corrective_action_due: '', involved_people: props.preloadEmployee
+    ? [{ type: 'employee', id: props.preloadEmployee.id, full_name: `${props.preloadEmployee.prenom} ${props.preloadEmployee.nom}`, identifier: props.preloadEmployee.matricule }]
+    : [] as any[],
 })
 
 async function submit() {
   loading.value = true
   try {
-    await nearMissApi.create({ ...form })
+    await nearMissApi.create({ ...form, involved_people: form.involved_people.map((p: any) => ({ type: p.type, id: p.id })) })
     toast.add({ severity: 'success', summary: t('nearMiss.created'), life: 3000 })
     dbStore.refresh()
     emit('created')

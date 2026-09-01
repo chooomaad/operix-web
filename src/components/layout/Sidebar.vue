@@ -31,18 +31,17 @@
       <NavItem to="/" :icon="HomeIcon" :label="t('nav.dashboard')" exact />
       <NavItem to="/safety-tracker" :icon="ShieldCheckIcon" :label="t('nav.safetyTracker')" />
 
-      <SidebarSection :label="t('nav.sectionHR')" />
-      <NavItem to="/employees"    :icon="UsersIcon"      :label="t('nav.employees')" />
+      <SidebarSection :label="t('nav.sectionPeople')" />
+      <NavItem to="/employees"    :icon="UsersIcon"          :label="t('nav.employees')" />
+      <NavItem to="/contractors"  :icon="BuildingOfficeIcon" :label="t('nav.contractors')" />
+      <NavItem to="/visitors"     :icon="UserGroupIcon"      :label="t('nav.visitors')" />
+      <NavItem to="/interns"      :icon="AcademicCapIcon"    :label="t('nav.interns')" />
 
       <SidebarSection :label="t('nav.sectionSafety')" />
       <NavItem to="/incidents"    :icon="ExclamationTriangleIcon" :label="t('nav.incidents')" />
       <NavItem to="/near-miss"    :icon="EyeIcon"        :label="t('nav.nearMiss')" />
       <NavItem to="/breaches"     :icon="XCircleIcon"    :label="t('nav.breaches')" />
       <NavItem to="/environment"  :icon="GlobeAltIcon"   :label="t('nav.environment')" />
-
-      <SidebarSection :label="t('nav.sectionOps')" />
-      <NavItem to="/contractors"  :icon="BuildingOfficeIcon" :label="t('nav.contractors')" />
-      <NavItem to="/visitors"     :icon="UserGroupIcon"  :label="t('nav.visitors')" />
 
       <SidebarSection :label="t('nav.reports')" v-if="auth.isAdmin" />
       <NavItem to="/reports"      :icon="ChartBarIcon"   :label="t('nav.reports')"   v-if="auth.isAdmin" />
@@ -82,7 +81,7 @@ import {
   HomeIcon, ShieldCheckIcon, UsersIcon, ExclamationTriangleIcon,
   EyeIcon, XCircleIcon, GlobeAltIcon,
   BuildingOfficeIcon, UserGroupIcon, ChartBarIcon, ClockIcon,
-  UserCircleIcon, ArrowRightOnRectangleIcon, XMarkIcon,
+  UserCircleIcon, ArrowRightOnRectangleIcon, XMarkIcon, AcademicCapIcon,
 } from '@heroicons/vue/24/outline'
 
 defineProps<{ open: boolean }>()

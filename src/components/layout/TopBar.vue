@@ -67,6 +67,7 @@ const pageTitleMap = computed((): Record<string, string> => ({
   dashboard:       t('nav.dashboard'),
   'safety-tracker':t('nav.safetyTracker'),
   employees:       t('nav.employees'),
+  interns:         t('nav.interns'),
   'employee-detail': t('employees.profile'),
   incidents:       t('nav.incidents'),
   'incident-detail': t('nav.incidents'),

@@ -41,9 +41,9 @@
             <UserGroupIcon class="w-4 h-4 text-gray-400" />
             {{ t('breaches.personsInvolved') }}
           </label>
-          <EmployeePicker
-            v-model="form.employees"
-            :placeholder="t('breaches.searchEmployee')"
+          <PeoplePicker
+            v-model="form.involved_people"
+            :placeholder="t('people.searchPlaceholder')"
           />
         </div>
 
@@ -65,7 +65,7 @@ import { useToast } from 'primevue/usetoast'
 import { breachesApi } from '@/api'
 import { useDashboardStore } from '@/stores/dashboard'
 import { XMarkIcon, UserGroupIcon } from '@heroicons/vue/24/outline'
-import EmployeePicker from '@/components/ui/EmployeePicker.vue'
+import PeoplePicker from '@/components/ui/PeoplePicker.vue'
 
 const props   = defineProps<{ preloadEmployee?: { id: number; nom: string; prenom: string; matricule: string } }>()
 const { t }   = useI18n()
@@ -76,13 +76,15 @@ const dbStore = useDashboardStore()
 const loading = ref(false)
 const form = reactive({
   date: '', time: '', location: '', type: 'procedure', severity: 'medium',
-  description: '', corrective_action: '', employees: props.preloadEmployee ? [props.preloadEmployee.id] : [] as number[],
+  description: '', corrective_action: '', involved_people: props.preloadEmployee
+    ? [{ type: 'employee', id: props.preloadEmployee.id, full_name: `${props.preloadEmployee.prenom} ${props.preloadEmployee.nom}`, identifier: props.preloadEmployee.matricule }]
+    : [] as any[],
 })
 
 async function submit() {
   loading.value = true
   try {
-    await breachesApi.create({ ...form })
+    await breachesApi.create({ ...form, involved_people: form.involved_people.map((p: any) => ({ type: p.type, id: p.id })) })
     toast.add({ severity: 'success', summary: t('breaches.created'), life: 3000 })
     dbStore.refresh()
     emit('created')

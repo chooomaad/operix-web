@@ -80,7 +80,9 @@
     "departments": "Départements",
     "permits": "Permis de travail",
     "equipment": "Équipements",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "sectionPeople": "Personnes",
+    "interns": "Stagiaires"
   },
   "status": {
     "allStatuses": "Tous statuts",
@@ -901,6 +903,50 @@
       "Formation": "Formation",
       "Certification": "Certification",
       "MedicalVisit": "Visite médicale"
+    }
+  },
+  "people": {
+    "searchPlaceholder": "Rechercher par nom, matricule, référence ou entreprise…",
+    "involvedPersons": "Personnes impliquées",
+    "title": "Personnes",
+    "allPeople": "Toutes les personnes",
+    "types": {
+      "employee": "Employé",
+      "contractor": "Sous-traitant",
+      "visitor": "Visiteur",
+      "intern": "Stagiaire"
+    }
+  },
+  "interns": {
+    "title": "Stagiaires",
+    "subtitle": "Gérez les stagiaires du site",
+    "add": "Nouveau stagiaire",
+    "searchPlaceholder": "Rechercher un stagiaire…",
+    "empty": "Aucun stagiaire",
+    "added": "Stagiaire créé",
+    "updated": "Stagiaire modifié",
+    "deleted": "Stagiaire supprimé",
+    "confirmDelete": "Supprimer ce stagiaire ?",
+    "cols": {
+      "reference": "Référence",
+      "name": "Nom complet",
+      "school": "Établissement",
+      "status": "Statut"
+    },
+    "form": {
+      "lastName": "Nom",
+      "firstName": "Prénom",
+      "school": "Établissement",
+      "supervisor": "Encadrant",
+      "phone": "Téléphone",
+      "email": "Email",
+      "start": "Début",
+      "end": "Fin",
+      "status": "Statut"
+    },
+    "status": {
+      "active": "Actif",
+      "ended": "Terminé"
     }
   }
 }

@@ -80,7 +80,9 @@
     "departments": "Departments",
     "permits": "Work Permits",
     "equipment": "Equipment",
-    "logout": "Logout"
+    "logout": "Logout",
+    "sectionPeople": "People",
+    "interns": "Interns"
   },
   "status": {
     "allStatuses": "All statuses",
@@ -901,6 +903,50 @@
       "Formation": "Training",
       "Certification": "Certification",
       "MedicalVisit": "Medical Visit"
+    }
+  },
+  "people": {
+    "searchPlaceholder": "Search by name, ID, reference or company…",
+    "involvedPersons": "Involved persons",
+    "title": "People",
+    "allPeople": "All people",
+    "types": {
+      "employee": "Employee",
+      "contractor": "Contractor",
+      "visitor": "Visitor",
+      "intern": "Intern"
+    }
+  },
+  "interns": {
+    "title": "Interns",
+    "subtitle": "Manage site interns",
+    "add": "New intern",
+    "searchPlaceholder": "Search an intern…",
+    "empty": "No interns",
+    "added": "Intern created",
+    "updated": "Intern updated",
+    "deleted": "Intern deleted",
+    "confirmDelete": "Delete this intern?",
+    "cols": {
+      "reference": "Reference",
+      "name": "Full name",
+      "school": "School",
+      "status": "Status"
+    },
+    "form": {
+      "lastName": "Last name",
+      "firstName": "First name",
+      "school": "School",
+      "supervisor": "Supervisor",
+      "phone": "Phone",
+      "email": "Email",
+      "start": "Start",
+      "end": "End",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "ended": "Ended"
     }
   }
 }

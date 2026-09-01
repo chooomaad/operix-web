@@ -77,6 +77,22 @@ export const safetyTrackerApi = {
 }
 
 // ── Employees ─────────────────────────────────────────────────────────────────
+// ── People (recherche unifiée multi-type) ─────────────────────────────────────
+export const peopleApi = {
+  search:  (q: string, type?: string, signal?: AbortSignal) =>
+    api.get('/people/search', { params: { q, type, limit: 12 }, signal }),
+  history: (type: string, id: number) => api.get(`/people/${type}/${id}/history`),
+}
+
+// ── Interns / Stagiaires ──────────────────────────────────────────────────────
+export const internsApi = {
+  list:    (params?: Record<string, unknown>) => api.get('/interns', { params }),
+  show:    (id: number) => api.get(`/interns/${id}`),
+  create:  (data: Record<string, unknown>) => api.post('/interns', data),
+  update:  (id: number, data: Record<string, unknown>) => api.put(`/interns/${id}`, data),
+  destroy: (id: number) => api.delete(`/interns/${id}`),
+}
+
 export const employeesApi = {
   list:    (params?: Record<string, unknown>) => api.get('/employees', { params }),
   show:    (id: number) => api.get(`/employees/${id}`),

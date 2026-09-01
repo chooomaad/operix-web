@@ -34,6 +34,7 @@ const router = createRouter({
         // Employees
         { path: 'employees',              name: 'employees',       component: () => import('@/pages/employees/EmployeesPage.vue') },
         { path: 'employees/:id',          name: 'employee-detail', component: () => import('@/pages/employees/EmployeeDetailPage.vue') },
+        { path: 'interns',                name: 'interns',         component: () => import('@/pages/interns/InternsPage.vue') },
 
         // Safety
         { path: 'incidents',              name: 'incidents',       component: () => import('@/pages/incidents/IncidentsPage.vue') },
