@@ -103,46 +103,6 @@
         </div>
       </div>
 
-      <!-- Employees -->
-      <div class="card space-y-3">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-            <UsersIcon class="w-5 h-5 text-blue-600" />
-          </div>
-          <div><h3 class="font-semibold text-gray-900">{{ t('reports.employees') }}</h3><p class="text-xs text-gray-500">{{ t('reports.employeesDesc') }}</p></div>
-        </div>
-        <div class="flex gap-2 pt-1">
-          <button @click="download('employees', {})" :disabled="busy.employees" class="btn-primary flex-1 text-sm"><DocumentArrowDownIcon class="w-4 h-4" /> {{ t('reports.pdf') }}</button>
-          <button @click="exportXlsx('employees', {})" :disabled="busy.employees_xlsx" class="btn-secondary flex-1 text-sm"><ArrowDownTrayIcon class="w-4 h-4" /> {{ t('reports.excel') }}</button>
-        </div>
-      </div>
-
-<!-- Certifications -->
-      <div class="card space-y-3">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
-            <AcademicCapIcon class="w-5 h-5 text-teal-600" />
-          </div>
-          <div><h3 class="font-semibold text-gray-900">{{ t('reports.certifications') }}</h3><p class="text-xs text-gray-500">{{ t('reports.certificationsDesc') }}</p></div>
-        </div>
-        <div class="flex gap-2 pt-1">
-          <button @click="exportXlsx('certifications', {})" :disabled="busy.certifications_xlsx" class="btn-secondary w-full text-sm"><ArrowDownTrayIcon class="w-4 h-4" /> {{ t('reports.excel') }}</button>
-        </div>
-      </div>
-
-      <!-- Medical Visits -->
-      <div class="card space-y-3">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
-            <HeartIcon class="w-5 h-5 text-pink-600" />
-          </div>
-          <div><h3 class="font-semibold text-gray-900">{{ t('reports.medicalVisits') }}</h3><p class="text-xs text-gray-500">{{ t('reports.medicalVisitsDesc') }}</p></div>
-        </div>
-        <div class="flex gap-2 pt-1">
-          <button @click="exportXlsx('medicalVisits', {})" :disabled="busy.medicalVisits_xlsx" class="btn-secondary w-full text-sm"><ArrowDownTrayIcon class="w-4 h-4" /> {{ t('reports.excel') }}</button>
-        </div>
-      </div>
-
     </div>
   </div>
 </template>
@@ -155,8 +115,7 @@ import { useDownload } from '@/composables/useDownload'
 import { availableYears } from '@/utils/years'
 import {
   ChartBarIcon, ExclamationTriangleIcon, BellAlertIcon, ShieldExclamationIcon,
-  GlobeAltIcon, UsersIcon, AcademicCapIcon,
-  HeartIcon, DocumentArrowDownIcon, ArrowDownTrayIcon
+  GlobeAltIcon, DocumentArrowDownIcon, ArrowDownTrayIcon
 } from '@heroicons/vue/24/outline'
 
 const { t } = useI18n()
