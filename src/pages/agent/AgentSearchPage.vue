@@ -61,23 +61,29 @@
           {{ results.length }} {{ t('agent.search.results') }}
         </p>
         <div
-          v-for="emp in results"
-          :key="emp.matricule"
+          v-for="p in results"
+          :key="p.type + '-' + p.id"
           class="bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-4 shadow-sm"
         >
-          <div class="w-11 h-11 rounded-full flex-shrink-0 bg-brand-50 flex items-center justify-center">
-            <span class="text-brand-600 font-bold text-sm">{{ initials(emp.name) }}</span>
+          <div class="w-11 h-11 rounded-full flex-shrink-0 flex items-center justify-center" :class="avatarClass(p.type)">
+            <span class="font-bold text-sm">{{ initials(p.full_name) }}</span>
           </div>
           <div class="flex-1 min-w-0">
-            <div class="font-semibold text-gray-900 truncate">{{ emp.name }}</div>
-            <div class="text-xs font-mono text-gray-500 mt-0.5">{{ emp.matricule }}</div>
+            <div class="font-semibold text-gray-900 truncate">{{ p.full_name }}</div>
+            <div class="text-xs text-gray-500 mt-0.5 flex items-center gap-1.5 flex-wrap">
+              <span class="inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] font-medium" :class="typeClass(p.type)">
+                <span class="w-1.5 h-1.5 rounded-full" :class="dotType(p.type)"></span>{{ t('people.types.' + p.type) }}
+              </span>
+              <span class="font-mono">{{ p.identifier }}</span>
+              <span v-if="p.company" class="text-gray-400">· {{ p.company }}</span>
+            </div>
           </div>
           <span
             class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0"
-            :class="statusClass(emp.status)"
+            :class="statusClass(p.status)"
           >
-            <span class="w-1.5 h-1.5 rounded-full" :class="dotClass(emp.status)"></span>
-            {{ t('agent.status.' + emp.status) }}
+            <span class="w-1.5 h-1.5 rounded-full" :class="dotClass(p.status)"></span>
+            {{ t('agent.status.' + p.status) }}
           </span>
         </div>
       </div>
@@ -92,9 +98,12 @@ import { agentApi } from '@/api'
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { FaceFrownIcon } from '@heroicons/vue/24/solid'
 
-interface AgentEmployee {
-  matricule: string
-  name: string
+interface Person {
+  type: string
+  id: number
+  full_name: string
+  identifier: string
+  company?: string | null
   status: 'active' | 'inactive'
 }
 
@@ -104,7 +113,7 @@ const DEBOUNCE_MS = 350
 
 const inputRef = ref<HTMLInputElement | null>(null)
 const query = ref('')
-const results = ref<AgentEmployee[]>([])
+const results = ref<Person[]>([])
 const loading = ref(false)
 
 let debounceTimer: ReturnType<typeof setTimeout>
@@ -130,7 +139,7 @@ async function doSearch() {
   ctrl?.abort()
   ctrl = new AbortController()
   try {
-    const { data } = await agentApi.searchEmployees(query.value.trim(), ctrl.signal)
+    const { data } = await agentApi.searchPeople(query.value.trim(), ctrl.signal)
     results.value = data.data ?? []
   } catch (err: any) {
     // On ignore les annulations (frappe suivante) ; sinon liste vide, sans détail.
@@ -152,6 +161,26 @@ function clearSearch() {
 
 function initials(name: string): string {
   return name.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase() || '?'
+}
+
+function typeClass(type: string): string {
+  return {
+    employee:   'bg-blue-50 text-blue-700',
+    contractor: 'bg-amber-50 text-amber-700',
+    visitor:    'bg-sky-50 text-sky-700',
+    intern:     'bg-violet-50 text-violet-700',
+  }[type] ?? 'bg-gray-100 text-gray-600'
+}
+function dotType(type: string): string {
+  return { employee: 'bg-blue-500', contractor: 'bg-amber-500', visitor: 'bg-sky-500', intern: 'bg-violet-500' }[type] ?? 'bg-gray-400'
+}
+function avatarClass(type: string): string {
+  return {
+    employee:   'bg-blue-50 text-blue-600',
+    contractor: 'bg-amber-50 text-amber-600',
+    visitor:    'bg-sky-50 text-sky-600',
+    intern:     'bg-violet-50 text-violet-600',
+  }[type] ?? 'bg-brand-50 text-brand-600'
 }
 
 function statusClass(status: string): string {

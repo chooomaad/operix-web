@@ -826,13 +826,13 @@
       "inactive": "Inactive"
     },
     "search": {
-      "title": "Search for an employee",
-      "subtitle": "Search by employee ID or name",
-      "placeholder": "Employee ID or name...",
-      "idle": "Start your search",
+      "title": "Search for a person",
+      "subtitle": "By name, ID or reference (employee, contractor, visitor, intern)",
+      "placeholder": "Name, ID, reference…",
+      "idle": "Search for a person",
       "minChars": "Enter at least 2 characters",
       "searching": "Searching...",
-      "noResults": "No employee found",
+      "noResults": "No person found",
       "results": "result(s)",
       "clear": "Clear"
     }

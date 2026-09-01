@@ -14,6 +14,8 @@ export const searchApi = {
 export const agentApi = {
   searchEmployees: (q: string, signal?: AbortSignal) =>
     api.get('/agent/employees/search', { params: { q }, signal }),
+  searchPeople: (q: string, signal?: AbortSignal) =>
+    api.get('/agent/people/search', { params: { q }, signal }),
 }
 
 // ── Auth ──────────────────────────────────────────────────────────────────────

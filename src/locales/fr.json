@@ -826,13 +826,13 @@
       "inactive": "Inactif"
     },
     "search": {
-      "title": "Rechercher un employé",
-      "subtitle": "Recherchez par matricule ou par nom",
-      "placeholder": "Matricule ou nom de l'employé...",
-      "idle": "Commencez votre recherche",
+      "title": "Rechercher une personne",
+      "subtitle": "Par nom, matricule ou référence (employé, sous-traitant, visiteur, stagiaire)",
+      "placeholder": "Nom, matricule, référence…",
+      "idle": "Recherchez une personne",
       "minChars": "Saisissez au moins 2 caractères",
       "searching": "Recherche en cours...",
-      "noResults": "Aucun employé trouvé",
+      "noResults": "Aucune personne trouvée",
       "results": "résultat(s)",
       "clear": "Effacer"
     }
