@@ -23,9 +23,12 @@
         </span>
       </template>
       <template #actions="{ row }">
-        <div class="flex justify-end gap-2" v-if="auth.can('employees.manage')">
-          <button @click="openEdit(row as any)" class="btn-secondary text-xs py-1 px-2">{{ t('common.edit') }}</button>
-          <button @click="remove(row as any)" class="btn-secondary text-xs py-1 px-2 !text-red-600">{{ t('common.delete') }}</button>
+        <div class="flex justify-end gap-2">
+          <RouterLink :to="`/people/intern/${(row as any).id}`" class="btn-secondary text-xs py-1 px-2">{{ t('common.view') }}</RouterLink>
+          <template v-if="auth.can('employees.manage')">
+            <button @click="openEdit(row as any)" class="btn-secondary text-xs py-1 px-2">{{ t('common.edit') }}</button>
+            <button @click="remove(row as any)" class="btn-secondary text-xs py-1 px-2 !text-red-600">{{ t('common.delete') }}</button>
+          </template>
         </div>
       </template>
     </DataTable>

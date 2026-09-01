@@ -35,6 +35,7 @@ const router = createRouter({
         { path: 'employees',              name: 'employees',       component: () => import('@/pages/employees/EmployeesPage.vue') },
         { path: 'employees/:id',          name: 'employee-detail', component: () => import('@/pages/employees/EmployeeDetailPage.vue') },
         { path: 'interns',                name: 'interns',         component: () => import('@/pages/interns/InternsPage.vue') },
+        { path: 'people/:type/:id',       name: 'person-profile',  component: () => import('@/pages/people/PersonProfilePage.vue') },
 
         // Safety
         { path: 'incidents',              name: 'incidents',       component: () => import('@/pages/incidents/IncidentsPage.vue') },

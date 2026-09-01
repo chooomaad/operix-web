@@ -251,6 +251,7 @@ export const reportsApi = {
   environment:      (params?: Record<string, unknown>) => api.get('/reports/environment', { params, responseType: 'blob' }),
   employees:        (params?: Record<string, unknown>) => api.get('/reports/employees', { params, responseType: 'blob' }),
   employeeProfile:  (id: number) => api.get(`/reports/employees/${id}/profile`, { responseType: 'blob' }),
+  personProfile:    (type: string, id: number) => api.get(`/reports/people/${type}/${id}/profile`, { responseType: 'blob' }),
   permits:          (params?: Record<string, unknown>) => api.get('/reports/permits', { params, responseType: 'blob' }),
 }
 

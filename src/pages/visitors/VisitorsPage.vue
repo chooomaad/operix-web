@@ -74,6 +74,7 @@
 
       <template #actions="{ row }">
         <div class="flex justify-end gap-2">
+          <RouterLink :to="`/people/visitor/${(row as any).id}`" class="btn-secondary text-xs py-1 px-2">{{ t('common.view') }}</RouterLink>
           <button
             v-if="(row as any).status === 'in' && auth.isAdmin"
             @click="checkout(row as any)"

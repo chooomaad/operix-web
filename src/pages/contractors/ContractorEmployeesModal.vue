@@ -76,6 +76,9 @@
 
             <!-- Actions -->
             <div class="flex items-center gap-2 flex-shrink-0">
+              <RouterLink :to="`/people/contractor/${emp.id}`" class="p-1.5 rounded-lg hover:bg-gray-200 text-gray-500" title="Voir le profil">
+                <EyeIcon class="w-4 h-4" />
+              </RouterLink>
               <button @click="startEdit(emp)" class="p-1.5 rounded-lg hover:bg-gray-200 text-gray-500">
                 <PencilIcon class="w-4 h-4" />
               </button>
@@ -166,7 +169,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { contractorsApi } from '@/api'
-import { XMarkIcon, PlusIcon, PencilIcon, TrashIcon, PhoneIcon, UsersIcon } from '@heroicons/vue/24/outline'
+import { XMarkIcon, PlusIcon, PencilIcon, TrashIcon, PhoneIcon, UsersIcon, EyeIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps<{ contractor: any }>()
 const emit  = defineEmits<{ close: [] }>()
