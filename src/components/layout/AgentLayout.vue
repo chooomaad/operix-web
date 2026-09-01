@@ -17,9 +17,8 @@
         <div class="w-9 h-9 rounded-xl overflow-hidden bg-white/10 flex items-center justify-center p-1 flex-shrink-0">
           <img
             :src="auth.orgLogo ?? '/logos/logo-tcn.png'" class="w-full h-full object-contain" alt="Logo"
-            @error="(e) => { (e.target as HTMLImageElement).style.display='none'; (e.target as HTMLImageElement).nextElementSibling!.removeAttribute('hidden') }"
+            @error="(e) => { const el = e.target as HTMLImageElement; if (!el.dataset.fb) { el.dataset.fb='1'; el.src='/logos/logo-tcn.png' } }"
           />
-          <span hidden class="text-white font-black text-sm">T</span>
         </div>
         <div class="min-w-0 flex-1">
           <div class="text-white font-bold text-sm leading-tight">Operix HSSE</div>

@@ -222,9 +222,8 @@
               <img
                 :src="org.logo_url ?? tcnLogoUrl"
                 class="w-full h-full object-contain" alt="Logo TCN"
-                @error="(e) => { (e.target as HTMLImageElement).style.display='none'; (e.target as HTMLImageElement).nextElementSibling!.removeAttribute('hidden') }"
+                @error="(e) => { const el = e.target as HTMLImageElement; if (!el.dataset.fb) { el.dataset.fb='1'; el.src=tcnLogoUrl } }"
               />
-              <span hidden class="font-black text-6xl" style="color:#0f2847">T</span>
             </div>
           </div>
 

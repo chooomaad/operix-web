@@ -12,9 +12,8 @@
           :src="auth.orgLogo ?? '/logos/logo-tcn.png'"
           class="w-full h-full object-contain"
           alt="Logo TCN"
-          @error="(e) => { (e.target as HTMLImageElement).style.display='none'; (e.target as HTMLImageElement).nextElementSibling!.removeAttribute('hidden') }"
+          @error="(e) => { const el = e.target as HTMLImageElement; if (!el.dataset.fb) { el.dataset.fb='1'; el.src='/logos/logo-tcn.png' } }"
         />
-        <span hidden class="text-white font-black text-base absolute">T</span>
       </div>
       <div class="min-w-0 flex-1">
         <div class="text-white font-semibold text-sm leading-tight truncate">Operix HSSE</div>
