@@ -773,7 +773,10 @@
     "modules": {
       "employees": "Employés",
       "incidents": "Incidents",
-      "near-miss": "Presqu'accidents"
+      "near-miss": "Presqu'accidents",
+      "interns": "Stagiaires",
+      "visitors": "Visiteurs",
+      "contractors": "Sous-traitants"
     }
   },
   "safetyTracker": {

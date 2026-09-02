@@ -5,10 +5,15 @@
         <h2 class="text-lg font-semibold text-gray-900">{{ t('interns.title') }}</h2>
         <p class="text-sm text-gray-500">{{ meta?.total ?? 0 }} · {{ t('interns.subtitle') }}</p>
       </div>
-      <button v-if="auth.can('employees.manage')" @click="openCreate" class="btn-primary text-sm">
-        <PlusIcon class="w-4 h-4" /> {{ t('interns.add') }}
-      </button>
+      <div class="flex items-center gap-2" v-if="auth.can('employees.manage')">
+        <button @click="showImport = true" class="btn-secondary text-sm">{{ t('import.title') }}</button>
+        <button @click="openCreate" class="btn-primary text-sm">
+          <PlusIcon class="w-4 h-4" /> {{ t('interns.add') }}
+        </button>
+      </div>
     </div>
+
+    <ImportModal v-if="showImport" module="interns" @close="showImport = false" @imported="load" />
 
     <div class="card-sm">
       <input v-model="search" @input="debouncedLoad" :placeholder="t('interns.searchPlaceholder')" class="input" />
@@ -80,6 +85,7 @@ import { internsApi } from '@/api'
 import { useAuthStore } from '@/stores/auth'
 import DataTable from '@/components/ui/DataTable.vue'
 import LoadErrorBanner from '@/components/ui/LoadErrorBanner.vue'
+import ImportModal from '@/components/ui/ImportModal.vue'
 import { PlusIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 
 const { t } = useI18n()
@@ -94,6 +100,7 @@ const search = ref('')
 const page = ref(1)
 
 const showForm = ref(false)
+const showImport = ref(false)
 const saving = ref(false)
 const editing = ref<number | null>(null)
 const form = reactive<any>({ nom: '', prenom: '', etablissement: '', encadrant: '', phone: '', email: '', date_debut: '', date_fin: '', status: 'active' })

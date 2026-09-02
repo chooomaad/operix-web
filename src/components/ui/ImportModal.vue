@@ -208,7 +208,12 @@ async function doPreview() {
   if (!selectedFile.value) return
   loading.value = true
   try {
-    const fn = props.module === 'employees' ? importsApi.previewEmployees : importsApi.previewIncidents
+    const previewFns: Record<string, (f: File) => Promise<any>> = {
+      employees: importsApi.previewEmployees, interns: importsApi.previewInterns,
+      visitors: importsApi.previewVisitors, contractors: importsApi.previewContractors,
+      incidents: importsApi.previewIncidents,
+    }
+    const fn = previewFns[props.module] ?? importsApi.previewIncidents
     const { data } = await fn(selectedFile.value)
     preview.value = data
   } catch (e: any) {
@@ -222,7 +227,12 @@ async function doImport() {
   if (!selectedFile.value) return
   loading.value = true
   try {
-    const fn = props.module === 'employees' ? importsApi.importEmployees : importsApi.importIncidents
+    const importFns: Record<string, (f: File) => Promise<any>> = {
+      employees: importsApi.importEmployees, interns: importsApi.importInterns,
+      visitors: importsApi.importVisitors, contractors: importsApi.importContractors,
+      incidents: importsApi.importIncidents,
+    }
+    const fn = importFns[props.module] ?? importsApi.importIncidents
     const { data } = await fn(selectedFile.value)
     toast.add({ severity: 'success', summary: data.message, detail: data.errors?.length ? `${data.errors.length} ligne(s) ignorée(s)` : undefined, life: 5000 })
     emit('imported')

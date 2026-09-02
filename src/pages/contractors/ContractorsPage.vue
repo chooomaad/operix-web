@@ -9,6 +9,7 @@
       </div>
       <div class="flex gap-2">
         <button @click="exportExcel" class="btn-secondary text-sm"><ArrowDownTrayIcon class="w-4 h-4" /> Excel</button>
+        <button v-if="auth.isAdmin" @click="showImport = true" class="btn-secondary text-sm">{{ t('import.title') }}</button>
         <button v-if="auth.isAdmin" @click="showForm = true" class="btn-primary text-sm">
           <PlusIcon class="w-4 h-4" /> {{ t('contractors.new') }}
         </button>
@@ -89,6 +90,7 @@
       :contractor="selectedContractor"
       @close="selectedContractor = null"
     />
+    <ImportModal v-if="showImport" module="contractors" @close="showImport = false" @imported="load" />
   </div>
 </template>
 
@@ -98,6 +100,7 @@ import { useI18n } from 'vue-i18n'
 import { useToast } from 'primevue/usetoast'
 import { contractorsApi, exportsApi } from '@/api'
 import { useAuthStore } from '@/stores/auth'
+import ImportModal from '@/components/ui/ImportModal.vue'
 import { useDownload } from '@/composables/useDownload'
 import DataTable from '@/components/ui/DataTable.vue'
 import ContractorFormModal from './ContractorFormModal.vue'
@@ -113,6 +116,7 @@ const records            = ref<any[]>([])
 const loading            = ref(false)
 const meta               = ref<any>(null)
 const showForm           = ref(false)
+const showImport         = ref(false)
 const editRow            = ref<any>(null)
 const selectedContractor = ref<any>(null)
 const filters            = reactive({ search: '', status: '', page: 1 })

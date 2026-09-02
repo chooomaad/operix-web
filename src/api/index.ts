@@ -280,4 +280,10 @@ export const importsApi = {
   previewIncidents: (file: File) => { const fd = new FormData(); fd.append('file', file); return api.post('/imports/incidents/preview', fd) },
   importIncidents:  (file: File) => { const fd = new FormData(); fd.append('file', file); return api.post('/imports/incidents', fd) },
   importNearMiss:   (file: File) => { const fd = new FormData(); fd.append('file', file); return api.post('/imports/near-miss', fd) },
+  previewInterns:     (file: File) => { const fd = new FormData(); fd.append('file', file); return api.post('/imports/interns/preview', fd) },
+  importInterns:      (file: File) => { const fd = new FormData(); fd.append('file', file); return api.post('/imports/interns', fd) },
+  previewVisitors:    (file: File) => { const fd = new FormData(); fd.append('file', file); return api.post('/imports/visitors/preview', fd) },
+  importVisitors:     (file: File) => { const fd = new FormData(); fd.append('file', file); return api.post('/imports/visitors', fd) },
+  previewContractors: (file: File) => { const fd = new FormData(); fd.append('file', file); return api.post('/imports/contractors/preview', fd) },
+  importContractors:  (file: File) => { const fd = new FormData(); fd.append('file', file); return api.post('/imports/contractors', fd) },
 }
