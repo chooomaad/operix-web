@@ -44,9 +44,7 @@ const message = computed(() => {
       return t('realtime.connecting')
     case 'reconnecting':
       return t('realtime.reconnecting')
-    case 'unavailable':
-    case 'failed':
-      return t('realtime.offline')
+    // unavailable / failed : on n'affiche PLUS d'annonce (temps réel optionnel).
     // connected, initializing, disconnected : rien.
     default:
       return ''
