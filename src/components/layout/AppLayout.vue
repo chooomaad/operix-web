@@ -15,12 +15,13 @@
       <TopBar @toggle-sidebar="sidebarOpen = !sidebarOpen" />
       <RealtimeStatusBanner />
       <main class="flex-1 overflow-y-auto">
+        <!-- Pas de <Transition mode="out-in"> autour du <KeepAlive> : la combinaison
+             laisse l'écran blanc au retour vers une page mise en cache (bug connu
+             Vue). Le KeepAlive suffit pour éviter les rechargements. -->
         <RouterView v-slot="{ Component, route }">
-          <Transition name="fade" mode="out-in">
-            <KeepAlive :max="8" :include="cachedPages">
-              <component :is="Component" :key="route.fullPath" />
-            </KeepAlive>
-          </Transition>
+          <KeepAlive :max="8" :include="cachedPages">
+            <component :is="Component" :key="route.fullPath" />
+          </KeepAlive>
         </RouterView>
       </main>
     </div>
