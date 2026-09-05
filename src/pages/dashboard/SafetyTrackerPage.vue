@@ -1,5 +1,17 @@
 <template>
   <div class="p-6 space-y-6">
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-gray-900">{{ t('safetyTracker.title') }}</h2>
+      <button
+        v-if="auth.can('safety_tracker.manage')"
+        @click="reset"
+        :disabled="resetting"
+        class="btn-secondary text-sm flex items-center gap-1.5"
+      >
+        <ArrowPathIcon class="w-4 h-4" /> {{ resetting ? t('common.saving') : t('safetyTracker.reset') }}
+      </button>
+    </div>
+
     <!-- Hero counter -->
     <div class="card text-center bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
       <div class="text-8xl font-black text-green-600 leading-none">{{ tracker?.days_without_accident ?? 0 }}</div>
@@ -43,12 +55,32 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useToast } from 'primevue/usetoast'
 import VueApexCharts from 'vue3-apexcharts'
+import { ArrowPathIcon } from '@heroicons/vue/24/outline'
 import { safetyTrackerApi } from '@/api'
+import { useAuthStore } from '@/stores/auth'
 
 const { t, tm } = useI18n()
+const auth        = useAuthStore()
+const toast       = useToast()
 const currentYear = new Date().getFullYear()
 const tracker     = ref<Record<string, any> | null>(null)
+const resetting   = ref(false)
+
+async function reset() {
+  if (!confirm(t('safetyTracker.resetConfirm'))) return
+  resetting.value = true
+  try {
+    const { data } = await safetyTrackerApi.reset()
+    tracker.value = data
+    toast.add({ severity: 'success', summary: t('safetyTracker.resetSuccess'), life: 3000 })
+  } catch (e: any) {
+    toast.add({ severity: 'error', summary: e.response?.data?.message ?? t('common.error'), life: 4000 })
+  } finally {
+    resetting.value = false
+  }
+}
 
 const monthLabels = tm('safetyTracker.months') as string[]
 

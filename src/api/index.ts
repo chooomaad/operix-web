@@ -76,6 +76,9 @@ export const dashboardApi = {
 export const safetyTrackerApi = {
   index:   (year?: number) => api.get('/safety-tracker', { params: { year } }),
   history: () => api.get('/safety-tracker/history'),
+  // Remet le compteur « jours sans accident » à zéro (date de référence = aujourd'hui
+  // par défaut). Réservé à l'encadrement (permission safety_tracker.manage).
+  reset:   (date?: string) => api.post('/safety-tracker/reset', date ? { date } : {}),
 }
 
 // ── Employees ─────────────────────────────────────────────────────────────────
@@ -126,7 +129,7 @@ export const departmentsApi = {
 export const incidentsApi = {
   list:    (params?: Record<string, unknown>) => api.get('/incidents', { params }),
   show:    (id: number) => api.get(`/incidents/${id}`),
-  create:  (data: Record<string, unknown>) => api.post('/incidents', data),
+  create:  (data: FormData | Record<string, unknown>) => api.post('/incidents', data),
   update:  (id: number, data: Record<string, unknown>) => api.put(`/incidents/${id}`, data),
   destroy: (id: number) => api.delete(`/incidents/${id}`),
   close:   (id: number, data: Record<string, unknown>) => api.post(`/incidents/${id}/close`, data),
@@ -137,7 +140,7 @@ export const incidentsApi = {
 export const nearMissApi = {
   list:    (params?: Record<string, unknown>) => api.get('/near-miss', { params }),
   show:    (id: number) => api.get(`/near-miss/${id}`),
-  create:  (data: Record<string, unknown>) => api.post('/near-miss', data),
+  create:  (data: FormData | Record<string, unknown>) => api.post('/near-miss', data),
   update:  (id: number, data: Record<string, unknown>) => api.put(`/near-miss/${id}`, data),
   destroy: (id: number) => api.delete(`/near-miss/${id}`),
   close:   (id: number, data: Record<string, unknown>) => api.post(`/near-miss/${id}/close`, data),
@@ -147,7 +150,7 @@ export const nearMissApi = {
 export const breachesApi = {
   list:    (params?: Record<string, unknown>) => api.get('/breaches', { params }),
   show:    (id: number) => api.get(`/breaches/${id}`),
-  create:  (data: Record<string, unknown>) => api.post('/breaches', data),
+  create:  (data: FormData | Record<string, unknown>) => api.post('/breaches', data),
   update:  (id: number, data: Record<string, unknown>) => api.put(`/breaches/${id}`, data),
   destroy: (id: number) => api.delete(`/breaches/${id}`),
   close:   (id: number, data: Record<string, unknown>) => api.post(`/breaches/${id}/close`, data),
@@ -157,11 +160,22 @@ export const breachesApi = {
 export const environmentApi = {
   list:    (params?: Record<string, unknown>) => api.get('/environment', { params }),
   show:    (id: number) => api.get(`/environment/${id}`),
-  create:  (data: Record<string, unknown>) => api.post('/environment', data),
+  create:  (data: FormData | Record<string, unknown>) => api.post('/environment', data),
   update:  (id: number, data: Record<string, unknown>) => api.put(`/environment/${id}`, data),
   destroy: (id: number) => api.delete(`/environment/${id}`),
   close:   (id: number, data: Record<string, unknown>) => api.post(`/environment/${id}/close`, data),
   stats:   (params?: Record<string, unknown>) => api.get('/environment/stats', { params }),
+}
+
+// ── Property Damage / Dommages matériels ──────────────────────────────────────
+export const propertyDamageApi = {
+  list:    (params?: Record<string, unknown>) => api.get('/property-damage', { params }),
+  show:    (id: number) => api.get(`/property-damage/${id}`),
+  create:  (data: FormData | Record<string, unknown>) => api.post('/property-damage', data),
+  update:  (id: number, data: Record<string, unknown>) => api.put(`/property-damage/${id}`, data),
+  destroy: (id: number) => api.delete(`/property-damage/${id}`),
+  close:   (id: number, data: Record<string, unknown>) => api.post(`/property-damage/${id}/close`, data),
+  stats:   (params?: Record<string, unknown>) => api.get('/property-damage/stats', { params }),
 }
 
 

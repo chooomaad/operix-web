@@ -44,6 +44,7 @@ const router = createRouter({
         { path: 'near-miss/:id',          name: 'near-miss-detail',component: () => import('@/pages/nearmiss/NearMissDetailPage.vue') },
         { path: 'breaches',               name: 'breaches',        component: () => import('@/pages/breaches/BreachesPage.vue') },
         { path: 'environment',            name: 'environment',     component: () => import('@/pages/environment/EnvironmentPage.vue') },
+        { path: 'property-damage',        name: 'property-damage', component: () => import('@/pages/property-damage/PropertyDamagePage.vue') },
 
         // Operations
         { path: 'permits',                name: 'permits',         component: () => import('@/pages/permits/PermitsPage.vue') },

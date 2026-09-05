@@ -51,6 +51,7 @@
     "noResults": "No results",
     "generate": "Generate",
     "download": "Download",
+    "photo": "Photo",
     "upload": "Upload",
     "refresh": "Refresh",
     "back": "Back",
@@ -67,6 +68,7 @@
     "incidents": "Incidents",
     "nearMiss": "Near Miss",
     "breaches": "Breach of Process",
+    "propertyDamage": "Property Damage",
     "environment": "Environment",
     "sectionOps": "Operations",
     "contractors": "Contractors",
@@ -306,6 +308,42 @@
       "autre": "Other"
     }
   },
+  "propertyDamage": {
+    "title": "Property Damage",
+    "new": "New property damage",
+    "add": "New damage",
+    "searchPlaceholder": "Search property damage...",
+    "empty": "No property damage recorded",
+    "reference": "Reference",
+    "date": "Date",
+    "time": "Time",
+    "location": "Location",
+    "type": "Type",
+    "severity": "Severity",
+    "description": "Description",
+    "estimatedCost": "Estimated cost",
+    "totalCost": "Total estimated cost",
+    "costHint": "Amount in MRU",
+    "immediateCause": "Immediate cause",
+    "correctiveAction": "Corrective action",
+    "correctiveDue": "Due date",
+    "personsInvolved": "Persons involved",
+    "created": "Property damage recorded",
+    "types": {
+      "vehicle": "Vehicle / machine",
+      "equipment": "Equipment",
+      "infrastructure": "Infrastructure",
+      "cargo": "Cargo",
+      "container": "Container",
+      "other": "Other"
+    }
+  },
+  "reportFile": {
+    "label": "Report (PDF)",
+    "hint": "PDF, 15 MB max",
+    "download": "Download report",
+    "current": "Report attached"
+  },
   "employees": {
     "title": "Employees",
     "profile": "Profile",
@@ -446,6 +484,46 @@
       "added": "Medical visit added",
       "doctorPlaceholder": "Doctor's name"
     },
+    "epi": {
+      "addTitle": "Issue PPE",
+      "designation": "Item",
+      "designationPlaceholder": "e.g. Safety helmet, S3 boots…",
+      "category": "Category",
+      "size": "Size",
+      "quantity": "Quantity",
+      "issuedAt": "Issued on",
+      "returnDue": "Return / renewal",
+      "condition": "Condition",
+      "observations": "Notes",
+      "noData": "No PPE issued",
+      "added": "PPE recorded",
+      "categories": {
+        "head": "Head",
+        "eyes": "Eyes / face",
+        "hearing": "Hearing",
+        "respiratory": "Respiratory",
+        "hands": "Hands",
+        "feet": "Feet",
+        "body": "Body",
+        "fall": "Fall protection",
+        "other": "Other"
+      },
+      "conditions": {
+        "neuf": "New",
+        "bon": "Good",
+        "use": "Worn",
+        "a_remplacer": "To replace"
+      },
+      "columns": {
+        "designation": "Item",
+        "category": "Category",
+        "size": "Size",
+        "quantity": "Qty",
+        "issuedAt": "Issued",
+        "returnDue": "Return",
+        "condition": "Condition"
+      }
+    },
     "noIncidents": "No incidents recorded",
     "noNearMiss": "No near miss recorded",
     "noBreaches": "No breaches recorded",
@@ -461,7 +539,8 @@
       "environment": "Environment",
       "formations": "Training",
       "certifications": "Certifications",
-      "medical": "Medical Visits"
+      "medical": "Medical Visits",
+      "epi": "PPE"
     },
     "info": {
       "email": "Email",
@@ -792,6 +871,9 @@
     "date": "Date",
     "type": "Type",
     "location": "Location",
+    "reset": "Reset to 0",
+    "resetConfirm": "Reset the \"days without accident\" counter to zero as of today? No data is deleted.",
+    "resetSuccess": "Counter reset",
     "months": [
       "Jan",
       "Feb",

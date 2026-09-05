@@ -51,6 +51,7 @@
     "noResults": "Aucun résultat",
     "generate": "Générer",
     "download": "Télécharger",
+    "photo": "Photo",
     "upload": "Importer",
     "refresh": "Actualiser",
     "back": "Retour",
@@ -67,6 +68,7 @@
     "incidents": "Incidents",
     "nearMiss": "Presqu'accidents",
     "breaches": "Manquements au processus",
+    "propertyDamage": "Dommages matériels",
     "environment": "Environnement",
     "sectionOps": "Opérations",
     "contractors": "Prestataires",
@@ -306,6 +308,42 @@
       "autre": "Autre"
     }
   },
+  "propertyDamage": {
+    "title": "Dommages matériels",
+    "new": "Nouveau dommage matériel",
+    "add": "Nouveau dommage",
+    "searchPlaceholder": "Rechercher un dommage matériel...",
+    "empty": "Aucun dommage matériel",
+    "reference": "Référence",
+    "date": "Date",
+    "time": "Heure",
+    "location": "Lieu",
+    "type": "Type",
+    "severity": "Gravité",
+    "description": "Description",
+    "estimatedCost": "Coût estimé",
+    "totalCost": "Coût total estimé",
+    "costHint": "Montant en MRU",
+    "immediateCause": "Cause immédiate",
+    "correctiveAction": "Action corrective",
+    "correctiveDue": "Échéance",
+    "personsInvolved": "Personnes impliquées",
+    "created": "Dommage matériel enregistré",
+    "types": {
+      "vehicle": "Véhicule / engin",
+      "equipment": "Équipement",
+      "infrastructure": "Infrastructure",
+      "cargo": "Marchandise",
+      "container": "Conteneur",
+      "other": "Autre"
+    }
+  },
+  "reportFile": {
+    "label": "Rapport (PDF)",
+    "hint": "PDF, 15 Mo max",
+    "download": "Télécharger le rapport",
+    "current": "Rapport joint"
+  },
   "employees": {
     "title": "Employés",
     "profile": "Profil",
@@ -446,6 +484,46 @@
       "added": "Visite médicale ajoutée",
       "doctorPlaceholder": "Nom du médecin"
     },
+    "epi": {
+      "addTitle": "Remettre un EPI",
+      "designation": "Désignation",
+      "designationPlaceholder": "Ex : Casque de sécurité, Chaussures S3…",
+      "category": "Catégorie",
+      "size": "Taille",
+      "quantity": "Quantité",
+      "issuedAt": "Date de remise",
+      "returnDue": "Retour / renouvellement",
+      "condition": "État",
+      "observations": "Observations",
+      "noData": "Aucun EPI remis",
+      "added": "EPI enregistré",
+      "categories": {
+        "head": "Tête",
+        "eyes": "Yeux / visage",
+        "hearing": "Audition",
+        "respiratory": "Respiratoire",
+        "hands": "Mains",
+        "feet": "Pieds",
+        "body": "Corps",
+        "fall": "Antichute",
+        "other": "Autre"
+      },
+      "conditions": {
+        "neuf": "Neuf",
+        "bon": "Bon",
+        "use": "Usé",
+        "a_remplacer": "À remplacer"
+      },
+      "columns": {
+        "designation": "Désignation",
+        "category": "Catégorie",
+        "size": "Taille",
+        "quantity": "Qté",
+        "issuedAt": "Remis le",
+        "returnDue": "Retour",
+        "condition": "État"
+      }
+    },
     "noIncidents": "Aucun incident enregistré",
     "noNearMiss": "Aucun presqu'accident enregistré",
     "noBreaches": "Aucune infraction enregistrée",
@@ -461,7 +539,8 @@
       "environment": "Environnement",
       "formations": "Formations",
       "certifications": "Certifications",
-      "medical": "Visites médicales"
+      "medical": "Visites médicales",
+      "epi": "EPI"
     },
     "info": {
       "email": "Email",
@@ -792,6 +871,9 @@
     "date": "Date",
     "type": "Type",
     "location": "Lieu",
+    "reset": "Remettre à 0",
+    "resetConfirm": "Remettre le compteur « jours sans accident » à zéro à partir d'aujourd'hui  ? Aucune donnée n'est supprimée.",
+    "resetSuccess": "Compteur réinitialisé",
     "months": [
       "Jan",
       "Fév",

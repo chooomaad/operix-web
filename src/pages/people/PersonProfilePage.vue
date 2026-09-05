@@ -70,8 +70,15 @@
         <div v-for="r in records" :key="r.id" class="card-sm flex items-center gap-4">
           <a v-if="r.image_url" :href="r.image_url" target="_blank" rel="noopener"><img :src="r.image_url" class="w-10 h-10 object-cover rounded border" /></a>
           <div class="flex-1 min-w-0">
-            <div class="font-medium text-gray-900 text-sm">{{ r.titre || r.type || r.date }}</div>
-            <div class="text-xs text-gray-500">{{ r.organisme || r.medecin || r.etablissement || '' }} <span v-if="r.date_debut">· {{ r.date_debut }}</span><span v-if="r.date_obtention">· {{ r.date_obtention }}</span><span v-if="r.date">· {{ r.date }}</span></div>
+            <div class="font-medium text-gray-900 text-sm">{{ r.titre || r.designation || r.type || r.date }}</div>
+            <div class="text-xs text-gray-500">
+              {{ r.organisme || r.medecin || r.etablissement || '' }}
+              <span v-if="r.category">· {{ t('profile.epi.categories.' + r.category) }}</span>
+              <span v-if="r.size">· {{ t('profile.epi.size') }} {{ r.size }}</span>
+              <span v-if="r.quantity">· ×{{ r.quantity }}</span>
+              <span v-if="r.condition">· {{ t('profile.epi.conditions.' + r.condition) }}</span>
+              <span v-if="r.date_debut">· {{ r.date_debut }}</span><span v-if="r.date_obtention">· {{ r.date_obtention }}</span><span v-if="r.issued_at">· {{ r.issued_at }}</span><span v-if="r.date">· {{ r.date }}</span>
+            </div>
           </div>
           <button v-if="auth.can('employees.manage')" @click="removeRecord(r)" class="btn-secondary text-xs py-1 px-2 !text-red-600">{{ t('common.delete') }}</button>
         </div>
@@ -106,7 +113,7 @@
             </div>
           </template>
           <!-- Medical -->
-          <template v-else>
+          <template v-else-if="activeTab==='medical-visits'">
             <div><label class="label">{{ t('profile.medical.date') }} *</label><input v-model="form.date" type="date" class="input" required /></div>
             <div><label class="label">{{ t('profile.medical.doctor') }}</label><input v-model="form.medecin" class="input" /></div>
             <div>
@@ -118,9 +125,46 @@
               </select>
             </div>
           </template>
+          <!-- EPI -->
+          <template v-else-if="activeTab==='epi'">
+            <div><label class="label">{{ t('profile.epi.designation') }} *</label><input v-model="form.designation" class="input" required :placeholder="t('profile.epi.designationPlaceholder')" /></div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="label">{{ t('profile.epi.category') }}</label>
+                <select v-model="form.category" class="input">
+                  <option value="head">{{ t('profile.epi.categories.head') }}</option>
+                  <option value="eyes">{{ t('profile.epi.categories.eyes') }}</option>
+                  <option value="hearing">{{ t('profile.epi.categories.hearing') }}</option>
+                  <option value="respiratory">{{ t('profile.epi.categories.respiratory') }}</option>
+                  <option value="hands">{{ t('profile.epi.categories.hands') }}</option>
+                  <option value="feet">{{ t('profile.epi.categories.feet') }}</option>
+                  <option value="body">{{ t('profile.epi.categories.body') }}</option>
+                  <option value="fall">{{ t('profile.epi.categories.fall') }}</option>
+                  <option value="other">{{ t('profile.epi.categories.other') }}</option>
+                </select>
+              </div>
+              <div><label class="label">{{ t('profile.epi.size') }}</label><input v-model="form.size" class="input" /></div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div><label class="label">{{ t('profile.epi.quantity') }}</label><input v-model="form.quantity" type="number" min="1" class="input" /></div>
+              <div>
+                <label class="label">{{ t('profile.epi.condition') }}</label>
+                <select v-model="form.condition" class="input">
+                  <option value="neuf">{{ t('profile.epi.conditions.neuf') }}</option>
+                  <option value="bon">{{ t('profile.epi.conditions.bon') }}</option>
+                  <option value="use">{{ t('profile.epi.conditions.use') }}</option>
+                  <option value="a_remplacer">{{ t('profile.epi.conditions.a_remplacer') }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div><label class="label">{{ t('profile.epi.issuedAt') }} *</label><input v-model="form.issued_at" type="date" class="input" required /></div>
+              <div><label class="label">{{ t('profile.epi.returnDue') }}</label><input v-model="form.return_due" type="date" class="input" /></div>
+            </div>
+          </template>
           <div>
             <label class="label">{{ t('profile.attachment') }}</label>
-            <input type="file" accept="image/*" @change="imageFile = ($event.target as HTMLInputElement).files?.[0] ?? null" class="input text-sm" />
+            <input type="file" :accept="activeTab==='epi' ? 'image/*,application/pdf' : 'image/*'" @change="imageFile = ($event.target as HTMLInputElement).files?.[0] ?? null" class="input text-sm" />
           </div>
           <div class="flex justify-end gap-3 pt-1">
             <button type="button" @click="showAdd=false" class="btn-secondary">{{ t('common.cancel') }}</button>
@@ -156,7 +200,7 @@ const idParam = computed(() => Number(route.params.id))
 const person = ref<any>(null)
 const counts = reactive({ incidents: 0, near_miss: 0, breaches: 0, environment: 0 })
 const incidents = ref<any[]>([]); const nearMiss = ref<any[]>([]); const breaches = ref<any[]>([]); const environment = ref<any[]>([])
-const formations = ref<any[]>([]); const certifications = ref<any[]>([]); const medical = ref<any[]>([])
+const formations = ref<any[]>([]); const certifications = ref<any[]>([]); const medical = ref<any[]>([]); const epi = ref<any[]>([])
 const activeTab = ref('incidents')
 const downloading = ref(false)
 
@@ -170,10 +214,11 @@ const recordTabs = computed(() => [
   { key: 'formations', label: t('profile.kpi.formations'), count: formations.value.length, alert: false },
   { key: 'certifications', label: t('profile.kpi.certifications'), count: certifications.value.length, alert: false },
   { key: 'medical-visits', label: t('profile.kpi.medical'), count: medical.value.length, alert: false },
+  { key: 'epi', label: t('profile.kpi.epi'), count: epi.value.length, alert: false },
 ])
 const tabs = computed(() => [...hsseTabs.value, ...recordTabs.value])
-const activeRecord = computed(() => ['formations', 'certifications', 'medical-visits'].includes(activeTab.value) ? activeTab.value : null)
-const records = computed(() => ({ formations: formations.value, certifications: certifications.value, 'medical-visits': medical.value }[activeTab.value] ?? []))
+const activeRecord = computed(() => ['formations', 'certifications', 'medical-visits', 'epi'].includes(activeTab.value) ? activeTab.value : null)
+const records = computed(() => ({ formations: formations.value, certifications: certifications.value, 'medical-visits': medical.value, epi: epi.value }[activeTab.value] ?? []))
 
 const initials = computed(() => (person.value?.full_name || '?').split(' ').map((w: string) => w[0]).slice(0, 2).join('').toUpperCase())
 const avatarClass = computed(() => ({ employee: 'bg-blue-100 text-blue-600', contractor: 'bg-amber-100 text-amber-600', visitor: 'bg-sky-100 text-sky-600', intern: 'bg-violet-100 text-violet-600' }[type.value] ?? 'bg-brand-100 text-brand-600'))
@@ -188,12 +233,13 @@ async function loadHistory() {
   incidents.value = data.incidents ?? []; nearMiss.value = data.near_miss ?? []; breaches.value = data.breaches ?? []; environment.value = data.environment ?? []
 }
 async function loadRecords() {
-  const [f, c, m] = await Promise.all([
+  const [f, c, m, e] = await Promise.all([
     peopleApi.records(type.value, idParam.value, 'formations'),
     peopleApi.records(type.value, idParam.value, 'certifications'),
     peopleApi.records(type.value, idParam.value, 'medical-visits'),
+    peopleApi.records(type.value, idParam.value, 'epi'),
   ])
-  formations.value = f.data ?? []; certifications.value = c.data ?? []; medical.value = m.data ?? []
+  formations.value = f.data ?? []; certifications.value = c.data ?? []; medical.value = m.data ?? []; epi.value = e.data ?? []
 }
 async function load() { person.value = null; await loadHistory(); await loadRecords() }
 
@@ -203,6 +249,7 @@ const form = reactive<any>({}); const imageFile = ref<File | null>(null)
 function openAdd() {
   Object.keys(form).forEach(k => delete form[k])
   if (activeTab.value === 'medical-visits') form.resultat = 'apte'
+  if (activeTab.value === 'epi') { form.condition = 'neuf'; form.quantity = 1 }
   imageFile.value = null; showAdd.value = true
 }
 async function saveRecord() {

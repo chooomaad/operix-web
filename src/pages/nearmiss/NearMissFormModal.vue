@@ -26,6 +26,12 @@
         <div><label class="label">{{ t('nearMiss.correctiveAction') }}</label><textarea v-model="form.corrective_action" class="input" rows="2" /></div>
         <div><label class="label">{{ t('nearMiss.correctiveDue') }}</label><input v-model="form.corrective_action_due" type="date" class="input" /></div>
 
+        <div>
+          <label class="label">{{ t('reportFile.label') }}</label>
+          <input type="file" accept="application/pdf" @change="reportFile = ($event.target as HTMLInputElement).files?.[0] ?? null" class="input text-sm" />
+          <p class="text-xs text-gray-400 mt-1">{{ t('reportFile.hint') }}</p>
+        </div>
+
         <!-- Persons Involved -->
         <div>
           <label class="label flex items-center gap-2">
@@ -57,6 +63,7 @@ import { nearMissApi } from '@/api'
 import { useDashboardStore } from '@/stores/dashboard'
 import { XMarkIcon, UserGroupIcon } from '@heroicons/vue/24/outline'
 import PeoplePicker from '@/components/ui/PeoplePicker.vue'
+import { objectToFormData } from '@/utils/eventForm'
 
 const props   = defineProps<{ preloadEmployee?: { id: number; nom: string; prenom: string; matricule: string } }>()
 const { t }   = useI18n()
@@ -65,6 +72,7 @@ const toast   = useToast()
 const dbStore = useDashboardStore()
 
 const loading = ref(false)
+const reportFile = ref<File | null>(null)
 const form = reactive({
   date: '', time: '', location: '', severity: 'medium',
   description: '', potential_consequence: '', corrective_action: '',
@@ -76,7 +84,9 @@ const form = reactive({
 async function submit() {
   loading.value = true
   try {
-    await nearMissApi.create({ ...form, involved_people: form.involved_people.map((p: any) => ({ type: p.type, id: p.id })) })
+    const base: Record<string, unknown> = { ...form, involved_people: form.involved_people.map((p: any) => ({ type: p.type, id: p.id })) }
+    if (reportFile.value) base.report_file = reportFile.value
+    await nearMissApi.create(reportFile.value ? objectToFormData(base) : base)
     toast.add({ severity: 'success', summary: t('nearMiss.created'), life: 3000 })
     dbStore.refresh()
     emit('created')
