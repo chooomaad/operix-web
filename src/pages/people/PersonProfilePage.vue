@@ -210,12 +210,18 @@ const hsseTabs = computed(() => [
   { key: 'breaches', label: t('nav.breaches'), count: breaches.value.length, rows: breaches.value, link: '/breaches/', alert: true },
   { key: 'environment', label: t('nav.environment'), count: environment.value.length, rows: environment.value, link: '/environment/', alert: true },
 ])
-const recordTabs = computed(() => [
-  { key: 'formations', label: t('profile.kpi.formations'), count: formations.value.length, alert: false },
-  { key: 'certifications', label: t('profile.kpi.certifications'), count: certifications.value.length, alert: false },
-  { key: 'medical-visits', label: t('profile.kpi.medical'), count: medical.value.length, alert: false },
-  { key: 'epi', label: t('profile.kpi.epi'), count: epi.value.length, alert: false },
-])
+const recordTabs = computed(() => {
+  const base = [
+    { key: 'formations', label: t('profile.kpi.formations'), count: formations.value.length, alert: false },
+    { key: 'certifications', label: t('profile.kpi.certifications'), count: certifications.value.length, alert: false },
+    { key: 'medical-visits', label: t('profile.kpi.medical'), count: medical.value.length, alert: false },
+  ]
+  // La dotation EPI est réservée aux employés.
+  if (type.value === 'employee') {
+    base.push({ key: 'epi', label: t('profile.kpi.epi'), count: epi.value.length, alert: false })
+  }
+  return base
+})
 const tabs = computed(() => [...hsseTabs.value, ...recordTabs.value])
 const activeRecord = computed(() => ['formations', 'certifications', 'medical-visits', 'epi'].includes(activeTab.value) ? activeTab.value : null)
 const records = computed(() => ({ formations: formations.value, certifications: certifications.value, 'medical-visits': medical.value, epi: epi.value }[activeTab.value] ?? []))
@@ -233,13 +239,16 @@ async function loadHistory() {
   incidents.value = data.incidents ?? []; nearMiss.value = data.near_miss ?? []; breaches.value = data.breaches ?? []; environment.value = data.environment ?? []
 }
 async function loadRecords() {
-  const [f, c, m, e] = await Promise.all([
+  const [f, c, m] = await Promise.all([
     peopleApi.records(type.value, idParam.value, 'formations'),
     peopleApi.records(type.value, idParam.value, 'certifications'),
     peopleApi.records(type.value, idParam.value, 'medical-visits'),
-    peopleApi.records(type.value, idParam.value, 'epi'),
   ])
-  formations.value = f.data ?? []; certifications.value = c.data ?? []; medical.value = m.data ?? []; epi.value = e.data ?? []
+  formations.value = f.data ?? []; certifications.value = c.data ?? []; medical.value = m.data ?? []
+  // EPI : employés uniquement (l'API renvoie 404 pour les autres types).
+  epi.value = type.value === 'employee'
+    ? ((await peopleApi.records(type.value, idParam.value, 'epi')).data ?? [])
+    : []
 }
 async function load() { person.value = null; await loadHistory(); await loadRecords() }
 
