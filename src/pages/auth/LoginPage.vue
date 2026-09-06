@@ -250,14 +250,6 @@
               </span>
             </transition>
           </div>
-
-          <!-- Specs / certifications -->
-          <div class="flex items-center gap-2 flex-wrap justify-center">
-            <span v-for="norm in ['ISO 45001', 'ISO 14001', 'OHSAS 18001']" :key="norm"
-              class="text-[10px] font-semibold text-blue-300/50 border border-blue-300/20 rounded-full px-3 py-0.5 tracking-wider">
-              {{ norm }}
-            </span>
-          </div>
         </div>
 
         <!-- BOTTOM: Powered by Operix -->
