@@ -68,19 +68,25 @@
     <div v-if="activeRecord">
       <div v-if="records.length" class="space-y-2">
         <div v-for="r in records" :key="r.id" class="card-sm flex items-center gap-4">
-          <a v-if="r.image_url" :href="r.image_url" target="_blank" rel="noopener"><img :src="r.image_url" class="w-10 h-10 object-cover rounded border" /></a>
+          <a v-if="r.image_url && activeTab !== 'epi'" :href="r.image_url" target="_blank" rel="noopener"><img :src="r.image_url" class="w-10 h-10 object-cover rounded border" /></a>
           <div class="flex-1 min-w-0">
-            <div class="font-medium text-gray-900 text-sm">{{ r.titre || r.designation || r.type || r.date }}</div>
-            <div class="text-xs text-gray-500">
-              {{ r.organisme || r.medecin || r.etablissement || '' }}
-              <span v-if="r.category">· {{ t('profile.epi.categories.' + r.category) }}</span>
-              <span v-if="r.size">· {{ t('profile.epi.size') }} {{ r.size }}</span>
-              <span v-if="r.quantity">· ×{{ r.quantity }}</span>
-              <span v-if="r.condition">· {{ t('profile.epi.conditions.' + r.condition) }}</span>
-              <span v-if="r.date_debut">· {{ r.date_debut }}</span><span v-if="r.date_obtention">· {{ r.date_obtention }}</span><span v-if="r.issued_at">· {{ r.issued_at }}</span><span v-if="r.date">· {{ r.date }}</span>
-            </div>
+            <template v-if="activeTab==='epi'">
+              <div class="font-medium text-gray-900 text-sm truncate">{{ ppeLabels(r.items, 'itemsList') }}</div>
+              <div class="text-xs text-gray-500 truncate">
+                {{ ppeLabels(r.categories, 'categories') }} · ×{{ r.quantity }}
+                <span v-if="r.condition">· {{ t('profile.epi.conditions.' + r.condition) }}</span>
+                <span v-if="r.issued_at">· {{ r.issued_at }}</span>
+              </div>
+            </template>
+            <template v-else>
+              <div class="font-medium text-gray-900 text-sm">{{ r.titre || r.type || r.date }}</div>
+              <div class="text-xs text-gray-500">{{ r.organisme || r.medecin || r.etablissement || '' }}<span v-if="r.date_debut"> · {{ r.date_debut }}</span><span v-if="r.date_obtention"> · {{ r.date_obtention }}</span><span v-if="r.date"> · {{ r.date }}</span></div>
+            </template>
           </div>
-          <button v-if="auth.can('employees.manage')" @click="removeRecord(r)" class="btn-secondary text-xs py-1 px-2 !text-red-600">{{ t('common.delete') }}</button>
+          <div class="flex gap-2 flex-shrink-0">
+            <button v-if="activeTab==='epi'" @click="viewPpe = r" class="btn-secondary text-xs py-1 px-2">{{ t('common.view') }}</button>
+            <button v-if="auth.can('employees.manage')" @click="removeRecord(r)" class="btn-secondary text-xs py-1 px-2 !text-red-600">{{ t('common.delete') }}</button>
+          </div>
         </div>
       </div>
       <div v-else class="card text-center py-10 text-gray-400 text-sm">{{ t('common.noData') }}</div>
@@ -125,46 +131,9 @@
               </select>
             </div>
           </template>
-          <!-- EPI -->
-          <template v-else-if="activeTab==='epi'">
-            <div><label class="label">{{ t('profile.epi.designation') }} *</label><input v-model="form.designation" class="input" required :placeholder="t('profile.epi.designationPlaceholder')" /></div>
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="label">{{ t('profile.epi.category') }}</label>
-                <select v-model="form.category" class="input">
-                  <option value="head">{{ t('profile.epi.categories.head') }}</option>
-                  <option value="eyes">{{ t('profile.epi.categories.eyes') }}</option>
-                  <option value="hearing">{{ t('profile.epi.categories.hearing') }}</option>
-                  <option value="respiratory">{{ t('profile.epi.categories.respiratory') }}</option>
-                  <option value="hands">{{ t('profile.epi.categories.hands') }}</option>
-                  <option value="feet">{{ t('profile.epi.categories.feet') }}</option>
-                  <option value="body">{{ t('profile.epi.categories.body') }}</option>
-                  <option value="fall">{{ t('profile.epi.categories.fall') }}</option>
-                  <option value="other">{{ t('profile.epi.categories.other') }}</option>
-                </select>
-              </div>
-              <div><label class="label">{{ t('profile.epi.size') }}</label><input v-model="form.size" class="input" /></div>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div><label class="label">{{ t('profile.epi.quantity') }}</label><input v-model="form.quantity" type="number" min="1" class="input" /></div>
-              <div>
-                <label class="label">{{ t('profile.epi.condition') }}</label>
-                <select v-model="form.condition" class="input">
-                  <option value="neuf">{{ t('profile.epi.conditions.neuf') }}</option>
-                  <option value="bon">{{ t('profile.epi.conditions.bon') }}</option>
-                  <option value="use">{{ t('profile.epi.conditions.use') }}</option>
-                  <option value="a_remplacer">{{ t('profile.epi.conditions.a_remplacer') }}</option>
-                </select>
-              </div>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div><label class="label">{{ t('profile.epi.issuedAt') }} *</label><input v-model="form.issued_at" type="date" class="input" required /></div>
-              <div><label class="label">{{ t('profile.epi.returnDue') }}</label><input v-model="form.return_due" type="date" class="input" /></div>
-            </div>
-          </template>
           <div>
             <label class="label">{{ t('profile.attachment') }}</label>
-            <input type="file" :accept="activeTab==='epi' ? 'image/*,application/pdf' : 'image/*'" @change="imageFile = ($event.target as HTMLInputElement).files?.[0] ?? null" class="input text-sm" />
+            <input type="file" accept="image/*" @change="imageFile = ($event.target as HTMLInputElement).files?.[0] ?? null" class="input text-sm" />
           </div>
           <div class="flex justify-end gap-3 pt-1">
             <button type="button" @click="showAdd=false" class="btn-secondary">{{ t('common.cancel') }}</button>
@@ -173,6 +142,10 @@
         </form>
       </div>
     </div>
+
+    <!-- Modals EPI (employés uniquement) -->
+    <PpeFormModal v-if="showPpeForm" :person-type="type" :person-id="idParam" @close="showPpeForm=false" @saved="loadRecords" />
+    <PpeViewModal v-if="viewPpe" :record="viewPpe" @close="viewPpe=null" />
   </div>
 
   <div v-else class="flex items-center justify-center h-64"><div class="w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full animate-spin"></div></div>
@@ -186,6 +159,8 @@ import { useToast } from 'primevue/usetoast'
 import { peopleApi, reportsApi } from '@/api'
 import { useAuthStore } from '@/stores/auth'
 import { useDownload } from '@/composables/useDownload'
+import PpeFormModal from '@/components/ppe/PpeFormModal.vue'
+import PpeViewModal from '@/components/ppe/PpeViewModal.vue'
 import { ArrowLeftIcon, DocumentArrowDownIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 
 const route = useRoute()
@@ -255,10 +230,19 @@ async function load() { person.value = null; await loadHistory(); await loadReco
 // ── Add record ────────────────────────────────────────────────────────────────
 const showAdd = ref(false); const saving = ref(false)
 const form = reactive<any>({}); const imageFile = ref<File | null>(null)
+// EPI : formulaire dédié (multi-sélection) + vue plein écran.
+const showPpeForm = ref(false); const viewPpe = ref<any>(null)
+
+/** Joint les clés EPI (articles / catégories) en libellés lisibles. */
+function ppeLabels(arr: any, group: 'itemsList' | 'categories'): string {
+  return (Array.isArray(arr) ? arr : []).map((k: string) => t(`profile.epi.${group}.${k}`)).join(', ') || '—'
+}
+
 function openAdd() {
+  // La dotation EPI utilise un formulaire multi-sélection dédié.
+  if (activeTab.value === 'epi') { showPpeForm.value = true; return }
   Object.keys(form).forEach(k => delete form[k])
   if (activeTab.value === 'medical-visits') form.resultat = 'apte'
-  if (activeTab.value === 'epi') { form.condition = 'neuf'; form.quantity = 1 }
   imageFile.value = null; showAdd.value = true
 }
 async function saveRecord() {

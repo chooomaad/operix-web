@@ -242,25 +242,23 @@
     <!-- ── EPI / Dotation ───────────────────────────────────────────────── -->
     <div v-if="activeTab === 'epi'">
       <DataTable :columns="[
-        { key:'designation', label: t('profile.epi.columns.designation') },
-        { key:'category',    label: t('profile.epi.columns.category') },
-        { key:'size',        label: t('profile.epi.columns.size') },
-        { key:'quantity',    label: t('profile.epi.columns.quantity') },
-        { key:'issued_at',   label: t('profile.epi.columns.issuedAt') },
-        { key:'return_due',  label: t('profile.epi.columns.returnDue') },
-        { key:'condition',   label: t('profile.epi.columns.condition') },
-        { key:'image_url',   label: t('profile.attachment') },
+        { key:'items',      label: t('profile.epi.columns.items') },
+        { key:'categories', label: t('profile.epi.columns.categories') },
+        { key:'quantity',   label: t('profile.epi.columns.quantity') },
+        { key:'issued_at',  label: t('profile.epi.columns.issuedAt') },
+        { key:'return_due', label: t('profile.epi.columns.returnDue') },
+        { key:'condition',  label: t('profile.epi.columns.condition') },
       ]" :rows="epiRows" :empty-text="t('profile.epi.noData')">
-        <template #cell-category="{ value }">{{ value ? t('profile.epi.categories.' + value) : '—' }}</template>
+        <template #cell-items="{ value }"><span class="text-sm text-gray-800">{{ ppeLabels(value, 'itemsList') }}</span></template>
+        <template #cell-categories="{ value }"><span class="text-xs text-gray-500">{{ ppeLabels(value, 'categories') }}</span></template>
         <template #cell-condition="{ value }">
           <span :class="value === 'a_remplacer' ? 'badge-inactive' : 'badge-active'" class="text-xs">{{ value ? t('profile.epi.conditions.' + value) : '—' }}</span>
         </template>
-        <template #cell-image_url="{ value }">
-          <a v-if="value" :href="value" target="_blank" rel="noopener" class="text-brand-600 text-xs underline">{{ t('reportFile.current') }}</a>
-          <span v-else class="text-gray-300">—</span>
-        </template>
         <template #actions="{ row }">
-          <button v-if="auth.isAdmin" @click="removeEpi(row as any)" class="btn-secondary text-xs py-1 px-2 !text-red-600">{{ t('common.delete') }}</button>
+          <div class="flex justify-end gap-2">
+            <button @click="viewEpi = row as any" class="btn-secondary text-xs py-1 px-2">{{ t('common.view') }}</button>
+            <button v-if="auth.isAdmin" @click="removeEpi(row as any)" class="btn-secondary text-xs py-1 px-2 !text-red-600">{{ t('common.delete') }}</button>
+          </div>
         </template>
       </DataTable>
     </div>
@@ -412,64 +410,17 @@
     </div>
   </div>
 
-  <!-- ══ Mini-modal : EPI ══════════════════════════════════════════════ -->
-  <div v-if="showAddEpi" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl">
-      <div class="flex items-center justify-between px-6 py-4 border-b">
-        <h3 class="font-semibold text-gray-900">{{ t('profile.epi.addTitle') }}</h3>
-        <button @click="showAddEpi = false"><XMarkIcon class="w-5 h-5 text-gray-400" /></button>
-      </div>
-      <form @submit.prevent="saveEpi" class="px-6 py-4 space-y-3">
-        <div>
-          <label class="label">{{ t('profile.epi.designation') }} *</label>
-          <input v-model="formEpi.designation" class="input" required :placeholder="t('profile.epi.designationPlaceholder')" />
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="label">{{ t('profile.epi.category') }}</label>
-            <select v-model="formEpi.category" class="input">
-              <option value="head">{{ t('profile.epi.categories.head') }}</option>
-              <option value="eyes">{{ t('profile.epi.categories.eyes') }}</option>
-              <option value="hearing">{{ t('profile.epi.categories.hearing') }}</option>
-              <option value="respiratory">{{ t('profile.epi.categories.respiratory') }}</option>
-              <option value="hands">{{ t('profile.epi.categories.hands') }}</option>
-              <option value="feet">{{ t('profile.epi.categories.feet') }}</option>
-              <option value="body">{{ t('profile.epi.categories.body') }}</option>
-              <option value="fall">{{ t('profile.epi.categories.fall') }}</option>
-              <option value="other">{{ t('profile.epi.categories.other') }}</option>
-            </select>
-          </div>
-          <div><label class="label">{{ t('profile.epi.size') }}</label><input v-model="formEpi.size" class="input" /></div>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div><label class="label">{{ t('profile.epi.quantity') }}</label><input v-model="formEpi.quantity" type="number" min="1" class="input" /></div>
-          <div>
-            <label class="label">{{ t('profile.epi.condition') }}</label>
-            <select v-model="formEpi.condition" class="input">
-              <option value="neuf">{{ t('profile.epi.conditions.neuf') }}</option>
-              <option value="bon">{{ t('profile.epi.conditions.bon') }}</option>
-              <option value="use">{{ t('profile.epi.conditions.use') }}</option>
-              <option value="a_remplacer">{{ t('profile.epi.conditions.a_remplacer') }}</option>
-            </select>
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div><label class="label">{{ t('profile.epi.issuedAt') }} *</label><input v-model="formEpi.issued_at" type="date" class="input" required /></div>
-          <div><label class="label">{{ t('profile.epi.returnDue') }}</label><input v-model="formEpi.return_due" type="date" class="input" /></div>
-        </div>
-        <div>
-          <label class="label">{{ t('profile.attachment') }}</label>
-          <input type="file" accept="image/*,application/pdf" @change="epiFile = ($event.target as HTMLInputElement).files?.[0] ?? null" class="input text-sm" />
-        </div>
-        <div class="flex justify-end gap-3 pt-1">
-          <button type="button" @click="showAddEpi = false" class="btn-secondary">{{ t('common.cancel') }}</button>
-          <button type="submit" :disabled="subLoading" class="btn-primary">{{ subLoading ? t('common.saving') : t('common.save') }}</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <!-- ══ Modals EPI (formulaire multi-sélection + vue plein écran) ═══════ -->
+  <PpeFormModal
+    v-if="showAddEpi"
+    :person-type="'employee'"
+    :person-id="Number(route.params.id)"
+    @close="showAddEpi = false"
+    @saved="loadEpi"
+  />
+  <PpeViewModal v-if="viewEpi" :record="viewEpi" @close="viewEpi = null" />
 
-  <div v-else class="flex items-center justify-center h-64">
+  <div v-if="!employee" class="flex items-center justify-center h-64">
     <div class="text-center">
       <div class="w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
       <p class="text-gray-500 text-sm">{{ t('profile.loading') }}</p>
@@ -498,6 +449,8 @@ import IncidentFormModal from '@/pages/incidents/IncidentFormModal.vue'
 import NearMissFormModal from '@/pages/nearmiss/NearMissFormModal.vue'
 import BreachFormModal from '@/pages/breaches/BreachFormModal.vue'
 import EnvironmentFormModal from '@/pages/environment/EnvironmentFormModal.vue'
+import PpeFormModal from '@/components/ppe/PpeFormModal.vue'
+import PpeViewModal from '@/components/ppe/PpeViewModal.vue'
 import { ArrowLeftIcon, PencilIcon, DocumentArrowDownIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 
 const { t } = useI18n()
@@ -514,6 +467,12 @@ const stats     = ref({ incidents_count:0, near_miss_count:0, breaches_count:0, 
 const showEdit  = ref(false)
 const activeTab = ref('incidents')
 const epiRows   = ref<any[]>([])
+const viewEpi   = ref<any>(null)
+
+/** Joint les clés EPI (articles / catégories) en libellés lisibles. */
+function ppeLabels(arr: any, group: 'itemsList' | 'categories'): string {
+  return (Array.isArray(arr) ? arr : []).map((k: string) => t(`profile.epi.${group}.${k}`)).join(', ') || '—'
+}
 
 // Modals sécurité
 const showAddIncident    = ref(false)
@@ -531,13 +490,11 @@ const subLoading       = ref(false)
 const formFormation = reactive({ titre: '', organisme: '', date_debut: '', date_fin: '', statut: 'terminee' })
 const formCert      = reactive({ titre: '', organisme: '', date_obtention: '', date_expiration: '' })
 const formMedical   = reactive({ date: '', type: 'periodique', medecin: '', resultat: 'apte', prochaine_visite: '' })
-const formEpi       = reactive({ designation: '', category: 'head', size: '', quantity: 1, issued_at: '', return_due: '', condition: 'neuf' })
 
 // Justificatifs image (optionnels) attachés à chaque enregistrement RH.
 const formationImage = ref<File | null>(null)
 const certImage      = ref<File | null>(null)
 const medicalImage   = ref<File | null>(null)
-const epiFile        = ref<File | null>(null)
 
 // Construit un payload : FormData si une image est jointe (multipart), sinon l'objet brut.
 function buildPayload(fields: Record<string, any>, image: File | null): FormData | Record<string, any> {
@@ -586,7 +543,7 @@ function openAddModal() {
     formations:   () => { Object.assign(formFormation, { titre:'', organisme:'', date_debut:'', date_fin:'', statut:'terminee' }); showAddFormation.value = true },
     certifications:() => { Object.assign(formCert, { titre:'', organisme:'', date_obtention:'', date_expiration:'' }); showAddCert.value = true },
     medical:      () => { Object.assign(formMedical, { date:'', type:'periodique', medecin:'', resultat:'apte', prochaine_visite:'' }); showAddMedical.value = true },
-    epi:          () => { Object.assign(formEpi, { designation:'', category:'head', size:'', quantity:1, issued_at:'', return_due:'', condition:'neuf' }); epiFile.value = null; showAddEpi.value = true },
+    epi:          () => { showAddEpi.value = true },
   }
   map[activeTab.value]?.()
 }
@@ -606,19 +563,6 @@ async function loadEpi() {
   const id = Number(route.params.id)
   const { data } = await peopleApi.records('employee', id, 'epi')
   epiRows.value = data ?? []
-}
-
-async function saveEpi() {
-  subLoading.value = true
-  try {
-    await peopleApi.addRecord('employee', Number(route.params.id), 'epi', buildPayload(formEpi, epiFile.value))
-    toast.add({ severity: 'success', summary: t('profile.epi.added'), life: 3000 })
-    epiFile.value = null
-    showAddEpi.value = false
-    await loadEpi()
-  } catch (e: any) {
-    toast.add({ severity: 'error', summary: e.response?.data?.message ?? 'Erreur', life: 4000 })
-  } finally { subLoading.value = false }
 }
 
 async function removeEpi(row: any) {

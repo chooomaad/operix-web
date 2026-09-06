@@ -485,11 +485,11 @@
       "doctorPlaceholder": "Nom du médecin"
     },
     "epi": {
-      "addTitle": "Remettre un EPI",
-      "designation": "Désignation",
-      "designationPlaceholder": "Ex : Casque de sécurité, Chaussures S3…",
-      "category": "Catégorie",
-      "size": "Taille",
+      "addTitle": "Remettre des EPI",
+      "items": "Articles",
+      "selectItems": "Cochez les articles remis",
+      "category": "Catégories",
+      "selectCategories": "Cochez les catégories (la quantité s'ajuste automatiquement)",
       "quantity": "Quantité",
       "issuedAt": "Date de remise",
       "returnDue": "Retour / renouvellement",
@@ -497,6 +497,23 @@
       "observations": "Observations",
       "noData": "Aucun EPI remis",
       "added": "EPI enregistré",
+      "view": "Voir la dotation",
+      "itemsList": {
+        "helmet": "Casque de sécurité",
+        "safety_glasses": "Lunettes de sécurité",
+        "face_shield": "Visière",
+        "ear_plugs": "Bouchons d'oreille",
+        "ear_muffs": "Casque antibruit",
+        "respirator": "Masque respiratoire",
+        "dust_mask": "Masque anti-poussière",
+        "gloves": "Gants",
+        "safety_boots": "Chaussures de sécurité",
+        "hi_vis_vest": "Gilet haute visibilité",
+        "coverall": "Combinaison",
+        "harness": "Harnais antichute",
+        "rain_gear": "Vêtement de pluie",
+        "knee_pads": "Genouillères"
+      },
       "categories": {
         "head": "Tête",
         "eyes": "Yeux / visage",
@@ -515,9 +532,8 @@
         "a_remplacer": "À remplacer"
       },
       "columns": {
-        "designation": "Désignation",
-        "category": "Catégorie",
-        "size": "Taille",
+        "items": "Articles",
+        "categories": "Catégories",
         "quantity": "Qté",
         "issuedAt": "Remis le",
         "returnDue": "Retour",
