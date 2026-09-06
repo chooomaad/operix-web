@@ -179,6 +179,26 @@ export const propertyDamageApi = {
 }
 
 
+// ── Management des risques ────────────────────────────────────────────────────
+export const risksApi = {
+  list:      (params?: Record<string, unknown>) => api.get('/risks', { params }),
+  show:      (id: number) => api.get(`/risks/${id}`),
+  create:    (data: Record<string, unknown>) => api.post('/risks', data),
+  update:    (id: number, data: Record<string, unknown>) => api.put(`/risks/${id}`, data),
+  destroy:   (id: number) => api.delete(`/risks/${id}`),
+  dashboard: (year?: number) => api.get('/risks/dashboard', { params: { year } }),
+  assignees: () => api.get('/risks/assignees'),
+  // Plan d'action
+  actions:      (id: number) => api.get(`/risks/${id}/actions`),
+  addAction:    (id: number, data: FormData | Record<string, unknown>) => api.post(`/risks/${id}/actions`, data),
+  updateAction: (id: number, actionId: number, data: FormData | Record<string, unknown>) =>
+    data instanceof FormData
+      ? api.post(`/risks/${id}/actions/${actionId}`, data, { params: { _method: 'PUT' } })
+      : api.put(`/risks/${id}/actions/${actionId}`, data),
+  deleteAction: (id: number, actionId: number) => api.delete(`/risks/${id}/actions/${actionId}`),
+  validateAction: (id: number, actionId: number) => api.post(`/risks/${id}/actions/${actionId}/validate`),
+}
+
 // ── Permits to Work ───────────────────────────────────────────────────────────
 export const permitsApi = {
   list:    (params?: Record<string, unknown>) => api.get('/permits', { params }),

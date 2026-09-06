@@ -42,6 +42,7 @@
       <NavItem to="/breaches"     :icon="XCircleIcon"    :label="t('nav.breaches')" />
       <NavItem to="/property-damage" :icon="WrenchScrewdriverIcon" :label="t('nav.propertyDamage')" />
       <NavItem to="/environment"  :icon="GlobeAltIcon"   :label="t('nav.environment')" />
+      <NavItem to="/risks"        :icon="ShieldExclamationIcon" :label="t('nav.risks')" />
 
       <SidebarSection :label="t('nav.reports')" v-if="auth.isAdmin" />
       <NavItem to="/reports"      :icon="ChartBarIcon"   :label="t('nav.reports')"   v-if="auth.isAdmin" />
@@ -79,7 +80,7 @@ import NavItem from './NavItem.vue'
 import SidebarSection from './SidebarSection.vue'
 import {
   HomeIcon, ShieldCheckIcon, UsersIcon, ExclamationTriangleIcon,
-  EyeIcon, XCircleIcon, GlobeAltIcon, WrenchScrewdriverIcon,
+  EyeIcon, XCircleIcon, GlobeAltIcon, WrenchScrewdriverIcon, ShieldExclamationIcon,
   BuildingOfficeIcon, UserGroupIcon, ChartBarIcon, ClockIcon,
   UserCircleIcon, ArrowRightOnRectangleIcon, XMarkIcon, AcademicCapIcon,
 } from '@heroicons/vue/24/outline'

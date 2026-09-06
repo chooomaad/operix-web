@@ -50,6 +50,7 @@ const cachedPages = [
   'NearMissPage',
   'BreachesPage',
   'PropertyDamagePage',
+  'RisksPage',
 
   'ContractorsPage',
   'VisitorsPage',

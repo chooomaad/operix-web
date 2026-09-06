@@ -45,6 +45,9 @@ const router = createRouter({
         { path: 'breaches',               name: 'breaches',        component: () => import('@/pages/breaches/BreachesPage.vue') },
         { path: 'environment',            name: 'environment',     component: () => import('@/pages/environment/EnvironmentPage.vue') },
         { path: 'property-damage',        name: 'property-damage', component: () => import('@/pages/property-damage/PropertyDamagePage.vue') },
+        { path: 'risks',                  name: 'risks',            component: () => import('@/pages/risks/RisksPage.vue') },
+        { path: 'risks/dashboard',        name: 'risks-dashboard',  component: () => import('@/pages/risks/RiskDashboardPage.vue') },
+        { path: 'risks/:id',              name: 'risk-detail',      component: () => import('@/pages/risks/RiskDetailPage.vue') },
 
         // Operations
         { path: 'permits',                name: 'permits',         component: () => import('@/pages/permits/PermitsPage.vue') },
