@@ -17,7 +17,7 @@
       <div><span class="text-gray-500 block">{{ t('incidents.detail.location') }}</span><strong>{{ incident.location }}</strong></div>
       <div><span class="text-gray-500 block">{{ t('incidents.detail.time') }}</span><strong>{{ incident.time ?? '—' }}</strong></div>
       <div><span class="text-gray-500 block">{{ t('incidents.detail.type') }}</span><strong>{{ incident.type }}</strong></div>
-      <div><span class="text-gray-500 block">{{ t('incidents.detail.reportedBy') }}</span><strong>{{ incident.reporter?.name ?? '—' }}</strong></div>
+      <div><span class="text-gray-500 block">{{ t('incidents.detail.reportedBy') }}</span><strong>{{ incident.reported_by?.name ?? '—' }}</strong></div>
     </div>
 
     <div class="card space-y-4 text-sm">

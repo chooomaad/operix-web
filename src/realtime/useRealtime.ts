@@ -19,6 +19,20 @@ interface NotificationPayload {
   read_at: string | null
 }
 
+/** Activité système diffusée à toute l'entreprise (toast temps réel). */
+interface SystemActivityPayload {
+  action: string
+  label: string
+  verb: string
+  title: string
+  reference: string | null
+  actor: string
+  resource_kind: string
+  resource_id: number
+  severity: 'info' | 'warn'
+  created_at: string
+}
+
 /**
  * Branche l'application sur le flux temps réel.
  *
@@ -73,6 +87,16 @@ export function useRealtime() {
             summary: summaryOf(payload),
             detail: payload.location ?? '',
             life: 6000,
+          })
+        })
+        // Toute action du système (création/modification/suppression sur n'importe
+        // quel module) → toast en haut, en temps réel, pour tout le monde.
+        .listen('.system.activity', (a: SystemActivityPayload) => {
+          toast.add({
+            severity: a.severity === 'warn' ? 'warn' : 'info',
+            summary: a.reference ? `${a.title} — ${a.reference}` : a.title,
+            detail: a.actor,
+            life: 4500,
           })
         })
     }

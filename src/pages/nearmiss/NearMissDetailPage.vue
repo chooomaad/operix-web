@@ -15,7 +15,7 @@
     <div class="card grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
       <div><span class="text-gray-500 block">{{ t('nearMiss.detail.location') }}</span><strong>{{ record.location }}</strong></div>
       <div><span class="text-gray-500 block">{{ t('nearMiss.detail.time') }}</span><strong>{{ record.time ?? '—' }}</strong></div>
-      <div><span class="text-gray-500 block">{{ t('nearMiss.detail.reportedBy') }}</span><strong>{{ record.reporter?.name ?? '—' }}</strong></div>
+      <div><span class="text-gray-500 block">{{ t('nearMiss.detail.reportedBy') }}</span><strong>{{ record.reported_by?.name ?? '—' }}</strong></div>
     </div>
 
     <div class="card space-y-4 text-sm">
