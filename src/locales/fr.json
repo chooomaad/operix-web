@@ -502,6 +502,8 @@
     "department": "Département",
     "contract": "Contrat",
     "status": "Statut",
+    "induction": "Induction",
+    "ppe": "EPI",
     "totalActive": "Total actifs",
     "totalInactive": "Total inactifs",
     "confirmDelete": "Supprimer cet employé ?",

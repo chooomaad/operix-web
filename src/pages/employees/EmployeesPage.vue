@@ -56,9 +56,14 @@
         <div class="text-xs text-gray-500">{{ (row as any).matricule }}</div>
       </template>
       <template #cell-department="{ row }">{{ (row as any).department?.name ?? '—' }}</template>
-      <template #cell-is_active="{ row }">
-        <span :class="(row as any).is_active ? 'badge-active' : 'badge-inactive'">
-          {{ (row as any).is_active ? t('common.active') : t('common.inactive') }}
+      <template #cell-induction="{ row }">
+        <span :class="(row as any).induction ? 'badge-active' : 'badge-inactive'">
+          {{ (row as any).induction ? t('common.yes') : t('common.no') }}
+        </span>
+      </template>
+      <template #cell-has_ppe="{ row }">
+        <span :class="(row as any).has_ppe ? 'badge-active' : 'badge-inactive'">
+          {{ (row as any).has_ppe ? t('common.yes') : t('common.no') }}
         </span>
       </template>
       <template #actions="{ row }">
@@ -109,7 +114,8 @@ const columns = computed(() => [
   { key: 'poste',        label: t('employees.position') },
   { key: 'department',   label: t('employees.department') },
   { key: 'type_contrat', label: t('employees.contract') },
-  { key: 'is_active',    label: t('employees.status') },
+  { key: 'induction',    label: t('employees.induction') },
+  { key: 'has_ppe',      label: t('employees.ppe') },
 ])
 
 let debounceTimer: ReturnType<typeof setTimeout>

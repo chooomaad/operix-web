@@ -78,13 +78,26 @@
               <span v-if="p.company" class="text-gray-400">· {{ p.company }}</span>
             </div>
           </div>
-          <span
-            class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0"
-            :class="statusClass(p.status)"
-          >
-            <span class="w-1.5 h-1.5 rounded-full" :class="dotClass(p.status)"></span>
-            {{ t('agent.status.' + p.status) }}
-          </span>
+          <div class="flex flex-col items-end gap-1 flex-shrink-0">
+            <!-- Employé : induction + EPI ; autres types : statut de présence -->
+            <template v-if="p.type === 'employee'">
+              <span class="inline-flex items-center text-[11px] font-medium px-2 py-0.5 rounded-full"
+                    :class="p.induction ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'">
+                {{ t('employees.induction') }} : {{ p.induction ? t('common.yes') : t('common.no') }}
+              </span>
+              <span class="inline-flex items-center text-[11px] font-medium px-2 py-0.5 rounded-full"
+                    :class="p.has_ppe ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'">
+                {{ t('employees.ppe') }} : {{ p.has_ppe ? t('common.yes') : t('common.no') }}
+              </span>
+            </template>
+            <span v-else
+              class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full"
+              :class="statusClass(p.status)"
+            >
+              <span class="w-1.5 h-1.5 rounded-full" :class="dotClass(p.status)"></span>
+              {{ t('agent.status.' + p.status) }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -105,6 +118,8 @@ interface Person {
   identifier: string
   company?: string | null
   status: 'active' | 'inactive'
+  induction?: boolean
+  has_ppe?: boolean
 }
 
 const { t } = useI18n()
