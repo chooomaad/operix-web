@@ -220,6 +220,7 @@
       "deadline": "Échéance",
       "closeTitle": "Clôturer l'incident",
       "closeBtn": "Clôturer",
+      "closureReport": "Rapport de clôture (PDF)",
       "loading": "Chargement..."
     }
   },

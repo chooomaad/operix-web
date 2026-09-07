@@ -132,7 +132,7 @@ export const incidentsApi = {
   create:  (data: FormData | Record<string, unknown>) => api.post('/incidents', data),
   update:  (id: number, data: Record<string, unknown>) => api.put(`/incidents/${id}`, data),
   destroy: (id: number) => api.delete(`/incidents/${id}`),
-  close:   (id: number, data: Record<string, unknown>) => api.post(`/incidents/${id}/close`, data),
+  close:   (id: number, data: FormData | Record<string, unknown>) => api.post(`/incidents/${id}/close`, data),
   stats:   (year?: number) => api.get('/incidents/stats', { params: { year } }),
 }
 

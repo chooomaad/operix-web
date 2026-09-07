@@ -220,6 +220,7 @@
       "deadline": "Deadline",
       "closeTitle": "Close incident",
       "closeBtn": "Close",
+      "closureReport": "Closure report (PDF)",
       "loading": "Loading..."
     }
   },
