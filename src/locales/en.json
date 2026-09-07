@@ -807,6 +807,8 @@
     "breachesDesc": "Breach of process",
     "environment": "Environment",
     "environmentDesc": "Environmental reports",
+    "propertyDamage": "Property Damage",
+    "propertyDamageDesc": "Property damage report",
     "employees": "Employees",
     "employeesDesc": "Directory & profiles",
     "certifications": "Certifications",

@@ -103,6 +103,24 @@
         </div>
       </div>
 
+      <!-- Property Damage -->
+      <div class="card space-y-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+            <WrenchScrewdriverIcon class="w-5 h-5 text-amber-600" />
+          </div>
+          <div><h3 class="font-semibold text-gray-900">{{ t('reports.propertyDamage') }}</h3><p class="text-xs text-gray-500">{{ t('reports.propertyDamageDesc') }}</p></div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 pt-1">
+          <div><label class="text-xs text-gray-500 mb-1 block">{{ t('reports.from') }}</label><input v-model="pdFilters.from" type="date" class="input text-xs py-1" /></div>
+          <div><label class="text-xs text-gray-500 mb-1 block">{{ t('reports.to') }}</label><input v-model="pdFilters.to" type="date" class="input text-xs py-1" /></div>
+        </div>
+        <div class="flex gap-2">
+          <button @click="download('propertyDamage', pdFilters)" :disabled="busy.propertyDamage" class="btn-primary flex-1 text-sm"><DocumentArrowDownIcon class="w-4 h-4" /> {{ t('reports.pdf') }}</button>
+          <button @click="exportXlsx('propertyDamage', pdFilters)" :disabled="busy.propertyDamage_xlsx" class="btn-secondary flex-1 text-sm"><ArrowDownTrayIcon class="w-4 h-4" /> {{ t('reports.excel') }}</button>
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
@@ -115,7 +133,7 @@ import { useDownload } from '@/composables/useDownload'
 import { availableYears } from '@/utils/years'
 import {
   ChartBarIcon, ExclamationTriangleIcon, BellAlertIcon, ShieldExclamationIcon,
-  GlobeAltIcon, DocumentArrowDownIcon, ArrowDownTrayIcon
+  GlobeAltIcon, DocumentArrowDownIcon, ArrowDownTrayIcon, WrenchScrewdriverIcon
 } from '@heroicons/vue/24/outline'
 
 const { t } = useI18n()
@@ -131,17 +149,19 @@ const incFilters  = reactive({ from: '', to: '' })
 const nmFilters   = reactive({ from: '', to: '' })
 const brFilters   = reactive({ from: '', to: '' })
 const envFilters  = reactive({ from: '', to: '' })
+const pdFilters   = reactive({ from: '', to: '' })
 
-type ReportKey = 'dashboard' | 'incidents' | 'nearMiss' | 'breaches' | 'environment' | 'employees'
-type ExportKey = 'incidents' | 'nearMiss' | 'breaches' | 'environment' | 'employees' | 'certifications' | 'medicalVisits'
+type ReportKey = 'dashboard' | 'incidents' | 'nearMiss' | 'breaches' | 'environment' | 'propertyDamage' | 'employees'
+type ExportKey = 'incidents' | 'nearMiss' | 'breaches' | 'environment' | 'propertyDamage' | 'employees' | 'certifications' | 'medicalVisits'
 
 const reportFns: Record<ReportKey, (p: any) => Promise<any>> = {
-  dashboard:   (p) => reportsApi.dashboard(p),
-  incidents:   (p) => reportsApi.incidents(p),
-  nearMiss:    (p) => reportsApi.nearMiss(p),
-  breaches:    (p) => reportsApi.breaches(p),
-  environment: (p) => reportsApi.environment(p),
-  employees:   (p) => reportsApi.employees(p),
+  dashboard:      (p) => reportsApi.dashboard(p),
+  incidents:      (p) => reportsApi.incidents(p),
+  nearMiss:       (p) => reportsApi.nearMiss(p),
+  breaches:       (p) => reportsApi.breaches(p),
+  environment:    (p) => reportsApi.environment(p),
+  propertyDamage: (p) => reportsApi.propertyDamage(p),
+  employees:      (p) => reportsApi.employees(p),
 }
 
 const exportFns: Record<ExportKey, (p: any) => Promise<any>> = {
@@ -149,6 +169,7 @@ const exportFns: Record<ExportKey, (p: any) => Promise<any>> = {
   nearMiss:      (p) => exportsApi.nearMiss(p),
   breaches:      (p) => exportsApi.breaches(p),
   environment:   (p) => exportsApi.environment(p),
+  propertyDamage:(p) => exportsApi.propertyDamage(p),
   employees:     (p) => exportsApi.employees(p),
   certifications:(p) => exportsApi.certifications(p),
   medicalVisits: (p) => exportsApi.medicalVisits(p),

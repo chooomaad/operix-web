@@ -301,6 +301,7 @@ export const exportsApi = {
   nearMiss:       (params?: Record<string, unknown>) => api.get('/exports/near-miss', { params, responseType: 'blob' }),
   breaches:       (params?: Record<string, unknown>) => api.get('/exports/breaches', { params, responseType: 'blob' }),
   environment:    (params?: Record<string, unknown>) => api.get('/exports/environment', { params, responseType: 'blob' }),
+  propertyDamage: (params?: Record<string, unknown>) => api.get('/exports/property-damage', { params, responseType: 'blob' }),
   certifications: (params?: Record<string, unknown>) => api.get('/exports/certifications', { params, responseType: 'blob' }),
   medicalVisits:  (params?: Record<string, unknown>) => api.get('/exports/medical-visits', { params, responseType: 'blob' }),
   permits:        (params?: Record<string, unknown>) => api.get('/exports/permits', { params, responseType: 'blob' }),
