@@ -5,8 +5,9 @@
         <h2 class="text-lg font-semibold text-gray-900">{{ t('propertyDamage.title') }}</h2>
         <p class="text-sm text-gray-500">{{ meta?.total ?? 0 }} {{ t('common.total').toLowerCase() }}</p>
       </div>
-      <div class="flex gap-2" v-if="auth.can('property_damage.create')">
-        <button @click="showForm = true" class="btn-primary text-sm"><PlusIcon class="w-4 h-4" /> {{ t('propertyDamage.add') }}</button>
+      <div class="flex gap-2">
+        <button v-if="auth.can('reports.generate')" @click="exportPdf" class="btn-secondary text-sm"><DocumentArrowDownIcon class="w-4 h-4" /> PDF</button>
+        <button v-if="auth.can('property_damage.create')" @click="showForm = true" class="btn-primary text-sm"><PlusIcon class="w-4 h-4" /> {{ t('propertyDamage.add') }}</button>
       </div>
     </div>
 
@@ -112,8 +113,9 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useToast } from 'primevue/usetoast'
-import { propertyDamageApi } from '@/api'
+import { propertyDamageApi, reportsApi } from '@/api'
 import { useAuthStore } from '@/stores/auth'
+import { useDownload } from '@/composables/useDownload'
 import DataTable from '@/components/ui/DataTable.vue'
 import LoadErrorBanner from '@/components/ui/LoadErrorBanner.vue'
 import PropertyDamageFormModal from './PropertyDamageFormModal.vue'
@@ -122,6 +124,12 @@ import { PlusIcon, XMarkIcon, DocumentArrowDownIcon } from '@heroicons/vue/24/ou
 const { t } = useI18n()
 const auth   = useAuthStore()
 const toast  = useToast()
+const { downloadPdf } = useDownload()
+
+async function exportPdf() {
+  const params = Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== '' && v !== 'page'))
+  await downloadPdf(() => reportsApi.propertyDamage(params), 'dommages-materiels.pdf')
+}
 
 const records  = ref<any[]>([])
 const stats    = ref<any>({})

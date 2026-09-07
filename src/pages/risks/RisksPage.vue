@@ -6,6 +6,7 @@
         <p class="text-sm text-gray-500">{{ meta?.total ?? 0 }} {{ t('risks.registered') }}</p>
       </div>
       <div class="flex items-center gap-2">
+        <button v-if="auth.can('reports.generate')" @click="exportPdf" class="btn-secondary text-sm"><DocumentArrowDownIcon class="w-4 h-4" /> PDF</button>
         <RouterLink to="/risks/dashboard" class="btn-secondary text-sm"><ChartBarIcon class="w-4 h-4" /> {{ t('risks.dashboard') }}</RouterLink>
         <div v-if="auth.can('risks.create')" class="relative">
           <button @click="menuOpen = !menuOpen" class="btn-primary text-sm"><PlusIcon class="w-4 h-4" /> {{ t('risks.newAssessment') }}</button>
@@ -80,16 +81,23 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { risksApi } from '@/api'
+import { risksApi, reportsApi } from '@/api'
 import { useAuthStore } from '@/stores/auth'
+import { useDownload } from '@/composables/useDownload'
 import DataTable from '@/components/ui/DataTable.vue'
 import LoadErrorBanner from '@/components/ui/LoadErrorBanner.vue'
 import RiskFormModal from './RiskFormModal.vue'
 import { RISK_CATEGORIES, ASSESSMENT_TYPES, RISK_LEVELS, RISK_STATUSES, levelClasses } from '@/constants/risk'
-import { PlusIcon, ChartBarIcon } from '@heroicons/vue/24/outline'
+import { PlusIcon, ChartBarIcon, DocumentArrowDownIcon } from '@heroicons/vue/24/outline'
 
 const { t } = useI18n()
 const auth  = useAuthStore()
+const { downloadPdf } = useDownload()
+
+async function exportPdf() {
+  const params = Object.fromEntries(Object.entries(filters).filter(([k, v]) => v !== '' && v !== false && k !== 'page' && k !== 'search'))
+  await downloadPdf(() => reportsApi.risks(params), 'registre-risques.pdf')
+}
 
 const records   = ref<any[]>([])
 const meta      = ref<any>(null)
